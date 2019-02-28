@@ -3,7 +3,6 @@ zdim = 0; scan = 'C'; lausanneScaleBOLD = 250; extralabel = 'corrfinal';
 name_root = ['Scan',scan,'Laus',num2str(lausanneScaleBOLD),'Z',num2str(zdim),extralabel];
 masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data'];
 mkdir(masterdir);
-mkdir(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root])
 
 demoLTN = readtable('/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/subject_demographics/n884_pnc_dtiNbackRest_subject_demographics.csv');
 demoLTN = sortrows(demoLTN,'scanid','ascend');
