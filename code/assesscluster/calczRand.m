@@ -1,11 +1,10 @@
 a = clock;
 rng(a(6));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/NCT'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'));
+addpaths;
 minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
 k_offset = minNumClusters - 1;
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
+
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load([masterdir,'/clusterAssignments/repkmeansPartitions',distanceMethod,name_root,'.mat']);
 
 savedir = [masterdir,'/clusterAssignments'];

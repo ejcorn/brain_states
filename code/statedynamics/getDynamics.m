@@ -1,10 +1,7 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/brainmapping2/Colormaps'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/BCT/'));
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-%masterdir = ['~/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/results/',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
+addpaths;
+
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
 
 if scan == 'R'
     scanlab = {'Rest'}; numTRs = 120;
@@ -17,7 +14,7 @@ end
 
 savedir = [masterdir,'/analyses/transitionprobabilities'];
 mkdir(savedir);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat']);
+load(fullfile(masterdir,['clusterAssignments/k',num2str(numClusters),name_root,'.mat']));
 kClusterAssignments = clusterAssignments.(['k',num2str(numClusters)]).partition;
 kClusterCentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
 clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;

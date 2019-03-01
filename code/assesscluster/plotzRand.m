@@ -1,4 +1,4 @@
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
+
 savedir = [masterdir,'/clusterAssignments'];
 load([masterdir,'/clusterAssignments/repkmeansPartitions',distanceMethod,name_root,'.mat'],'nreps');
 cd(savedir);

@@ -1,8 +1,6 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/brainmapping2/Colormaps'));
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat']);
+addpaths;
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
 
 scanlab = {'RestComb','nBackComb'}; 
 
@@ -18,7 +16,7 @@ restTransitionProbabilityMats = transitionProbabilityMats; clear transitionProba
 load([masterdir,'/analyses/transitionprobabilities/',scanlab{2},'TransitionProbabilityMatrices_k',num2str(numClusters),name_root,'.mat']);
 nBackTransitionProbabilityMats = transitionProbabilityMats; clear transitionProbabilityMats
 
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat']);
+load(fullfile(masterdir,['clusterAssignments/k',num2str(numClusters),name_root,'.mat']));
 clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
 
 %% permute rest and n-back within subjects

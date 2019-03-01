@@ -1,7 +1,7 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/brainmapping2/Colormaps'));
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat']);
+addpaths;
+
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
 savedir = [masterdir,'/analyses/transitionprobabilities'];
 scanlab = {'RestComb','nBackComb'};
 
@@ -9,7 +9,7 @@ load([masterdir,'/analyses/transitionprobabilities/',scanlab{1},'TransitionProba
 restTransitionProbabilityMats = transitionProbabilityMats; clear transitionProbabilityMats
 load([masterdir,'/analyses/transitionprobabilities/',scanlab{2},'TransitionProbabilityMatrices_k',num2str(numClusters),name_root,'.mat']);
 nBackTransitionProbabilityMats = transitionProbabilityMats; clear transitionProbabilityMats
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat']);
+load(fullfile(masterdir,['clusterAssignments/k',num2str(numClusters),name_root,'.mat']));
 kClusterAssignments = clusterAssignments.(['k',num2str(numClusters)]).partition;
 
 rPP = diag(squeeze(mean(restTransitionProbabilityMats,1)))';
@@ -23,7 +23,7 @@ tic
 tmpAssignments = kClusterAssignments(scanInd == 0);	% rest
 subjIndtmp = subjInd(scanInd == 0);
 probExceedNull = zeros(nperms,numClusters);
-parfor P = 1:nperms
+for P = 1:nperms
     tic
     nullPersistenceProbs = GET_NULL_PERSIST_PROBS(tmpAssignments,subjIndtmp);
     toc
@@ -62,7 +62,7 @@ tic
 tmpAssignments = kClusterAssignments(scanInd == 1);	% rest
 subjIndtmp = subjInd(scanInd == 1);
 probExceedNull = zeros(nperms,numClusters);
-parfor P = 1:nperms
+for P = 1:nperms
     tic
     nullPersistenceProbs = GET_NULL_PERSIST_PROBS(tmpAssignments,subjIndtmp);
     toc

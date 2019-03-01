@@ -1,8 +1,5 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/brainmapping2/Colormaps'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/BCT/'));
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
+addpaths;
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 
 if scan ~= 'C'
 	return

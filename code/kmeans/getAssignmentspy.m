@@ -1,18 +1,17 @@
-rng('shuffle');
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'))
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/kmeanscode'))
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/assesskmeanscode'))
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/NCT'));
+addpath(genpath(fullfile(basedir,'code')))
 minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
 k_offset = minNumClusters - 1;
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-addpath(masterdir);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat'])
+
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat'])
 
 
 savedir = [masterdir,'/clusterAssignments'];
 mkdir(savedir);
+
+% for some reason, k-means jobs will sometimes randomly die
+% check which saved k-means solution files exist, store in logical matrix splits_by_K
+% splits are just repetitions of clustering with full sample, not subsamples
 
 d = [masterdir,'/repkmeans'];
 splits_by_K = zeros(nsplits,numK);
@@ -27,7 +26,6 @@ end
 nsplits = min(sum(splits_by_K,1));
 
 totalNumTPs = length(subjInd);
-
 
 combPartitions = cell(numK,1); combSumD = cell(numK,1);
 disp('start loading k means partitions');

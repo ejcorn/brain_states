@@ -1,11 +1,10 @@
 % script to reorder states for k = 5 so +/- states can be easily compared
 
 a = clock; rng(a(6));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'))
 minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters;
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat'],'subjInd','scanInd');
+
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/TimeSeriesIndicators',name_root,'.mat'],'subjInd','scanInd');
 
 load(['k',num2str(numClusters),name_root,'.mat'],'clusterAssignments');
 

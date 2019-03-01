@@ -1,9 +1,9 @@
 a=clock;
 rng(a(6));
 %nreps = 10;
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
+
 cd(masterdir); mkdir repkmeans;
-concTS = csvread(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTSCSV_',name_root,'.csv']);
+concTS = csvread(fullfile(datadir,['ConcTSCSV_',name_root,'.csv']));
 cd repkmeans
 
 if zdim > 0

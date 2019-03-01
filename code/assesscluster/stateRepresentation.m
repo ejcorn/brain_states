@@ -1,8 +1,6 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'));
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat'])
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
 
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
 scanlab = {'RestComb','nBackComb'};
 minNumClusters = 2; maxNumClusters = 18; 
 clusterRange = minNumClusters:maxNumClusters; 
@@ -13,7 +11,7 @@ nbackAbsentStateCount = zeros(1,numK);
 dwelltime = cell(numK,2);
 for C = 1:numK
 	numClusters = clusterRange(C);
-	load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat']);
+	load(fullfile(masterdir,['clusterAssignments/k',num2str(numClusters),name_root,'.mat']));
 	kClusterAssignments = clusterAssignments.(['k',num2str(numClusters)]).partition;
 	
 	for S = 1:numel(scanlab)

@@ -1,11 +1,8 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/assesskmeanscode'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/brainmapping2/'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/BCT/'));
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTimeSeries',name_root,'.mat']);
-concTS = csvread(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTSCSV_',name_root,'.csv']);
+addpaths;
+
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
+concTS = csvread(fullfile(datadir,['ConcTSCSV_',name_root,'.csv']));
 
 if scan == 'R'
     scanlab = {'Rest'};

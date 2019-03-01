@@ -21,7 +21,7 @@ ROOT='Scan'$SCAN'Laus'$NPARC'Z'$ZDIM$LAB
 BASEDIR='/data/tesla-data/ecornblath/matlab/control_fc/pipeline/'
 MATPATH=/share/apps/matlab/R2017a/bin/matlab
 RPATH=/share/apps/R/R-3.2.5/bin/Rscript
-MASTERDIR='/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_'$ROOT
+MASTERDIR=$BASEDIR'results/clusterTransitions_'$ROOT
 if [ ! -d "$MASTERDIR" ]; then
   mkdir $MASTERDIR
 fi
@@ -34,7 +34,7 @@ cd $BASEDIR'jobs'		# change to directory containing all shell scripts
 
 PROC=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q -v ZDIM=$ZDIM,NPARC=$NPARC,SCAN=$SCAN,LAB=$LAB,BD=$BASEDIR,MP=$MATPATH ProcessDataBaumSample.sh)
 PROC="${PROC//[!0-9]/}"
-NULLSC=$(qsub -l h_vmem=30.5G,s_vmem=30G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,NPARC=$NPARC,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC nullSC.sh)
+NULLSC=$(qsub -l h_vmem=30.5G,s_vmem=30G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,NPARC=$NPARC,MP=$MATPATH -hold_jid $PROC nullSC.sh)
 NULLSC="${NULLSC//[!0-9]/}"
 
 ##########################
@@ -42,7 +42,7 @@ NULLSC="${NULLSC//[!0-9]/}"
 ##########################
 
 NREPS=1
-NSPLITS=100
+NSPLITS=10
 REPK='kmeans'$ROOT
 SPLITHALVES='splithalves'$ROOT
 

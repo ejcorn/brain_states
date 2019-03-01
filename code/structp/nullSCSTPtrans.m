@@ -1,14 +1,12 @@
-addpath(genpath('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode'));
-addpath(genpath('/data/tesla-data/ecornblath/matlab/BCT/'));
+addpaths;
 
-masterdir = ['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root];
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.mat']);
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat']);
+load(fullfile(masterdir,['clusterAssignments/k',num2str(numClusters),name_root,'.mat']));
 kClusterAssignments = clusterAssignments.(['k',num2str(numClusters)]).partition;
 kClusterCentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
 
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/VolNormSCRickNull',num2str(lausanneScaleBOLD),'.mat']);
+load(fullfile(datadir,['VolNormSCRickNull',num2str(lausanneScaleBOLD),'.mat']));
 savedir = [masterdir,'/analyses/structrans'];
 mkdir(savedir);
 
