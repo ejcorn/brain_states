@@ -4,6 +4,9 @@
 # data folder
 data
 
+# mac files
+.DS_STORE
+
 # History files
 .Rhistory
 .Rapp.history

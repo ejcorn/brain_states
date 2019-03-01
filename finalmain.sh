@@ -18,10 +18,10 @@ SCAN='C'
 LAB='corrfinal'
 
 ROOT='Scan'$SCAN'Laus'$NPARC'Z'$ZDIM$LAB
-BASEDIR='/data/tesla-data/ecornblath/matlab/control_fc/pipeline/'
+BASEDIR='/data/tesla-data/ecornblath/brain_states/'
 MATPATH=/share/apps/matlab/R2017a/bin/matlab
 RPATH=/share/apps/R/R-3.2.5/bin/Rscript
-MASTERDIR=$BASEDIR'results/clusterTransitions_'$ROOT
+MASTERDIR=$BASEDIR'results/'$ROOT
 if [ ! -d "$MASTERDIR" ]; then
   mkdir $MASTERDIR
 fi
@@ -42,15 +42,10 @@ NULLSC="${NULLSC//[!0-9]/}"
 ##########################
 
 NREPS=1
-NSPLITS=10
+NSPLITS=30
 REPK='kmeans'$ROOT
 SPLITHALVES='splithalves'$ROOT
 
-cd $MASTERDIR
-if [ ! -d "repkmeans" ]; then 
-  mkdir repkmeans
-fi
-cd /data/tesla-data/ecornblath/matlab/control_fc/pipeline/ 
 for K in {2..18}
 do
 	for S in $(seq $NSPLITS)
