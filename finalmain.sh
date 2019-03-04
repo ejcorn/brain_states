@@ -33,10 +33,10 @@ cd $BASEDIR'jobs'		# change to directory containing all shell scripts
 ####################
 
 
-#PROC=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q -v ZDIM=$ZDIM,NPARC=$NPARC,SCAN=$SCAN,LAB=$LAB,BD=$BASEDIR,MP=$MATPATH ProcessDataBaumSample.sh)
-#PROC="${PROC//[!0-9]/}"
-#NULLSC=$(qsub -l h_vmem=30.5G,s_vmem=30G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,NPARC=$NPARC,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC nullSC.sh)
-#NULLSC="${NULLSC//[!0-9]/}"
+PROC=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q -v ZDIM=$ZDIM,NPARC=$NPARC,SCAN=$SCAN,LAB=$LAB,BD=$BASEDIR,MP=$MATPATH ProcessDataBaumSample.sh)
+PROC="${PROC//[!0-9]/}"
+NULLSC=$(qsub -l h_vmem=30.5G,s_vmem=30G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,NPARC=$NPARC,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC nullSC.sh)
+NULLSC="${NULLSC//[!0-9]/}"
 
 ##########################
 ### k-means clustering ###
@@ -61,9 +61,8 @@ done
 
 K=5
 
-#ASSIGN0=$(qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "$REPK" getassignmentspy.sh)
-#ASSIGN0="${ASSIGN0//[!0-9]/}"
-ASSIGN0={}
+ASSIGN0=$(qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "$REPK" getassignmentspy.sh)
+ASSIGN0="${ASSIGN0//[!0-9]/}"
 ASSIGN=$(qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid "$ASSIGN0" reorderClusters.sh)
 ASSIGN="${ASSIGN//[!0-9]/}"
 
@@ -76,8 +75,7 @@ ENDCOMMENT
 ASSIGN={}
 qsub -N "plotzrand" -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "zrand" plotzrand.sh
 
-#qsub -l h_vmem=10.5G,s_vmem=10G -q all.q,basic.q -v D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN stateRepresentation.sh
-
+qsub -l h_vmem=10.5G,s_vmem=10G -q all.q,basic.q -v D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN stateRepresentation.sh
 
 ################
 ### Analysis ###
@@ -93,24 +91,23 @@ K=5
 ######################
 
 qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getcentroids.sh
-#TP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getDynamics.sh)
-#TP="${TP//[!0-9]/}"
-TP={}
+TP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getDynamics.sh)
+TP="${TP//[!0-9]/}"
 
 NULL=$(qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,N=$NPERMS,BD=$BASEDIR,MP=$MATPATH -hold_jid $TP nullTransProbs.sh)
 NULL="${NULL//[!0-9]/}"
 qsub -N "$SYMM" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH,RP=$RPATH -hold_jid $TP symmRvNv2.sh
 
-qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR -hold_jid $TP persistNull.sh
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=MATPATH -hold_jid $TP persistNull.sh
 
 qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=MATPATH -hold_jid $NULL restvsnbackNP.sh
 
-qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RP -hold_jid $TP plotDur.sh
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RPATH -hold_jid $TP plotDur.sh
 
-qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=MATPATH,RP=$RP -hold_jid $TP nbackblockDur.sh
+qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=MATPATH,RP=$RPATH -hold_jid $TP nbackblockDur.sh
 NBACK="${NBACK//[!0-9]/}"
 
-qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RP -hold_jid $TP TPDistance.sh
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RPATH -hold_jid $TP TPDistance.sh
 
 ###################
 ### Development ###
