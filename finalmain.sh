@@ -23,7 +23,7 @@ MATPATH=/share/apps/matlab/R2017a/bin/matlab
 RPATH=/share/apps/R/R-3.2.5/bin/Rscript
 MASTERDIR=$BASEDIR'results/'$ROOT
 if [ ! -d "$MASTERDIR" ]; then
-  mkdir $MASTERDIR
+  mkdir -p $MASTERDIR		# recursively create general results folder and output folder
 fi
 
 cd $BASEDIR'jobs'		# change to directory containing all shell scripts
@@ -32,20 +32,21 @@ cd $BASEDIR'jobs'		# change to directory containing all shell scripts
 ### Process data ###
 ####################
 
-PROC=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q -v ZDIM=$ZDIM,NPARC=$NPARC,SCAN=$SCAN,LAB=$LAB,BD=$BASEDIR,MP=$MATPATH ProcessDataBaumSample.sh)
-PROC="${PROC//[!0-9]/}"
-NULLSC=$(qsub -l h_vmem=30.5G,s_vmem=30G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,NPARC=$NPARC,MP=$MATPATH -hold_jid $PROC nullSC.sh)
-NULLSC="${NULLSC//[!0-9]/}"
+
+#PROC=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q -v ZDIM=$ZDIM,NPARC=$NPARC,SCAN=$SCAN,LAB=$LAB,BD=$BASEDIR,MP=$MATPATH ProcessDataBaumSample.sh)
+#PROC="${PROC//[!0-9]/}"
+#NULLSC=$(qsub -l h_vmem=30.5G,s_vmem=30G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,NPARC=$NPARC,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC nullSC.sh)
+#NULLSC="${NULLSC//[!0-9]/}"
 
 ##########################
 ### k-means clustering ###
 ##########################
 
 NREPS=1
-NSPLITS=30
+NSPLITS=10
 REPK='kmeans'$ROOT
 SPLITHALVES='splithalves'$ROOT
-
+BEGINCOMMENT
 for K in {2..18}
 do
 	for S in $(seq $NSPLITS)
@@ -60,22 +61,23 @@ done
 
 K=5
 
-ASSIGN0=$(qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "$REPK" getassignmentspy.sh)
-ASSIGN0="${ASSIGN0//[!0-9]/}"
-
+#ASSIGN0=$(qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "$REPK" getassignmentspy.sh)
+#ASSIGN0="${ASSIGN0//[!0-9]/}"
+ASSIGN0={}
 ASSIGN=$(qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid "$ASSIGN0" reorderClusters.sh)
 ASSIGN="${ASSIGN//[!0-9]/}"
+
 
 for K in {2..18}
 do
 qsub -N "zrand" -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN calczrand.sh
 done
-
+ENDCOMMENT
+ASSIGN={}
 qsub -N "plotzrand" -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "zrand" plotzrand.sh
 
-qsub -l h_vmem=10.5G,s_vmem=10G -q all.q,basic.q -v D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN stateRepresentation.sh
+#qsub -l h_vmem=10.5G,s_vmem=10G -q all.q,basic.q -v D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN stateRepresentation.sh
 
-qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getcentroids.sh
 
 ################
 ### Analysis ###
@@ -90,10 +92,11 @@ K=5
 ### State Dynamics ###
 ######################
 
-TP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getDynamics.sh)
-TP="${TP//[!0-9]/}"
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getcentroids.sh
+#TP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getDynamics.sh)
+#TP="${TP//[!0-9]/}"
+TP={}
 
-BEGINCOMMENT
 NULL=$(qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,N=$NPERMS,BD=$BASEDIR,MP=$MATPATH -hold_jid $TP nullTransProbs.sh)
 NULL="${NULL//[!0-9]/}"
 qsub -N "$SYMM" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH,RP=$RPATH -hold_jid $TP symmRvNv2.sh
@@ -150,5 +153,3 @@ qsub -l h_vmem=8G,s_vmem=7.5G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SC
 #################
 
 qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN -hold_jid $TP dprimeTPDurnew.sh
-
-ENDCOMMENT

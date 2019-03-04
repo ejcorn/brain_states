@@ -4,7 +4,7 @@ a = clock; rng(a(6));
 minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters;
 
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
-load(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/TimeSeriesIndicators',name_root,'.mat'],'subjInd','scanInd');
+load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat']));
 
 load(['k',num2str(numClusters),name_root,'.mat'],'clusterAssignments');
 

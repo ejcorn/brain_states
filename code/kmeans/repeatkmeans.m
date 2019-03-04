@@ -1,10 +1,11 @@
 a=clock;
 rng(a(6));
-%nreps = 10;
 
-cd(masterdir); mkdir repkmeans;
+load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
+savedir = fullfile(masterdir,'repkmeans');
+mkdir(savedir); cd(savedir);
 concTS = csvread(fullfile(datadir,['ConcTSCSV_',name_root,'.csv']));
-cd repkmeans
+
 
 if zdim > 0
 	concTS = zscore(concTS,[],zdim);

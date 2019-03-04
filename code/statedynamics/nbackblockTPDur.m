@@ -23,8 +23,8 @@ clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
 load(fullfile(datadir,'nbackBlocks.mat'));
 
 numBlocks = length(unique(nbackBlocks));
-BlockLabels = unique(nbackBlocks)';
-BlockNames = {'0back','1back','2back','Rest'};
+BlockLabels = [0 1 2];
+BlockNames = {'0back','1back','2back'};
 
 cd(savedir);
 for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each subject in each cluster

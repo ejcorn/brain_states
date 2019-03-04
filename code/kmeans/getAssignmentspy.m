@@ -1,9 +1,9 @@
-addpath(genpath(fullfile(basedir,'code')))
+addpaths;
 minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
 k_offset = minNumClusters - 1;
 
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
-load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat'])
+load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat']));
 
 
 savedir = [masterdir,'/clusterAssignments'];
