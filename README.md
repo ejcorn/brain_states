@@ -15,6 +15,7 @@ finalmain.sh is a bash script that will produce every figure in the paper. There
   -RPATH: the path to the user's Rscript function i.e. Rscript
 
 The user can also specify certain parameters in finalmain.sh:
+
   -ZDIM: should time series be z-scored? We did not z-score but one can if desired.
   -METHOD: specify a valid distance function for MATLAB kmeans. We used 'correlation'.
   -NPARC: specify Lausanne parcellation scale. Integer, either 60, 125, or 250.
