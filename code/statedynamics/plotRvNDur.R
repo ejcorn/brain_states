@@ -11,8 +11,8 @@ masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
 source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
 
-restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
-nbackDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
+restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
+nbackDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
@@ -42,4 +42,4 @@ if(numClusters == 5){
   p <- p + theme(axis.text.x = element_text(size=8,colour = clusterColors))
 }
 
-ggsave(plot = p, filename = paste(masterdir,'analyses/fractionaloccupancy/RvNFractionalOccupancy_k',numClusters,'.pdf',sep =""),height = 2,width = (numClusters-1) + 0.25, units = "in")
+ggsave(plot = p, filename = paste(masterdir,'analyses/transitionprobabilities/RvNFractionalOccupancy_k',numClusters,'.pdf',sep =""),height = 2,width = (numClusters-1) + 0.25, units = "in")
