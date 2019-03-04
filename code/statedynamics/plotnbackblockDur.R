@@ -23,9 +23,9 @@ clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"=
 RNcolors <- c('#005C9F','#FF8400') 
 
 restDur <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
-	numClusters,name_root,'.mat',sep = ''))$stateDuration * 100)
+	numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100)
 restSEM <- apply(X = readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
-	numClusters,name_root,'.mat',sep = ''))$stateDuration * 100,FUN = std.error, MARGIN= 2)
+	numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100,FUN = std.error, MARGIN= 2)
 nbackDur <- lapply(1:numBlocks, function(B) colMeans(readMat(paste(masterdir,'analyses/nbackblocks/FractionalOccupancy',
 	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100))
 nbackDurSEM <- lapply(1:numBlocks, function(B) apply(X = readMat(paste(masterdir,'analyses/nbackblocks/FractionalOccupancy',

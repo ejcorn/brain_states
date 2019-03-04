@@ -25,26 +25,26 @@ if(!dir.exists(savedir)){
 	dir.create(savedir,recursive = TRUE)
 }
 
-restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
-                         numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
-nbackDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',
-                        numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
+restDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
+                         numClusters,name_root,'.mat',sep = ''))$DwellTime
+nbackDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombDwellTime_k',
+                        numClusters,name_root,'.mat',sep = ''))$DwellTime
 
-restDur.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(restDur[,K] ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
+restDwell.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(restDwell[,K] ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
 	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
-nbackDur.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackDur[,K] ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
+nbackDwell.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackDwell[,K] ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
 	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
 
 # permutation testing
 nperms <- 500
 age_orig <- demo$age_in_yrs
-restDur.age.Null <- lapply(1:nperms, function(n) lapply(1:numClusters, function(K) summary(lm.beta(lm(restDur[,K] ~ age_orig + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
+restDwell.age.Null <- lapply(1:nperms, function(n) lapply(1:numClusters, function(K) summary(lm.beta(lm(restDwell[,K] ~ age_orig + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
   data = demo[sample(nrow(demo),replace=F),])))$coefficients[2,c('Standardized','Pr(>|t|)')]))
-restBeta.null <- lapply(1:numClusters, function(K) sapply(1:nperms, function(n) restDur.age.Null[[n]][[K]]['Standardized']))
-restBeta.z <- lapply(1:numClusters, function(K) (restDur.age[[K]]['Standardized'] - mean(restBeta.null[[K]])) /sd(restBeta.null[[K]]))
-restBeta.p <- lapply(1:numClusters, function(K) restDur.age[[K]]['Standardized'] > restBeta.null[[K]])
+restBeta.null <- lapply(1:numClusters, function(K) sapply(1:nperms, function(n) restDwell.age.Null[[n]][[K]]['Standardized']))
+restBeta.z <- lapply(1:numClusters, function(K) (restDwell.age[[K]]['Standardized'] - mean(restBeta.null[[K]])) /sd(restBeta.null[[K]]))
+restBeta.p <- lapply(1:numClusters, function(K) restDwell.age[[K]]['Standardized'] > restBeta.null[[K]])
 
-pdat <- as.data.frame(cbind(t(as.data.frame(restDur.age, row.names = c('RestB','RestP'))),t(as.data.frame(nbackDur.age,row.names = c('nBackB','nBackP')))))
+pdat <- as.data.frame(cbind(t(as.data.frame(restDwell.age, row.names = c('RestB','RestP'))),t(as.data.frame(nbackDwell.age,row.names = c('nBackB','nBackP')))))
 pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
 pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
 pdat$RestP <- ifelse(pdat$RestP,'*','')
@@ -56,7 +56,7 @@ pdat$State = rep(clusterNames,2)
 
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
 	geom_bar(stat = "identity", position = position_dodge(width = NULL), color = 'black') +
-  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["age"])) + ggtitle('Fractional Occupancy') +
+  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["age"])) + ggtitle('Dwell Time') +
   scale_y_continuous(limits = c(1.05*min(pdat$B),1.1*max(pdat$B))) + 
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + scale_x_discrete(limits = clusterNames,breaks = clusterNames) + 
   theme_classic() + theme(text = element_text(size = 8)) + theme(legend.position = 'none') + #theme(legend.key.size = unit(0.5,'line')) +
@@ -68,4 +68,4 @@ if(numClusters == 5){
 	p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-ggsave(plot = p,filename = paste(savedir,'RvNAgeFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
+ggsave(plot = p,filename = paste(savedir,'RvNAgeDwellTime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
