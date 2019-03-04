@@ -41,7 +41,7 @@ restCentroids = kClusterCentroids;
 load([scanlab{2},'ClusterCentroids_k',num2str(numClusters),name_root,'.mat'],'kClusterCentroids');
 nBackCentroids = kClusterCentroids;
 
-r = zeros(numClusters,1)
+r = zeros(numClusters,1);
 for K = 1:numClusters
     r(K) = corr(restCentroids(:,K),nBackCentroids(:,K));
 end
