@@ -10,9 +10,9 @@ Scripts are organized by their purpose in the code folder. The jobs folder conta
 
 finalmain.sh is a bash script that will produce every figure in the paper. There are a few paths that need to be specified in this script:
 
-  -BASEDIR: the path to the master branch of this repository, i.e. /Users/Eli/Dropbox/brain_states
-  -MATPATH: the path to the user's MATLAB binary, i.e. /Applications/MATLAB_R2017a.app/bin/matlab
-  -RPATH: the path to the user's Rscript function i.e. Rscript
+  #BASEDIR: the path to the master branch of this repository, i.e. /Users/Eli/Dropbox/brain_states
+  #MATPATH: the path to the user's MATLAB binary, i.e. /Applications/MATLAB_R2017a.app/bin/matlab
+  #RPATH: the path to the user's Rscript function i.e. Rscript
 
 The user can also specify certain parameters in finalmain.sh:
 
