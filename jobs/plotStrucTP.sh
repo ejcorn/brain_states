@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode
-$RP plotSCTP.R $D $SCAN $THRESH $K
+cd $BD'code/structp'
+$RP plotSCTP.R $D $SCAN $THRESH $K $BD

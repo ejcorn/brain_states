@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-cd /data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode
-$RP dprimeTPDur.R $D $K
-$RP dprimeTPscatter.R $D $K
+cd $BD'code/cognition'
+$RP dprimeTPDur.R $D $K $BD
+$RP dprimeTPscatter.R $D $K $BD
 

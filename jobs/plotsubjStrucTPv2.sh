@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode
-$RP plotSubjStrucTPcorrsv2.R $D $K $THRESH
+cd $BD'code/structp'
+$RP plotSubjStrucTPcorrsv2.R $D $K $THRESH $BD

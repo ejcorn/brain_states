@@ -49,7 +49,7 @@ nreps = nsplits;
 cd(savedir);
 save(['repkmeansPartitions',distanceMethod,name_root,'.mat'],'combPartitions','combSumD','nreps','splits_by_K','-v7.3');
 
-concTS = dlmread(['/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/ConcTSCSV_',name_root,'.csv'],',');
+concTS = dlmread(fullfile(basedir,['data/ConcTSCSV_',name_root,'.csv']),',');
 disp('time series loaded');
 
 disp('finding lowest MSE partition');
