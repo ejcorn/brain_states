@@ -1,6 +1,7 @@
 addpaths;
 masterdir = fullfile(basedir,'results',name_root);
 savedir = fullfile(masterdir,'analyses','hcpLR');
+mkdir(savedir);
 nparc = 462;
 rTR = round(405); nTR = 405;
 
