@@ -52,12 +52,10 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 	BlockDuration = sum(nbackBlocks == BlockLabels(B));
 	for N = 1:nobs
 		subjMask = subjInd == N;
-		tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
-		for K = 1:numClusters			
-				% calculate Dwell Time as mean length of runs of each state
-			dt = CALC_DWELL_TIME(tmpAssignments(nbackBlocks == BlockLabels(B)),numClusters);
-			BlockDwellTime(N,K) = dt*TR;	% store dwell time *in seconds*
-		end
+		tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time			
+		% calculate Dwell Time as mean length of runs of each state
+		mean_dt = CALC_DWELL_TIME(tmpAssignments(nbackBlocks == BlockLabels(B)),numClusters);
+		BlockDwellTime(N,:) = mean_dt*TR;	% store dwell time *in seconds*		
 	end
 	save(['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
 end
