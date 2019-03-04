@@ -29,9 +29,11 @@ fi
 cd $BASEDIR'jobs'		# change to directory containing all shell scripts
 
 K=5
+ASSIGN={}
+TP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN getDynamics.sh)
+TP="${TP//[!0-9]/}"
 
-TP={}
-NULL={}
+NULL=$TP
 SYMM='symm'
 qsub -N "$SYMM" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH,RP=$RPATH -hold_jid $TP symmRvNv2.sh
 
