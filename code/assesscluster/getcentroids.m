@@ -66,7 +66,7 @@ for K = 1:numClusters
     kClusterCentroids(:,K) = mean(concTS(kClusterAssignments == K,:),1)';
 end
 
-[clusterNames,clusterReorder,clusterNamesSort] = NAME_CLUSTERS_ANGLE(kClusterCentroids);
+[clusterNames,clusterReorder,clusterNamesSort] = NAME_CLUSTERS_CORR(kClusterCentroids);
 
 clusterCorr = corr(kClusterCentroids(:,clusterReorder));
 

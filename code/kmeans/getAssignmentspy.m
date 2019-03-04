@@ -46,8 +46,7 @@ end
 
 nreps = nsplits;
 
-cd(savedir);
-save(['repkmeansPartitions',distanceMethod,name_root,'.mat'],'combPartitions','combSumD','nreps','splits_by_K','-v7.3');
+save(fullfile(savedir,['repkmeansPartitions',distanceMethod,name_root,'.mat']),'combPartitions','combSumD','nreps','splits_by_K','-v7.3');
 
 concTS = dlmread(fullfile(basedir,['data/ConcTSCSV_',name_root,'.csv']),',');
 disp('time series loaded');
@@ -56,22 +55,25 @@ disp('finding lowest MSE partition');
 for numClusters = minNumClusters:maxNumClusters
     combBestClusterCentroids = zeros(nparc,numClusters);
     combBestClusterInd = find(combSumD{numClusters-k_offset} == min(combSumD{numClusters-k_offset}));
-    combBestClusterInd = combBestClusterInd(1); %if multiple partitions exactly the same, just use the first one]
-    
+    combBestClusterInd = combBestClusterInd(1); %if multiple partitions exactly the same, just use the first one
+    % store partition with lowest error
+    clusterAssignments.(['k',num2str(numClusters)]).partition = combPartitions{numClusters - k_offset}(:,combBestClusterInd);
+
+    % compute centroids based on that partition, averaging across all data used for clustering
     for K = 1:numClusters
-        combBestClusterCentroids(:,K) = mean(concTS(combPartitions{numClusters-k_offset}(:,combBestClusterInd) == K,:),1)';
+        combBestClusterCentroids(:,K) = mean(concTS(clusterAssignments.(['k',num2str(numClusters)]).partition == K,:),1)';
     end
     
     clusterAssignments.(['k',num2str(numClusters)]).bestCentroid = combBestClusterCentroids;
     clusterAssignments.(['k',num2str(numClusters)]).bestClusterInd = combBestClusterInd;
-    clusterAssignments.(['k',num2str(numClusters)]).partition = combPartitions{numClusters - k_offset}(:,combBestClusterInd);
-    clusterAssignments.(['k',num2str(numClusters)]).sumD = combSumD{K-k_offset};
-    clusterAssignments.(['k',num2str(numClusters)]).clusterNames = NAME_CLUSTERS_ANGLE(combBestClusterCentroids);
-    [~,clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_UP_DOWN(combBestClusterCentroids);
+    
+    clusterAssignments.(['k',num2str(numClusters)]).sumD = combSumD{K-k_offset}(combBestClusterInd);
+    clusterAssignments.(['k',num2str(numClusters)]).clusterNames = NAME_CLUSTERS_CORR(combBestClusterCentroids);
+    [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_CORR_UP_DOWN(combBestClusterCentroids);
     clusterAssignments.(['k',num2str(numClusters)]).clusterNamesUp = clusterNamesUp;
     clusterAssignments.(['k',num2str(numClusters)]).clusterNamesDown = clusterNamesDown;
 
-    save(['k',num2str(numClusters),name_root,'.mat'],'clusterAssignments');
+    save(fullfile(savedir,['k',num2str(numClusters),name_root,'.mat']),'clusterAssignments');
     clear clusterAssignments
     disp(['K=',num2str(K)]);
 end

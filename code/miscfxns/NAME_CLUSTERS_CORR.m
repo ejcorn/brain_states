@@ -1,38 +1,38 @@
-function [clusterNames,reorderClusters,clusterNamesSort] = NAME_CLUSTERS_CORR(centroids,sclfactor)
+function [clusterNames,reorderClusters,clusterNamesSort,sysCorrs] = NAME_CLUSTERS_CORR(centroids)
 
 %Provide names for clusters based on angular distance to binary Yeo
 %System Vectors
 %returns vector where 1 indicates a "+" state and 0 indicates a "-" state
 %centroids = kClusterCentroids;
 
-if ~exist('sclfactor','var')
-    sclfactor=1;
-end
-
 [nparc,numClusters] = size(centroids);
 
 if nparc > 400
-    load('yeo7netlabelsLaus250.mat'); network7labels = network7labels(1:nparc);
+    load('data/yeo7netlabelsLaus250.mat'); network7labels = network7labels(1:nparc);
 else
-    load('yeo7netlabelsLaus125.mat'); network7labels = network7labels(1:nparc);
+    load('data/yeo7netlabelsLaus125.mat'); network7labels = network7labels(1:nparc);
 end
 
-binaryNetVectors = zeros(nparc,14);
+numNets = 7;
+% make a matrix where each column corresponds to a labeled Yeo system in Lausanne parcellation
+% the columns are binary vectors indicated whether a region belongs to corresponding Yeo system
 
-for I = 1:7
-    binaryNetVectors(:,I) = sclfactor*double(network7labels == I);
-    binaryNetVectors(:,I+7) = -sclfactor*double(network7labels == I);
-end
+binaryNetVectors = ones(nparc,numNets) .* repmat((1:numNets),[nparc 1]); 
+binaryNetVectors = double(binaryNetVectors == network7labels);
+% then duplicate this matrix, multiply by -1 and horizontally concatenate to
+% provide separate names for when systems are low amplitude
+
+binaryNetVectors = [binaryNetVectors, -1*binaryNetVectors];
 
 YeoNetNames = {'VIS+', 'SOM+', 'DAT+', 'VAT+', 'LIM+', 'FPN+', 'DMN+','VIS-', 'SOM-', 'DAT-', 'VAT-', 'LIM-', 'FPN-', 'DMN-'};
 
 % calculate correlation between each binary state vector and each centroid
 
-net7ED = zeros(numClusters,14);
+net7corr = zeros(numClusters,numNets*2);
 
 for K = 1:numClusters
-    for B = 1:14
-        net7ED(K,B) = corr(centroids(:,K),binaryNetVectors(:,B));
+    for B = 1:(numNets*2)
+        net7corr(K,B) = corr(centroids(:,K),binaryNetVectors(:,B));
     end
 end
 
@@ -40,9 +40,11 @@ end
 
 clusterNamesInit = cell(numClusters,1);
 plusminus = true(numClusters,1);
+sysCorrs = zeros(numClusters,1);                 
 for K = 1:numClusters
-    ind = find(net7ED(K,:) == max(net7ED(K,:)));    % find maximum correlation
-    clusterNamesInit{K} = YeoNetNames{ind};
+    ind = find(net7corr(K,:) == max(net7corr(K,:)));    % find maximum correlation for each cluster
+    clusterNamesInit{K} = YeoNetNames{ind};             % give that cluster the corresponding name
+    sysCorrs(K) = net7corr(K,ind);      % save correlation value with most similar binary vector
     if ind > 7
         plusminus(K) = false;
     end
