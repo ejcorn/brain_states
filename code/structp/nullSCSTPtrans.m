@@ -20,28 +20,35 @@ interStateSTP = zeros(nobs,numClusters,numClusters);
 interStateComm = zeros(nobs,numClusters,numClusters);
 
 for N = 1:nobs
-    tic
-    A = SCvolnormNULL{N};    
-    A1 = A(corrlog);
-    A2 = distance_bin(A>0); A2 = A2(corrlog);
-    Di = diag(strengths_und(A))^-0.5;
-    A3 = expm(Di*A*Di); A3 = A3(corrlog);
+    % put nan's on diagonal so you don't include it in averaging
+    % this will only matter if there is overlap in active nodes between states
+    A = SCvolnormNULL{N};  
+    STP = distance_bin(A>0) + diag(nan(nparc,1));
+    D = diag(strengths_und(A))^-0.5;
+    Comm = expm(D*A*D) + diag(nan(nparc,1));
+    A = A + diag(nan(nparc,1));
     for K1 = 1:numClusters
         T1 = find(centroidKeyNodes(:,K1));
-        
         for K2 = 1:numClusters
-            T2 = find(centroidKeyNodes(:,K2)); 
-            B = zeros(nparc); B(T1,T2) = 1; B(T2,T1) = 1; B = logical(B(corrlog));
-            SCtmp = A1(B); %SCtmp = SCtmp(SCtmp ~= 0);
-            interStateSC(N,K1,K2) = mean(SCtmp);
-            STPtmp = A2(B); %STPtmp = STPtmp(STPtmp ~= 0);
-            interStateSTP(N,K1,K2) = mean(STPtmp);
-            Commtmp = A3(B); %Commtmp = Commtmp(Commtmp ~= 0);
-            interStateComm(N,K1,K2) = mean(Commtmp);     
+            T2 = find(centroidKeyNodes(:,K2));                         
+            % exclude all connections between regions in both states
+            
+            A_s = A; % make new matrices with NaNs on all connections between regions in both states
+            Comm_s = Comm;
+            STP_s = STP;
+            overlap(K1,K2) = sum(ismember(T1,T2));
+            A_s(T1(ismember(T1,T2)),T2(ismember(T2,T1))) = NaN;
+            A_s(T2(ismember(T2,T1)),T1(ismember(T1,T2))) = NaN;
+            STP_s(T1(ismember(T1,T2)),T2(ismember(T2,T1))) = NaN;
+            Comm_s(T1(ismember(T1,T2)),T2(ismember(T2,T1))) = NaN;
+
+            interStateSC(N,K1,K2) = nanmean(reshape(A_s(T1,T2),1,[]));
+            interStateSTP(N,K1,K2) = nanmean(reshape(STP_s(T1,T2),1,[]));
+            interStateComm(N,K1,K2) = nanmean(reshape(Comm_s(T1,T2),1,[]));            
+
         end
     end
     disp(['Subject = ',num2str(N)]);
-    toc
 end
 
 interStateSC = reshape(permute(interStateSC,[1 3 2]),nobs,possible_transitions);

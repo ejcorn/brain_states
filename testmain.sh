@@ -42,6 +42,7 @@ ENDCOMMENT
 
 
 K=5
+NPERMS=5000
 TP={}
 ASSIGN={}
 SYMM='symm'
@@ -60,8 +61,8 @@ NBACK="${NBACK//[!0-9]/}"
 ### Development ###
 ###################
 
-qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,RP=$RP -hold_jid $TP ageTPDur.sh
-qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,RP=$RP -hold_jid "$SYMM" ageTPprop.sh
+qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,RP=$RPATH -hold_jid $TP ageTPDur.sh
+qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,RP=$RPATH -hold_jid "$SYMM" ageTPprop.sh
 
 ##########################
 ### Structure-function ###
@@ -84,4 +85,4 @@ qsub -N "plotnullstruc" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,
 qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,THRESH=$THRESH,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$BCTSTRUCNULL" plotBCTNULLStrucTP.sh
 done
 
-qsub -l h_vmem=8G,s_vmem=7.5G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,K=$K -hold_jid "$STRUC" SCTPthresh.sh
+qsub -l h_vmem=8G,s_vmem=7.5G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$STRUC" SCTPthresh.sh

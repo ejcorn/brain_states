@@ -21,6 +21,8 @@ interStateComm = zeros(nobs,numClusters,numClusters);
 
 for N = 1:nobs
     tic
+    % put nan's on diagonal so you don't include it in averaging
+    % this will only matter if there is overlap in active nodes between states
     A = SCvolnormNULL{N};      
     STP = distance_bin(A>0) + diag(nan(nparc,1));
     D = diag(strengths_und(A))^-0.5;

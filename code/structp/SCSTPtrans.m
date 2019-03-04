@@ -71,6 +71,4 @@ interStateSC = reshape(permute(interStateSC,[1 3 2]),nobs,possible_transitions);
 interStateSTP = reshape(permute(interStateSTP,[1 3 2]),nobs,possible_transitions);
 interStateComm = reshape(permute(interStateComm,[1 3 2]),nobs,possible_transitions);
 
-
-cd(savedir);
-save(['structrans_k',num2str(numClusters),'thresh',num2str(thrsh),name_root,'.mat'],'interStateSC','interStateSTP','interStateComm','overlap');
+save(fullfile(savedir,['structrans_k',num2str(numClusters),'thresh',num2str(thrsh),name_root,'.mat']),'interStateSC','interStateSTP','interStateComm','overlap');
