@@ -34,7 +34,7 @@ for i = 1:numel(scanlab)
 
     for N = 1:nobs
         for K = 1:numClusters
-            fractionalOccupancy(N,K) = sum(and(and(kClusterAssignments == K,subjInd' == N),scanInd == (i-1))) / numTRs(i);
+            FractionalOccupancy(N,K) = sum(and(and(kClusterAssignments == K,subjInd' == N),scanInd == (i-1))) / numTRs(i);
         end
     end
 
