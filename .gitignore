@@ -3,6 +3,7 @@
 
 # data folder
 data
+results
 
 # mac files
 .DS_STORE
