@@ -22,14 +22,14 @@ clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
 RNcolors <- c('#005C9F','#FF8400') 
 
-restDur <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
+restDur <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
 	numClusters,name_root,'.mat',sep = ''))$stateDuration * 100)
-restSEM <- apply(X = readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
+restSEM <- apply(X = readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
 	numClusters,name_root,'.mat',sep = ''))$stateDuration * 100,FUN = std.error, MARGIN= 2)
-nbackDur <- lapply(1:numBlocks, function(B) colMeans(readMat(paste(masterdir,'analyses/nbackblocks/FractionalOccupancy',
-	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100))
-nbackDurSEM <- lapply(1:numBlocks, function(B) apply(X = readMat(paste(masterdir,'analyses/nbackblocks/FractionalOccupancy',
-	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100,FUN=std.error,MARGIN=2))
+nbackDur <- lapply(1:numBlocks, function(B) colMeans(readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
+	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockDwellTime*100))
+nbackDurSEM <- lapply(1:numBlocks, function(B) apply(X = readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
+	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockDwellTime*100,FUN=std.error,MARGIN=2))
 nbackDur <- c(list(restDur),nbackDur)
 nbackDurSEM <- c(list(restSEM),nbackDurSEM)
 numBlocks <- numBlocks + 1
@@ -47,7 +47,7 @@ p <- ggplot() + geom_line(aes(x = blocks, y = nbackDur, color = states), size = 
   geom_errorbar(aes(ymin = nbackDur - 2*nbackDurSEM,ymax = nbackDur + 2*nbackDurSEM, x = blocks, color = states),width = 0.1,size = 0.25) +
   scale_x_continuous(limits = c(0.7,numBlocks+0.25),breaks= c(1:numBlocks),label=BlockNames,expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) + 
-  xlab("Task Block") + ylab("Fractional Occupancy (%)") + 
+  xlab("Task Block") + ylab("Dwell Time (seconds)") + 
   theme_classic() + theme(text = element_text(size = 8),legend.position = 'none')
 
 if(numClusters == 5){
@@ -60,4 +60,4 @@ if(numClusters == 5){
     scale_color_discrete(limits = c(1:numClusters))
 }
 
-ggsave(plot = p, filename = paste(masterdir,'analyses/nbackblocks/nbackBlockFractionalOccupancy_k',numClusters,'.pdf',sep =""),height = 2,width = 2.7, units = "in")
+ggsave(plot = p, filename = paste(masterdir,'analyses/nbackblocks/nbackBlockDwellTime_k',numClusters,'.pdf',sep =""),height = 2,width = 2.7, units = "in")

@@ -45,7 +45,8 @@ end
 
 %% Compute dwell times for each state in each n-back block
 
-cd(savedir);
+TR = 3;		%3 seconds/TR in PNC data
+
 for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each subject in each cluster
 	BlockDwellTime = zeros(nobs,numClusters);
 	BlockDuration = sum(nbackBlocks == BlockLabels(B));
@@ -54,7 +55,8 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 		tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
 		for K = 1:numClusters			
 				% calculate time spent in each state as percentage of time spent in each block
-			BlockDwellTime(N,K) = CALC_DWELL_TIME(tmpAssignments(nbackBlocks == BlockLabels(B)),numClusters);
+			dt = CALC_DWELL_TIME(tmpAssignments(nbackBlocks == BlockLabels(B)),numClusters);
+			BlockDwellTime(N,K) = dt*TR;	% store dwell time *in seconds*
 		end
 	end
 	save(['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
