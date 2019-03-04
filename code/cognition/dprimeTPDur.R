@@ -39,11 +39,11 @@ if(!dir.exists(savedir)){
 	dir.create(savedir,recursive = TRUE)
 }
 
-restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombStateDurations_k',
+restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
                          numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
 nbackREDur <- readMat(paste(masterdir,'analyses/nbackblocks/nBackRestExcludeDwellTime_k',
                           numClusters,name_root,'.mat',sep = ''))$BlockDwellTime*100
-#nbackREDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombStateDurations_k',
+#nbackREDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',
 #                        numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
 
 # rest and n-back to overall d-prime

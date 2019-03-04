@@ -26,6 +26,25 @@ numBlocks = length(unique(nbackBlocks));
 BlockLabels = [0 1 2];
 BlockNames = {'0back','1back','2back'};
 
+%% Compute fractional occupancy for each state in each n-back block
+
+cd(savedir);
+for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each subject in each cluster
+	BlockFractionalOccupancy = zeros(nobs,numClusters);
+	BlockDuration = sum(nbackBlocks == BlockLabels(B));
+	for N = 1:nobs
+		subjMask = subjInd == N;
+		tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
+		for K = 1:numClusters			
+				% calculate time spent in each state as percentage of time spent in each block
+			BlockFractionalOccupancy(N,K) = sum(tmpAssignments(nbackBlocks == BlockLabels(B)) == K) / BlockDuration;
+		end
+	end
+	save(['FractionalOccupancy',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockFractionalOccupancy');
+end
+
+%% Compute dwell times for each state in each n-back block
+
 cd(savedir);
 for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each subject in each cluster
 	BlockDwellTime = zeros(nobs,numClusters);
@@ -35,26 +54,11 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 		tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
 		for K = 1:numClusters			
 				% calculate time spent in each state as percentage of time spent in each block
-			BlockDwellTime(N,K) = sum(tmpAssignments(nbackBlocks == BlockLabels(B)) == K) / BlockDuration;
+			BlockDwellTime(N,K) = CALC_DWELL_TIME(tmpAssignments(nbackBlocks == BlockLabels(B)),numClusters);
 		end
 	end
 	save(['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
 end
-
-%% calculate dwell times for n-back excluding rest blocks
-
-BlockDwellTime = zeros(nobs,numClusters);
-BlockDuration = sum(nbackBlocks ~= BlockLabels(end));
-for N = 1:nobs	
-	subjMask = subjInd == N;
-	tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
-	for K = 1:numClusters			
-			% calculate time spent in each state as percentage of time spent in non-rest blocks
-		BlockDwellTime(N,K) = sum(tmpAssignments(nbackBlocks ~= BlockLabels(end)) == K) / BlockDuration;
-	end
-	save(['nBackRestExcludeDwellTime_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
-end
-
 
 % *** doesn't address case where blocks are not contiguous in time ***
 for B = 1:numBlocks
