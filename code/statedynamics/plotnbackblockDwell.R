@@ -8,9 +8,6 @@ library(R.matlab)
 library(RColorBrewer)
 library(plotrix)
 
-#name_root <- 'ScanCLaus250Z2sqeuc'
-#numClusters <- 5
-
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
 BlockNames <- c('0back','1back','2back')
@@ -52,11 +49,11 @@ p <- ggplot() + geom_line(aes(x = blocks, y = nbackDwell, color = states), size 
 
 if(numClusters == 5){
   p <- p + scale_color_manual(limits = c(1:numClusters), values = clusterColors, label=clusterNames) +
-    annotate("text",x = rep(1,numClusters),y = 0.7 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,size = 2, color = clusterColors)
+    annotate("text",x = rep(1,numClusters),y = 0.1 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,size = 2, color = clusterColors)
   
 } else {
   #p <- p + annotate("text",x = rep(1,numClusters),y = 0.7 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,size = 2,color = unique(states)) +
-  p <- p + geom_text(aes(x = rep(1,numClusters),y = 0.7 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,color = unique(states)),size = 2) +
+  p <- p + geom_text(aes(x = rep(1,numClusters),y = 0.1 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,color = unique(states)),size = 2) +
     scale_color_discrete(limits = c(1:numClusters))
 }
 
