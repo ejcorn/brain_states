@@ -11,30 +11,30 @@ masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
 source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
 
-restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',numClusters,name_root,'.mat',sep = ''))$DwellTime
-nbackDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombDwellTime_k',numClusters,name_root,'.mat',sep = ''))$DwellTime
+restDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',numClusters,name_root,'.mat',sep = ''))$DwellTime
+nbackDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombDwellTime_k',numClusters,name_root,'.mat',sep = ''))$DwellTime
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
 RNcolors <- c('#005C9F','#FF8400')  
 
-grps <- rbind(matrix('Rest',nrow = nrow(restDur),ncol = ncol(restDur)),matrix('n-back',nrow = nrow(nbackDur),ncol = ncol(nbackDur)))
-states <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(restDur)))
-p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(states,states)) ,y = as.vector(rbind(restDur,nbackDur)),fill = as.vector(grps))) + theme_classic() +
+grps <- rbind(matrix('Rest',nrow = nrow(restDwell),ncol = ncol(restDwell)),matrix('n-back',nrow = nrow(nbackDwell),ncol = ncol(nbackDwell)))
+states <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(restDwell)))
+p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(states,states)) ,y = as.vector(rbind(restDwell,nbackDwell)),fill = as.vector(grps))) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + 
   ylab("Dwell Time (seconds)") + xlab("") +theme(text = element_text(size = 8)) +
   theme(legend.title = element_blank()) + 
   scale_x_discrete(limits = 1:numClusters, breaks=1:numClusters, labels = list(clusterNames)) +
   theme(legend.key.size = unit(0.5,'line'))
 
-diffs.full <- lapply(1:numClusters, function(i) t.test(restDur[,i],nbackDur[,i],paired=TRUE))
+diffs.full <- lapply(1:numClusters, function(i) t.test(restDwell[,i],nbackDwell[,i],paired=TRUE))
 diffs <- sapply(diffs.full, function(x) x$p.value)
 diffs <- p.adjust(diffs,method = "bonf")
 for(K in 1:numClusters){
   if(diffs[K] < 10^-15){
-    p <- p + annotate("text", x = K, y = 1.1*max(rbind(restDur,nbackDur)),label = "**",color = 'red')
+    p <- p + annotate("text", x = K, y = 1.1*max(rbind(restDwell,nbackDwell)),label = "**",color = 'red')
   } else if(diffs[K] < 10^-4){
-  	p <- p + annotate("text", x = K, y = 1.1*max(rbind(restDur,nbackDur)),label = "*",color = 'red')
+  	p <- p + annotate("text", x = K, y = 1.1*max(rbind(restDwell,nbackDwell)),label = "*",color = 'red')
   }
 }
 

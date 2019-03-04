@@ -22,29 +22,29 @@ clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
 RNcolors <- c('#005C9F','#FF8400') 
 
-restDur <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
+restDwell <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
 	numClusters,name_root,'.mat',sep = ''))$DwellTime)
 restSEM <- apply(X = readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
 	numClusters,name_root,'.mat',sep = ''))$DwellTime,FUN = std.error, MARGIN= 2)
-nbackDur <- lapply(1:numBlocks, function(B) colMeans(readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
+nbackDwell <- lapply(1:numBlocks, function(B) colMeans(readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
 	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockDwellTime))
-nbackDurSEM <- lapply(1:numBlocks, function(B) apply(X = readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
+nbackDwellSEM <- lapply(1:numBlocks, function(B) apply(X = readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
 	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockDwellTime,FUN=std.error,MARGIN=2))
-nbackDur <- c(list(restDur),nbackDur)
-nbackDurSEM <- c(list(restSEM),nbackDurSEM)
+nbackDwell <- c(list(restDwell),nbackDwell)
+nbackDwellSEM <- c(list(restSEM),nbackDwellSEM)
 numBlocks <- numBlocks + 1
 
 states <- lapply(1:numBlocks, function(B) sapply(1:numClusters, function(K) as.character(K)))
 blocks <- lapply(1:numBlocks, function(B) sapply(1:numClusters, function(K) B))
-nbackDur <- as.vector(do.call(cbind,nbackDur))
-nbackDurSEM <- as.vector(do.call(cbind,nbackDurSEM))
+nbackDwell <- as.vector(do.call(cbind,nbackDwell))
+nbackDwellSEM <- as.vector(do.call(cbind,nbackDwellSEM))
 states <- as.vector(do.call(cbind,states))
 blocks <- as.vector(do.call(cbind,blocks))
 
 BlockNames <- c('Rest','0-back','1-back','2-back')
 
-p <- ggplot() + geom_line(aes(x = blocks, y = nbackDur, color = states), size = 0.4) +
-  geom_errorbar(aes(ymin = nbackDur - 2*nbackDurSEM,ymax = nbackDur + 2*nbackDurSEM, x = blocks, color = states),width = 0.1,size = 0.25) +
+p <- ggplot() + geom_line(aes(x = blocks, y = nbackDwell, color = states), size = 0.4) +
+  geom_errorbar(aes(ymin = nbackDwell - 2*nbackDwellSEM,ymax = nbackDwell + 2*nbackDwellSEM, x = blocks, color = states),width = 0.1,size = 0.25) +
   scale_x_continuous(limits = c(0.7,numBlocks+0.25),breaks= c(1:numBlocks),label=BlockNames,expand = c(0,0)) +
   scale_y_continuous(expand = c(0,0)) + 
   xlab("Task Block") + ylab("Dwell Time (seconds)") + 
@@ -52,11 +52,11 @@ p <- ggplot() + geom_line(aes(x = blocks, y = nbackDur, color = states), size = 
 
 if(numClusters == 5){
   p <- p + scale_color_manual(limits = c(1:numClusters), values = clusterColors, label=clusterNames) +
-    annotate("text",x = rep(1,numClusters),y = 0.7 + (nbackDur + nbackDurSEM)[blocks == 1],label = clusterNames,size = 2, color = clusterColors)
+    annotate("text",x = rep(1,numClusters),y = 0.7 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,size = 2, color = clusterColors)
   
 } else {
-  #p <- p + annotate("text",x = rep(1,numClusters),y = 0.7 + (nbackDur + nbackDurSEM)[blocks == 1],label = clusterNames,size = 2,color = unique(states)) +
-  p <- p + geom_text(aes(x = rep(1,numClusters),y = 0.7 + (nbackDur + nbackDurSEM)[blocks == 1],label = clusterNames,color = unique(states)),size = 2) +
+  #p <- p + annotate("text",x = rep(1,numClusters),y = 0.7 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,size = 2,color = unique(states)) +
+  p <- p + geom_text(aes(x = rep(1,numClusters),y = 0.7 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,color = unique(states)),size = 2) +
     scale_color_discrete(limits = c(1:numClusters))
 }
 
