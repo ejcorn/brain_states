@@ -62,12 +62,12 @@ saveas(f,fullfile(savedir,['HCP_XHBetweenClusterSpatialCorr_k',num2str(numCluste
 
 [~,shuffleIdx] = sort(shuffleIdx);	% reorder to index indiv. cluster not overall
 
-idx = false(length(partition),numClusters);
+idx = false(length(HCPpartition),numClusters);
 % rest cluster K needs to become comb cluster shuffleIdx(K)
 
-HCPpartitionPNCorder = zeros(length(partition),1);
+HCPpartitionPNCorder = zeros(length(HCPpartition),1);
 for K = 1:numClusters 
-	idx(:,K) = partition == K;  % find each rest cluster
+	idx(:,K) = HCPpartition == K;  % find each rest cluster
 end
 
 for K = 1:numClusters
