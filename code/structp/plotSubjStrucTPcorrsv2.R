@@ -71,4 +71,4 @@ for(K in 1:ncol(rest)){
 }
 
 print(rvn.t)
-ggsave(plot = p, filename = paste(strucdir,'/RvNStrucTPCorr_k',numClusters,'thresh',thrsh,'.pdf',sep =""),height = 1.8,width = 1.5, units = "in")
+ggsave(plot = p, filename = paste(strucdir,'RvNStrucTPCorr_k',numClusters,'thresh',thrsh,'.pdf',sep =""),height = 1.8,width = 1.5, units = "in")
