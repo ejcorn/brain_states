@@ -4,7 +4,7 @@ Code to reproduce all analysis in Cornblath et al. 2018 ("Context-dependent arch
 Requirements:
   - MATLAB R2017a or later
   - R 3.2.5 or later, with packages:
-    - ggplot2, R.matlab
+    - ggplot2, R.matlab, RColorBrewer
 
 Scripts are organized by their purpose in the code folder. The jobs folder contains shell scripts to allow the scripts in code folder to be submitted to a computing cluster using a Sun Grid Engine job schedule (qsub).
 
