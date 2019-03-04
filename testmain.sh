@@ -47,7 +47,8 @@ TP={}
 ASSIGN={}
 SYMM='symm'
 
-HCP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=$MATPATH hcp_cluster.sh)
+HCP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,METHOD=$METHOD,K=$K,BD=$BASEDIR,MP=$MATPATH hcp_cluster.sh)
+HCP="${HCP//[!0-9]/}"
 qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid $HCP hcp_tpmat.sh
 
 BEGINCOMMENT

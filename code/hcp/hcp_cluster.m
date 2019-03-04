@@ -25,7 +25,7 @@ HCPcentroidsPNCorder = HCPcentroids(:,shuffleIdx);
 clusterNames = NAME_CLUSTERS_CORR(HCPcentroidsPNCorder);
 [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_CORR_UP_DOWN(HCPcentroidsPNCorder);
 save(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']),...
-    'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown');
+    'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown','distanceMethod');
 
 f = figure;
 imagesc(PNCvsHCP(shuffleIdx,:)); colormap('plasma');
