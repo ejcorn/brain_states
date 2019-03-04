@@ -10,6 +10,7 @@ Requirements:
     - lm.beta
     - reshape2
     - viridis
+    - plotrix
 
 Scripts are organized by their purpose in the code folder. The jobs folder contains shell scripts to allow the scripts in code folder to be submitted to a computing cluster using a Sun Grid Engine job schedule (qsub).
 
