@@ -4,6 +4,7 @@ function [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_CORR_UP_DOWN(centroid
 % This function looks at high (+) and low (-) amplitude activity separately
 % and assigns a + name to the Yeo system that the regions with activity > 0 are most correlated with
 % and a - name to Yeo system that regions with activity < 0 are most correlated with
+% centroids: NxK matrix
 
 [nparc,numClusters] = size(centroids);
 

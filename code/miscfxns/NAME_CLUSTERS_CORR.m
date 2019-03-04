@@ -1,9 +1,9 @@
 function [clusterNames,reorderClusters,clusterNamesSort,sysCorrs] = NAME_CLUSTERS_CORR(centroids)
 
-%Provide names for clusters based on angular distance to binary Yeo
-%System Vectors
-%returns vector where 1 indicates a "+" state and 0 indicates a "-" state
-%centroids = kClusterCentroids;
+% Generate names for clusters based on the largest absolute correlation
+% between the centroid and either positive or negative binary indicators
+% of Yeo systems.
+% centroids: NxK matrix
 
 [nparc,numClusters] = size(centroids);
 
