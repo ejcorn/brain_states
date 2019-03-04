@@ -10,7 +10,7 @@ library(ggplot2)
 library(RColorBrewer)
 library(gridExtra)
 
-strucdir <- paste(basedir,"results/",name_root,"/analyses/structrans/BCTnull",sep = "")
+strucdir <- paste(basedir,"results/",name_root,"/analyses/structrans/BCTnull/",sep = "")
 transdir <- paste(basedir,"results/",name_root,"/analyses/transitionprobabilities/",sep = "")
 RNcolors <- c('#005C9F','#FF8400') 
 
@@ -26,7 +26,7 @@ persistExclude <- (1:numClusters) + (numClusters*(0:(numClusters-1)));
 rTP <- readMat(paste(transdir,scanlab[1],'TransitionProbabilities_k',numClusters,name_root,".mat",sep=""))$transitionProbability[,-persistExclude]
 nTP <- readMat(paste(transdir,scanlab[2],'TransitionProbabilities_k',numClusters,name_root,".mat",sep=""))$transitionProbability[,-persistExclude]
 
-structure <- readMat(paste(strucdir,"NULLstructrans_k",numClusters,"thresh",thrsh,name_root,".mat",sep=""))
+structure <- readMat(paste(strucdir,"BCTNULLstructrans_k",numClusters,"thresh",thrsh,name_root,".mat",sep=""))
 structure$interStateSC[is.na(structure$interStateSC)] <- 0  #NA comes from 0 connections so make this 0
 SC <- structure$interStateSC[,-persistExclude]
 STP <- (structure$interStateSTP*(structure$interStateSTP < Inf))[,-persistExclude]
@@ -74,4 +74,4 @@ for(K in 1:ncol(rest)){
 }
 
 print(rvn.t)
-ggsave(plot = p, filename = paste(strucdir,'/BCTNULLRvNStrucTPCorr_k',numClusters,'thresh',thrsh,'.pdf',sep =""),height = 1.8,width = 1.5, units = "in")
+ggsave(plot = p, filename = paste(strucdir,'BCTNULLRvNStrucTPCorr_k',numClusters,'thresh',thrsh,'.pdf',sep =""),height = 1.8,width = 1.5, units = "in")
