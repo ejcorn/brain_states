@@ -13,12 +13,9 @@ HCPcentroids = HCPcentroids';
 
 %% compare centroids to pnc
 %
-load([masterdir,'/assign/k',num2str(numClusters),name_root,'.mat'])
+load([masterdir,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat'])
 PNCcentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
 PNCnames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
-%load(['~/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/results/',name_root,...
-%   '/choosing_k/rvn/RvNSeparateClusterCentroids_k',num2str(numClusters),name_root,'.mat']);
-cd(savedir);
 PNCvsHCP = corr(HCPcentroids,PNCcentroids);
 [~,shuffleIdx] = max(PNCvsHCP,[],1);
 HCPcentroidsPNCorder = HCPcentroids(:,shuffleIdx);
@@ -41,7 +38,7 @@ f.PaperUnits = 'inches';
 f.PaperSize = [2.7 2.7];
 f.PaperPosition = [0 0 2.7 2.7];
 
-saveas(f,['HCP_XHClusterSpatialCorr_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.pdf'],'pdf');
+saveas(f,fullfile(savedir,['HCP_XHClusterSpatialCorr_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.pdf']),'pdf');
 %% within HCP spatial corr
 
 f = figure;
@@ -58,7 +55,7 @@ f.PaperUnits = 'inches';
 f.PaperSize = [2.7 2.7];
 f.PaperPosition = [0 0 2.7 2.7];
 
-saveas(f,['HCP_XHBetweenClusterSpatialCorr_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.pdf'],'pdf');
+saveas(f,fullfile(savedir,['HCP_XHBetweenClusterSpatialCorr_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.pdf']),'pdf');
 
 %% reorder centroids based on similarity to original centroids
 
