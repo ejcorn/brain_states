@@ -50,7 +50,8 @@ for(S in 1:length(scanlab)){
 	r.trans <- SCTP.trans.r$estimate
 	p.trans <- SCTP.trans.r$p.value
 
-		nperms <- 1000
+	# compute bootstrapped confidence interval for r
+	nperms <- 1000
 	boot.cors <- matrix(NA,nrow = nperms)
 	for(P in 1:nperms){
 		resamp <- sample(1:nobs,nobs*0.5,replace=F)
@@ -60,7 +61,7 @@ for(S in 1:length(scanlab)){
 	}
 	upr <- quantile(boot.cors,probs = 0.0975)
 	lwr <- quantile(boot.cors,probs = 0.025)
-	print(paste(scanttl[S],'95% CI:',,'to',))
+	print(paste(scanttl[S],'95% CI:',lwr,'to',upr))
 
 	p <- ggplot() + geom_point(aes(x = SC,y = TP),color = ptcol,size = 1, alpha = 0.75,stroke = 0) + 
 		geom_smooth(aes(x = SC,y = TP),color = lncol, fill = lncol,method = 'lm',size=0.5) +
@@ -73,7 +74,7 @@ for(S in 1:length(scanlab)){
 		theme(legend.position = 'none') + theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))
 
 	ggsave(p, filename = paste(masterdir,'analyses/structrans/',scanlab[S],"TPSC_k",numClusters,"thresh",thrsh,name_root,".pdf",sep=""),units = "in", width = 1.5,height = 1.5)
-	# compute bootstrapped confidence interval for r
+	
 
 
 }
