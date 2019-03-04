@@ -2,4 +2,4 @@
 set -euxo pipefail
 
 cd $BD'code/statedynamics/'
-$RP plotRvNDur.R $D $K $
+$RP plotRvNDur.R $D $K $BD
