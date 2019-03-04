@@ -30,4 +30,19 @@ cd $BASEDIR'jobs'		# change to directory containing all shell scripts
 
 K=5
 
+TP={}
+NULL={}
+SYMM='symm'
 qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN -hold_jid $TP nbackblockDur.sh
+qsub -N "$SYMM" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=$MATPATH,RP=$RPATH -hold_jid $TP symmRvNv2.sh
+
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR -hold_jid $TP persistNull.sh
+
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=MATPATH -hold_jid $NULL restvsnbackNP.sh
+
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RP -hold_jid $TP plotDur.sh
+
+qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,MP=MATPATH,RP=$RP -hold_jid $TP nbackblockDur.sh
+NBACK="${NBACK//[!0-9]/}"
+
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RP -hold_jid $TP TPDistance.sh

@@ -2,6 +2,7 @@ args <- commandArgs(TRUE)
 name_root <- args[1]
 scan <- args[2]
 numClusters <- as.numeric(args[3])
+basedir <- args[4]
 
 library(R.matlab)
 library(reshape2)
@@ -10,7 +11,7 @@ library(RColorBrewer)
 library(gridExtra)
 
 thrsh.rng <- signif(seq(0,1.5,0.1),2)
-masterdir <- paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/",sep="")
+masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 persistExclude <- (1:numClusters) + (numClusters*(0:(numClusters-1)));
 
 lncol <- "#CE2B37"

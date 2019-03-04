@@ -2,6 +2,7 @@ args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
 thrsh <- args[3]
+basedir <- args[4]
 
 library(R.matlab)
 library(reshape2)
@@ -9,11 +10,11 @@ library(ggplot2)
 library(RColorBrewer)
 library(gridExtra)
 
-strucdir <- paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/analyses/structrans/",sep = "")
-transdir <- paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/analyses/transitionprobabilities/",sep = "")
+strucdir <- paste(basedir,"results/",name_root,"/analyses/structrans/",sep = "")
+transdir <- paste(basedir,"results/",name_root,"/analyses/transitionprobabilities/",sep = "")
 RNcolors <- c('#005C9F','#FF8400') 
 
-source('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode/GeomSplitViolin.R')
+source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
 
 scanlab = c('RestComb','nBackComb')
 persistExclude <- (1:numClusters) + (numClusters*(0:(numClusters-1)));

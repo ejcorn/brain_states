@@ -1,19 +1,20 @@
 args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
+basedir <- args[3]
 
 library(R.matlab)
 library(ggplot2)
 library(lm.beta)
-masterdir <- paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/",sep="")
-source('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode/GeomSplitViolin.R')
+masterdir <- paste(basedir,'results/',name_root,'/',sep='')
+source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
 scanlab <- c("RestComb","nBackComb")
 scanttl <- c('Rest','n-back')
 RNcolors <- c('#005C9F','#FF8400')  
 
-demo <- read.csv(paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.csv',sep =""))
+demo <- read.csv(paste(basedir,'data/Demographics',name_root,'.csv',sep =""))
 
-clusterAssignments <- readMat(paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
+clusterAssignments <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterAssignments$clusterAssignments[[1]][[5]])
 kClusterCentroids <- unlist(clusterAssignments$clusterAssignments[[1]][[1]])
 
@@ -33,18 +34,18 @@ for(K1 in 1:numClusters){
 }
 
 InterStateDistance = as.vector(t(InterStateDistance))[-persistExclude]
-rtp <- colMeans(readMat(paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/analyses/transitionprobabilities/",
+rtp <- colMeans(readMat(paste(basedir,"results/",name_root,"/analyses/transitionprobabilities/",
 	scanlab[1],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability)[-persistExclude]
 cor.test(InterStateDistance,rtp)
 
-ntp <- colMeans(readMat(paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/analyses/transitionprobabilities/",
+ntp <- colMeans(readMat(paste(basedir,"results/",name_root,"/analyses/transitionprobabilities/",
 	scanlab[2],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability)[-persistExclude]
 cor.test(InterStateDistance,ntp)
 
-rtp <- readMat(paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/analyses/transitionprobabilities/",
+rtp <- readMat(paste(basedir,"results/",name_root,"/analyses/transitionprobabilities/",
 	scanlab[1],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability[,-persistExclude]
 
-ntp <- readMat(paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/analyses/transitionprobabilities/",
+ntp <- readMat(paste(basedir,"results/",name_root,"/analyses/transitionprobabilities/",
 	scanlab[2],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability[,-persistExclude]
 
 nobs <- nrow(rtp)

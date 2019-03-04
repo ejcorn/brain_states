@@ -1,6 +1,7 @@
 args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
+basedir <- args[3]
 
 library(ggplot2)
 library(R.matlab)
@@ -9,15 +10,15 @@ library(lm.beta)
 library(reshape2)
 library(viridis)
 
-masterdir <- paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/",sep="")
-source('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode/plottingfxns.R')
+masterdir <- paste(basedir,'results/',name_root,'/',sep='')
+source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
 
-clusterNames <- readMat(paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
+clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
 RNcolors <- c('#005C9F','#FF8400') 
 
-demo <- read.csv(paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/data/Demographics',name_root,'.csv',sep =""))
+demo <- read.csv(paste(basedir,'data/Demographics',name_root,'.csv',sep =""))
 
 nbbeh <- read.csv('/data/jag/bassett-lab/Lausanne1601/nback/n1601_nbackBehavior_from_20160207_dataRelease.csv')
 nbbeh <- nbbeh[which(nbbeh$scanid %in% demo$scanid),]

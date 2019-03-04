@@ -3,12 +3,13 @@
 args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
+basedir <- args[3]
 
 library(ggplot2)
 library(R.matlab)
 library(RColorBrewer)
 
-symmvars <- readMat(paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/analyses/transitionprobabilities/symmetry/RvNSymmetryScorev2_k',numClusters,'.mat',sep = ''))
+symmvars <- readMat(paste(basedir,'results/',name_root,'/analyses/transitionprobabilities/symmetry/RvNSymmetryScorev2_k',numClusters,'.mat',sep = ''))
 
 scanlab = c('RestComb','nBackComb')
 RNcolors <- c('#005C9F','#FF8400') 
@@ -27,6 +28,6 @@ p
 if(t.test(symmvars$nBackSymmetryScore,symmvars$restSymmetryScore,paired = TRUE)$p.value < 10^-15){
 	p <- p + annotate("text", x = 'n-back', y = 0.5,label = "**",color = 'red')
 }
-ggsave(plot = p,filename = paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',
+ggsave(plot = p,filename = paste(basedir,'results/',
                                  name_root,'/analyses/transitionprobabilities/symmetry/RvNSymmetryScorev2_k',
                                  numClusters,name_root,'.pdf',sep = ''), units = 'in', height = 2, width = 2)

@@ -3,24 +3,24 @@
 args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
+basedir <- args[3]
 
 library(ggplot2)
 library(R.matlab)
 
 #name_root <- 'ScanCLaus250Z2sqeuc'
 #numClusters <- 5
-masterdir <- '/data/tesla-data/ecornblath/matlab/control_fc/pipeline/'
 
 print('1')
 
-symmdir <- paste(masterdir,'clusterTransitions_',name_root,'/analyses/development/symmetry/',sep = '')
+symmdir <- paste(basedir,'results/',name_root,'/analyses/development/symmetry/',sep = '')
 if(!dir.exists(symmdir)){
 	dir.create(symmdir,recursive = TRUE)
 }
 
 print('2')
 
-unifdir <- paste(masterdir,'clusterTransitions_',name_root,'/analyses/development/randnull/',sep = '')
+unifdir <- paste(masterdir,'results/',name_root,'/analyses/development/randnull/',sep = '')
 if(!dir.exists(unifdir)){
 	dir.create(unifdir,recursive = TRUE)
 }
@@ -31,9 +31,9 @@ scanlab <- c("RestComb","nBackComb")
 scanttl <- c('Rest','n-back')
 RNcolors <- c('#005C9F','#FF8400')  
 
-demo <- read.csv(paste(masterdir,'data/Demographics',name_root,'.csv',sep =""))
+demo <- read.csv(paste(basedir,'data/Demographics',name_root,'.csv',sep =""))
 
-clusterNames <- readMat(paste('/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
+clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 
 transLabels <- as.vector(sapply(1:numClusters, function(i) sapply(1:numClusters,function(j) paste(clusterNames[i],'to',clusterNames[j]))))	#label transitions
@@ -47,7 +47,7 @@ print('defined paths, start analysis and plotting')
 for(i in 1:length(scanlab)){
 
 	# symmetry
-	symmvars <- readMat(paste(masterdir,'clusterTransitions_',name_root,'/analyses/transitionprobabilities/symmetry/RvNSymmetryScorev2_k',
+	symmvars <- readMat(paste(basedir,'results/',name_root,'/analyses/transitionprobabilities/symmetry/RvNSymmetryScorev2_k',
 		numClusters,'.mat',sep = ''))
 	if(i == 1){
 		symm <- symmvars$restSymmetryScore

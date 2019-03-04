@@ -3,6 +3,7 @@ name_root <- args[1]
 scan <- args[2]
 thrsh <- as.numeric(args[3])
 numClusters <- as.numeric(args[4])
+basedir <- args[5]
 
 library(R.matlab)
 library(reshape2)
@@ -10,7 +11,7 @@ library(ggplot2)
 library(RColorBrewer)
 library(gridExtra)
 
-masterdir <- paste("/data/tesla-data/ecornblath/matlab/control_fc/pipeline/clusterTransitions_",name_root,"/",sep="")
+masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 persistExclude <- (1:numClusters) + (numClusters*(0:(numClusters-1)));
 
 SC.full <- readMat(paste(masterdir,"analyses/structrans/",

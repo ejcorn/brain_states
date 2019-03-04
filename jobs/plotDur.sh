@@ -1,5 +1,5 @@
 #!/bin/bash
 set -euxo pipefail
 
-cd /data/tesla-data/ecornblath/matlab/control_fc/pipeline/analysiscode
-$RP plotRvNDur.R $D $K
+cd $BD'code/statedynamics/'
+$RP plotRvNDur.R $D $K $
