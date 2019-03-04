@@ -150,3 +150,13 @@ qsub -l h_vmem=8G,s_vmem=7.5G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SC
 #################
 
 qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN -hold_jid $TP dprimeTPDurnew.sh
+
+###########
+### HCP ###
+###########
+
+# replicate results in HCP dataset with equal amounts of resting state and n-back data
+# must have concatenated HCP data in data folder (see load_hcpdata.m)
+
+HCP=$(qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN hcp_cluster.sh)
+qsub -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN -hold_jid $HCP hcp_tpmat.sh
