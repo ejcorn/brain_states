@@ -66,6 +66,7 @@ Epersist_Null_mio = zeros(nperms,numClusters);
 Epersist_Null_DLW = zeros(nperms,numClusters);
 
 for P = 1:nperms
+	disp(['Null state ',num2str(P)])
 	Epersist_Null(P,:) = MIN_CONTROL_ENERGY(A,WcI,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,true);
 	Epersist_Null_mio(P,:) = MIN_CONTROL_ENERGY(Arandmio,WcI_mio,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,true);
 	Epersist_Null_DLW(P,:) = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,true);
