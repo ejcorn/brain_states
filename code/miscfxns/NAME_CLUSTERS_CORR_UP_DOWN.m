@@ -24,20 +24,23 @@ YeoNetNames = {'VIS', 'SOM', 'DAT', 'VAT', 'LIM', 'FPN', 'DMN'};
 
 
 % compute masks to isolate high and low amplitude regions (i.e. >0, <0)
-centroids_up = centroids > 0;
-centroids_down = centroids < 0; 
+centroids_up = centroids .* (centroids > 0);
+centroids_down = centroids .* (centroids < 0); 
 
 net7corr_Up = zeros(numClusters,numNets);
 net7corr_Down = zeros(numClusters,numNets);
 
 for K = 1:numClusters
     for B = 1:numNets
-        % compute correlations with Yeo systems for high amplitude regions only
-        net7corr_Up(K,B) = corr(centroids(centroids_up(:,K),K),binaryNetVectors(centroids_up(:,K),B));
-        % compute correlations with Yeo systems for low amplitude regions only, multiply by -1 so positive correlation = more similar
-        net7corr_Down(K,B) = corr(-1*centroids(centroids_down(:,K),K),binaryNetVectors(centroids_down(:,K),B));
+        % compute correlations with Yeo systems with low amplitude regions set to 0
+        net7corr_Up(K,B) = corr(centroids_up(:,K),binaryNetVectors(:,B));
+        % compute correlations with Yeo systems with high amplitude regions set to 0
+        net7corr_Down(K,B) = corr(-1*centroids_down(:,K),binaryNetVectors(:,B));
     end
 end
+
+
+
 
 % get index of minimum and assign names
 
