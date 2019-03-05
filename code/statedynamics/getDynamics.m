@@ -41,14 +41,17 @@ for i = 1:numel(scanlab)
     save(fullfile(savedir,[scanlab{i},'FractionalOccupancy_k',num2str(numClusters),name_root,'.mat']),'FractionalOccupancy')
 
     %$ calculate dwell time, i.e. average number of subsequent TRs that each state lasts for
+    % store both mean and median, because dwell time may not be normally distributed
     TR = 3;     % PNC TR length
-    DwellTime = zeros(nobs,numClusters);
+    DwellTimeMean = zeros(nobs,numClusters);
+    DwellTimeMedian = zeros(nobs,numClusters);
     for N = 1:nobs
-        dt = CALC_DWELL_TIME(kClusterAssignments(subjInd' == N & scanInd == (i-1)),numClusters);
-        DwellTime(N,:) = dt*TR;        % store dwell time in seconds
+        [dt_mean,dt_median] = CALC_DWELL_TIME(kClusterAssignments(subjInd' == N & scanInd == (i-1)),numClusters);
+        DwellTimeMean(N,:) = dt*TR;        % store dwell time in seconds
+        DwellTimeMedian(N,:) = dt*TR;        % store dwell time in seconds
     end
 
-    save(fullfile(savedir,[scanlab{i},'DwellTime_k',num2str(numClusters),name_root,'.mat']),'DwellTime')
+    save(fullfile(savedir,[scanlab{i},'DwellTime_k',num2str(numClusters),name_root,'.mat']),'DwellTimeMean','DwellTimeMedian')
 
 end
 

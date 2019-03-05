@@ -26,9 +26,9 @@ if(!dir.exists(savedir)){
 }
 
 restDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
-                         numClusters,name_root,'.mat',sep = ''))$DwellTime
+                         numClusters,name_root,'.mat',sep = ''))$DwellTimeMean
 nbackDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombDwellTime_k',
-                        numClusters,name_root,'.mat',sep = ''))$DwellTime
+                        numClusters,name_root,'.mat',sep = ''))$DwellTimeMean
 
 restDwell.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(restDwell[,K] ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
 	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])

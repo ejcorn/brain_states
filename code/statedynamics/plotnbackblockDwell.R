@@ -20,9 +20,9 @@ clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"=
 RNcolors <- c('#005C9F','#FF8400') 
 
 restDwell <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
-	numClusters,name_root,'.mat',sep = ''))$DwellTime)
+	numClusters,name_root,'.mat',sep = ''))$DwellTimeMean)
 restSEM <- apply(X = readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
-	numClusters,name_root,'.mat',sep = ''))$DwellTime,FUN = std.error, MARGIN= 2)
+	numClusters,name_root,'.mat',sep = ''))$DwellTimeMean,FUN = std.error, MARGIN= 2)
 nbackDwell <- lapply(1:numBlocks, function(B) colMeans(readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
 	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockDwellTime))
 nbackDwellSEM <- lapply(1:numBlocks, function(B) apply(X = readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
