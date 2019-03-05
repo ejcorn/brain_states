@@ -47,8 +47,8 @@ for i = 1:numel(scanlab)
     DwellTimeMedian = zeros(nobs,numClusters);
     for N = 1:nobs
         [dt_mean,dt_median] = CALC_DWELL_TIME(kClusterAssignments(subjInd' == N & scanInd == (i-1)),numClusters);
-        DwellTimeMean(N,:) = dt*TR;        % store dwell time in seconds
-        DwellTimeMedian(N,:) = dt*TR;        % store dwell time in seconds
+        DwellTimeMean(N,:) = dt_mean*TR;        % store dwell time in seconds
+        DwellTimeMedian(N,:) = dt_median*TR;        % store dwell time in seconds
     end
 
     save(fullfile(savedir,[scanlab{i},'DwellTime_k',num2str(numClusters),name_root,'.mat']),'DwellTimeMean','DwellTimeMedian')
