@@ -10,9 +10,16 @@ fname = ['data/ROIv_scale',num2str(lausanneScaleBOLD),'_dilated.nii.gz'];
 lausnifti = load_nii(fname);
 lauscoor = zeros(nparc,3);
 
+for i = 1:nparc
+    [xind,yind,zind] = ind2sub(size(lausnifti.img),find(ismember(lausnifti.img,i)));
+    lauscoor(i,:) = mean([xind,yind,zind],1);
+end
+
 D = squareform(pdist(lauscoor,'Euclidean'));
 
 %% generate representative group SC matrix
+
+load(fullfile(datadir,['VolNormSC',num2str(lausanneScaleBOLD),'.mat']));
 
 A = zeros(nparc,nparc,nobs);
 for N = 1:nobs
