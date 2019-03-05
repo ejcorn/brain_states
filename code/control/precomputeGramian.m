@@ -10,6 +10,7 @@ load(fullfile(datadir,['VolNormSC',num2str(lausanneScaleBOLD),'.mat']));
 n_per_split = ceil(nobs/nsplits);	% calculate subjects per job based on # of jobs (nsplits) and # of subjects (nobs)
 subj_range = (1+n_per_split*(split-1)):(n_per_split*split);
 subj_range(subj_range > nobs) = [];		% truncate subj_range to equal total number of subjects... only happens on last job
+
 T = 1; %control horizon
 for N = 
 	tic
