@@ -12,7 +12,6 @@ mkdir(savedir);
 %%
 [nparc,numClusters] = size(centroids);
 
-
 [~,~,~,net7corr] = NAME_CLUSTERS_CORR(centroids);
 
 YeoNetNames = {'VIS+', 'SOM+', 'DAT+', 'VAT+', 'LIM+', 'FPN+', 'DMN+','VIS-', 'SOM-', 'DAT-', 'VAT-', 'LIM-', 'FPN-', 'DMN-'};
@@ -41,6 +40,7 @@ set(ax,'FontSize',8);
 
 [~,~,net7corr_Up,net7corr_Down] = NAME_CLUSTERS_CORR_UP_DOWN(centroids);
 YeoNetNames = {'VIS', 'SOM', 'DAT', 'VAT', 'LIM', 'FPN', 'DMN'};
+numNets = numel(YeoNetNames);
 
 %% plot
 sim = [net7corr_Up;net7corr_Down];
