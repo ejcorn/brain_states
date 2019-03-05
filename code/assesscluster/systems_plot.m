@@ -12,7 +12,7 @@ mkdir(savedir);
 %%
 [nparc,numClusters] = size(centroids);
 
-[~,~,~,net7corr] = NAME_CLUSTERS_CORR(centroids);
+[~,~,~,net7angle] = NAME_CLUSTERS_ANGLE(centroids);
 
 YeoNetNames = {'VIS+', 'SOM+', 'DAT+', 'VAT+', 'LIM+', 'FPN+', 'DMN+','VIS-', 'SOM-', 'DAT-', 'VAT-', 'LIM-', 'FPN-', 'DMN-'};
 
@@ -24,7 +24,7 @@ YeoColors = [137 72 155; 128 162 199; 91 153 72; 202 114 251;250 218 94; 218 166
 YeoColors = [YeoColors;YeoColors];
 
 f = figure;
-imagesc(net7corr); ax = gca;
+imagesc(net7angle); ax = gca;
 colormap('plasma')
 set(ax,'xaxisLocation','top')
 xticks(1:14); xticklabels(YeoNetNames);
@@ -38,13 +38,14 @@ set(ax,'FontSize',8);
 
 %%
 
-[~,~,net7corr_Up,net7corr_Down] = NAME_CLUSTERS_CORR_UP_DOWN(centroids);
+[~,~,net7angle_Up,net7angle_Down] = NAME_CLUSTERS_UP_DOWN(centroids);
 YeoNetNames = {'VIS', 'SOM', 'DAT', 'VAT', 'LIM', 'FPN', 'DMN'};
 numNets = numel(YeoNetNames);
 
 %% plot
-sim = [net7corr_Up;net7corr_Down];
-reOrder = [1 6 2 7 3 8 4 9 5 10];
+
+sim = [net7angle_Up;net7angle_Down];
+reOrder = [1 6 2 7 3 8 4 9 5 10];   % order 1+ 1- 2+ 2- etc.
 clusterColors = {'AB484F','591A23', 'AA709F','527183','7E874B'};
 clusterColors(6:10) = clusterColors;
 clusterColors = hex2rgb(clusterColors);
@@ -85,6 +86,7 @@ f.PaperSize = [2.5 2];
 f.PaperPosition = [0 0 2.5 2];
 saveas(f,fullfile(savedir,['Systems_k',num2str(numClusters),name_root,'.pdf']));
 
+
 %% make radial plots
 
 clusterColors = {'AB484F','591A23', 'AA709F','527183','7E874B'};
@@ -94,10 +96,10 @@ thetaNames = YeoNetNames; thetaNames{8} = '';
 f=figure;
 for K = 1:numClusters
     ax = subplot(1,5,K,polaraxes); hold on
-    polarplot(netAngle,[net7corr_Up(K,:) net7corr_Up(K,1)],'k');
-    polarplot(netAngle,[net7corr_Down(K,:) net7corr_Down(K,1)],'r');
+    polarplot(netAngle,[net7angle_Up(K,:) net7angle_Up(K,1)],'k');
+    polarplot(netAngle,[net7angle_Down(K,:) net7angle_Down(K,1)],'r');
     thetaticks(rad2deg(netAngle)); thetaticklabels(thetaNames);
-    rticks([0.3 0.6]); rticklabels({'0.3','0.6'});
+    rticks([0.4 0.8]); rticklabels({'0.4','0.8'});
     for L = 1:numNets
         ax.ThetaTickLabel{L} = sprintf('\\color[rgb]{%f,%f,%f}%s', ...
         YeoColors(L,:), ax.ThetaTickLabel{L});
