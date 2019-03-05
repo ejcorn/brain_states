@@ -1,7 +1,7 @@
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 masterdir = fullfile(basedir,'results',name_root);
-savedir = fullfile(savedir,'analyses','control_energy');
+savedir = fullfile(masterdir,'analyses','control_energy');
 
 %% make null centroids for each cluster that preserve spatial structure
 
