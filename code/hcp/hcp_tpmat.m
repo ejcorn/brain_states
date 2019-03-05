@@ -4,8 +4,10 @@ savedir = fullfile(masterdir,'analyses','hcpLR');
 nparc = 462;
 rTR = round(405); nTR = 405;
 
-load(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']));
-load(fullfile(savedir,['HCP_XHpartition_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']));
+save(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']),...
+    'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown','distanceMethod');
+load(fullfile(savedir,['HCP_XHpartition_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']),...
+    'HCPpartitionPNCorder','nsubjs','HCPsubjInd','HCPscanInd');
 
 [hcprTP,HCPresttransprobs] = GET_TRANS_PROBS(HCPpartitionPNCorder(HCPscanInd == 0),HCPsubjInd(HCPscanInd == 0));
 [hcpnTP,HCPnBacktransprobs] = GET_TRANS_PROBS(HCPpartitionPNCorder(HCPscanInd == 1),HCPsubjInd(HCPscanInd == 1));
