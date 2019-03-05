@@ -25,15 +25,17 @@ for(scan in c(1:2)){
   PHcolors <- c('#005C9F','#33C3A6')  
 
   grps <- rbind(matrix('PNC',nrow = nrow(pncDwell),ncol = ncol(pncDwell)),matrix('HCP',nrow = nrow(hcpDwell),ncol = ncol(hcpDwell)))
-  states <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(pncDwell)))
-  p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(states,states)) ,y = as.vector(rbind(pncDwell,hcpDwell)),fill = as.vector(grps))) + theme_classic() +
+  statesPNC <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(pncDwell)))
+  statesHCP <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(hcpDwell)))
+  df <- data.frame(grps =as.vector(grps),states=as.vector(rbind(statesPNC,statesHCP)),dwelltimes=as.vector(rbind(pncDwell,hcpDwell)))
+  p <- ggplot(data=df) + geom_split_violin(aes(x = states ,y = dwelltimes,fill = grps)) + theme_classic() +
     scale_fill_manual(limits = c('PNC','HCP'), values = PHcolors) + 
     ylab("Dwell Time (seconds)") + xlab("") +theme(text = element_text(size = 8)) +
     theme(legend.title = element_blank()) + 
     scale_x_discrete(limits = 1:numClusters, breaks=1:numClusters, labels = list(clusterNames)) +
     theme(legend.key.size = unit(0.5,'line'))
 
-  diffs.full <- lapply(1:numClusters, function(i) t.test(pncDwell[,i],hcpDwell[,i],paired=TRUE))
+  diffs.full <- lapply(1:numClusters, function(i) t.test(pncDwell[,i],hcpDwell[,i],paired=FALSE))
   diffs <- sapply(diffs.full, function(x) x$p.value)
   diffs <- p.adjust(diffs,method = "bonf")
   for(K in 1:numClusters){
