@@ -13,7 +13,7 @@ end
 
 % Normalize
 if normalize
-	A = (A / max(eigs(A,1)+1)) - eye(length(A));
+	A = (A / max(eigs(A,1))) - eye(length(A));
 end
 % State transition to achieve
 Phi = expm(A*T)*x0 - xf;

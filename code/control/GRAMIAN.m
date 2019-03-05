@@ -13,7 +13,7 @@ end
 
 % Normalize
 if normalize
-	A = (A / max(eigs(A,1)+1)) - eye(length(A));
+	A = (A / max(eigs(A,1))) - eye(length(A));
 end
 % Gramian
 Wc = integral(@(t)expm((A+A')*t), 0, T, 'ArrayValued', 1);
