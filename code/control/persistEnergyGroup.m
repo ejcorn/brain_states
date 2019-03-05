@@ -15,7 +15,7 @@ Xo_Null_all = zeros(nparc,numClusters,nperms);	% preallocate 3D array to store e
 for K = 1:numClusters
 	Xo_Null_k = zeros(nparc,nperms);	% preallocate 2D array to store every null state for EACH cluster
 	for S = 1:nsplits
-		load(fullfile(savedir,['Xo_Null_Cluster',num2str(K),'_k',num2str(numClusters),'Split',num2str(S),'.mat']),'Xo_Null');
+		load(fullfile(savedir,['nullstates_k',num2str(numClusters)],['Xo_Null_Cluster',num2str(K),'_k',num2str(numClusters),'Split',num2str(S),'.mat']),'Xo_Null');
 		Xo_Null_k(:,(1+nreps*(S-1)):(nreps*S)) = Xo_Null;	% concatenate splits into one matrix
 	end
 	Xo_Null_all(:,K,:) = Xo_Null_k;	% concatenate null states from all clusters into one matrix
@@ -28,7 +28,7 @@ kClusterCentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid
 %% normalize states
 
 StateMagnitude = sqrt(sum(kClusterCentroids.^2,1));
-Xo = Xo ./ StateMagnitude;		% normalize all states
+Xo = kClusterCentroids ./ StateMagnitude;		% normalize all states
 Xf = Xo;	% start and end at same place, i.e. persistence energy
 
 NullStateMagnitude = sqrt(sum(Xo_Null_all.^2,1));
@@ -36,23 +36,24 @@ Xo_Null_all = Xo_Null_all ./ NullStateMagnitude;	% normalize null states
 Xf_Null = Xo_Null_all;
 
 %% load structure, normalize, generate nulls
-load(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A');
+load(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
 
 T = 1; %control horizon
-Anorm = (A / max(eigs(A,1))) - eye(length(A));	% normalize A to max eig --> new max eig = 1 --> one dominant eigenmode stationary over time
+%Anorm = (A / max(eigs(A,1))) - eye(length(A));	% normalize A to max eig --> new max eig = 0 --> one dominant eigenmode stationary over time
 % make degree preserving null model using BCT function
-Arandmio = randmio_und(Anorm,10) - eye(length(A));	% for some reason randmio_und makes diagonal 0
+Arandmio = randmio_und(A,10);	% for some reason randmio_und makes diagonal 0
 % make degree preserving, length distribution, edge weight-length distribution preserving null model using RFB function
 % Betzel & Bassett 2018 PNAS: https://doi.org/10.1073/pnas.1720186115
-nbins = 11; nrewire = 1e5; [~,ArandDLW] = fcn_preserve_degseq_lengthdist(Anorm,D,nbins,nrewire); 
-ArandDLW = ArandDLW + ArandDLW' - eye(length(A));
+nbins = 11; nrewire = 1e5; [~,ArandDLW] = fcn_preserve_degseq_lengthdist(A,D,nbins,nrewire); 
+ArandDLW = ArandDLW + ArandDLW';
 
 %% compute minimum control energy required to maintain each state
 
 % compute inverse of controllability gramian for each network
-WcI = GRAMIAN(Anorm,T,false);
-WcI_mio = GRAMIAN(Arandmio,T,false);
-WcI_DLW = GRAMIAN(ArandDLW,T,false);
+% normalize all networks to max eig then subtract identity to ensure max eigval = 0 so system converges on single eigenmode over time
+WcI = GRAMIAN(A,T,true);
+WcI_mio = GRAMIAN(Arandmio,T,true);
+WcI_DLW = GRAMIAN(ArandDLW,T,true);
 
 % compute minimum control energy required to maintain cluster centers
 Epersist = MIN_CONTROL_ENERGY(Anorm,WcI,Xo,Xf,T,false);
