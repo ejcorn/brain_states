@@ -8,8 +8,7 @@ basedir <- args[3]
 library(ggplot2)
 library(R.matlab)
 
-#name_root <- 'ScanCLaus250Z2sqeuc'
-#numClusters <- 5
+masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
 print('1')
 
