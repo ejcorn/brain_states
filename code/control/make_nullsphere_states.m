@@ -1,7 +1,7 @@
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 masterdir = fullfile(basedir,'results',name_root);
-savedir = fullfile(masterdir,'analyses','control_energy');
+savedir = fullfile(masterdir,'analyses','control_energy',['nullstates_k',num2str(numClusters)]);
 
 %% make null centroids for each cluster that preserve spatial structure
 
@@ -33,7 +33,7 @@ annot.roinames = roinames;
 
 %cluster_i is a variable passed in through bash script to parallelize this computation by computing one cluster at a time
 
-nperms = 10;
+nperms = 20;
 
 Xo_Null = zeros(nparc,nperms);		% make matrix to hold permuted centroid
 
@@ -50,8 +50,9 @@ clusterTmp = repmat(clusterTmp,[1 nperms]);
 nullTmp(nullTmp == 0) = clusterTmp(nullTmp == 0);	% replace subcortical ROIs (0's as output of LAUS_SPHERE_TO_NODE_FAST) with existing activity levels
 nullTmp(isnan(nullTmp)) = clusterTmp(isnan(nullTmp));
 Xo_Null = nullTmp;
-save(fullfile(savedir,['Xo_Null_Cluster',num2str(cluster_i),'_k',num2str(numClusters),'.mat']),'Xo_Null');
+save(fullfile(savedir,['Xo_Null_Cluster',num2str(cluster_i),'_k',num2str(numClusters),'Split',num2str(split_i),'.mat']),'Xo_Null');
 disp('saved null states')
+
 % t/c replacing subcortical activity with actual subcortical activity in centroid
 % maybe just find zeros and replace
 
