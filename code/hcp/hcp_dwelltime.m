@@ -4,11 +4,6 @@ savedir = fullfile(masterdir,'analyses','hcpLR');
 nparc = 462;
 rTR = round(405); nTR = 405;
 
-load(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']),...
-    'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown','distanceMethod');
-load(fullfile(savedir,['HCP_XHpartition_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']),...
-    'HCPpartitionPNCorder','nsubjs','HCPsubjInd','HCPscanInd');
-
 load(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']));
 load(fullfile(savedir,['HCP_XHpartition_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']));
 
@@ -18,7 +13,7 @@ for i = 1:numel(scanlab)
 	TR = 0.72;     % HCP TR length
     HCPDwellTimeMean = zeros(nobs,numClusters);
     HCPDwellTimeMedian = zeros(nobs,numClusters);
-    for N = 1:nobs
+    for N = 1:nsubjs
         [dt_mean,dt_median] = CALC_DWELL_TIME(HCPpartitionPNCorder(HCPsubjInd == N & HCPscanInd == (i-1)),numClusters);
         HCPDwellTimeMean(N,:) = dt_mean*TR;        % store dwell time in seconds
         HCPDwellTimeMedian(N,:) = dt_median*TR;        % store dwell time in seconds
