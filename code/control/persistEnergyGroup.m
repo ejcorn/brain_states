@@ -56,9 +56,9 @@ WcI_mio = GRAMIAN(Arandmio,T,true);
 WcI_DLW = GRAMIAN(ArandDLW,T,true);
 
 % compute minimum control energy required to maintain cluster centers
-Epersist = MIN_CONTROL_ENERGY(Anorm,WcI,Xo,Xf,T,false);
-Epersist_mio = MIN_CONTROL_ENERGY(Arandmio,WcI_mio,Xo,Xf,T,false);
-Epersist_DLW = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo,Xf,T,false);
+Epersist = MIN_CONTROL_ENERGY(A,WcI,Xo,Xf,T,true);
+Epersist_mio = MIN_CONTROL_ENERGY(Arandmio,WcI_mio,Xo,Xf,T,true);
+Epersist_DLW = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo,Xf,T,true);
 
 % compute minimum control energy required to maintain sphere-permuted null cluster centers
 Epersist_Null = zeros(nperms,numClusters);
@@ -66,9 +66,9 @@ Epersist_Null_mio = zeros(nperms,numClusters);
 Epersist_Null_DLW = zeros(nperms,numClusters);
 
 for P = 1:nperms
-	Epersist_Null(P,:) = MIN_CONTROL_ENERGY(Anorm,WcI,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,false);
-	Epersist_Null_mio(P,:) = MIN_CONTROL_ENERGY(Arandmio,WcI_mio,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,false);
-	Epersist_Null_DLW(P,:) = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,false);
+	Epersist_Null(P,:) = MIN_CONTROL_ENERGY(A,WcI,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,true);
+	Epersist_Null_mio(P,:) = MIN_CONTROL_ENERGY(Arandmio,WcI_mio,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,true);
+	Epersist_Null_DLW(P,:) = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,true);
 end
 
 save(fullfile(savedir,['PersistEnergySpherePerm_k_',num2str(numClusters),'.mat']),'Epersist','Epersist_Null','Epersist_mio','Epersist_Null_mio','Epersist_DLW','Epersist_Null_DLW');
