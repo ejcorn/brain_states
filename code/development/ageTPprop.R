@@ -7,6 +7,7 @@ basedir <- args[3]
 
 library(ggplot2)
 library(R.matlab)
+library(lm.beta)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
