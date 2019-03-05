@@ -1,9 +1,11 @@
-function [clusterNames,reorderClusters,clusterNamesSort,sysCorrs] = NAME_CLUSTERS_CORR(centroids)
+function [clusterNames,reorderClusters,clusterNamesSort,net7corr,sysCorrs] = NAME_CLUSTERS_CORR(centroids)
 
 % Generate names for clusters based on the largest absolute correlation
 % between the centroid and either positive or negative binary indicators
 % of Yeo systems.
 % centroids: NxK matrix
+% net7corr: KxY matrix containing correlation values between centroids and each Yeo system, positive or negative
+% sysCorrs: Kx1 vector containing correlation values with closeest system for each centroid.
 
 [nparc,numClusters] = size(centroids);
 

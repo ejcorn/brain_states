@@ -1,4 +1,4 @@
-function [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_CORR_UP_DOWN(centroids)
+function [clusterNamesUp,clusterNamesDown,net7corr_Up,net7corr_Down] = NAME_CLUSTERS_CORR_UP_DOWN(centroids)
 
 % Generate names for clusters based on correlation to binary Yeo
 % This function looks at high (+) and low (-) amplitude activity separately
