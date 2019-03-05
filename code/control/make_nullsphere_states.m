@@ -33,22 +33,25 @@ annot.roinames = roinames;
 
 %cluster_i is a variable passed in through bash script to parallelize this computation by computing one cluster at a time
 
-nperms = 500;
+nperms = 10;
 
 Xo_Null = zeros(nparc,nperms);		% make matrix to hold permuted centroid
 
 clusterTmp = kClusterCentroids(:,cluster_i);
+disp('converting node data to surface')
 [Rlabels,Llabels]= LAUS_DATA_TO_SURF_FAST(clusterTmp,annot);
+disp(['rotating sphere ',num2str(nperms),' times'])
 [bigrotl,bigrotr] = SpinPermuFS_EJCFAST(Llabels,Rlabels,Lvertices,Rvertices,nperms);
 %test = LAUS_SPHERE_TO_NODE(Llabels,Rlabels,nparc);		%reproduces the cluster centroid exactly
+disp(['applying rotation'])
 nullTmp = LAUS_SPHERE_TO_NODE_FAST(bigrotl,bigrotr,nparc,annot);
 % leave subcortical ROIs and non-surface rendered ROIs the same as centroid
 clusterTmp = repmat(clusterTmp,[1 nperms]);
-nullTmp(nullTmp == 0) = clusterTmp(nullTmp == 0);
+nullTmp(nullTmp == 0) = clusterTmp(nullTmp == 0);	% replace subcortical ROIs (0's as output of LAUS_SPHERE_TO_NODE_FAST) with existing activity levels
 nullTmp(isnan(nullTmp)) = clusterTmp(isnan(nullTmp));
-Xo_Null(:,K,:) = nullTmp;
+Xo_Null = nullTmp;
 save(fullfile(savedir,['Xo_Null_Cluster',num2str(cluster_i),'_k',num2str(numClusters),'.mat']),'Xo_Null');
-disp('made null states')
+disp('saved null states')
 % t/c replacing subcortical activity with actual subcortical activity in centroid
 % maybe just find zeros and replace
 
