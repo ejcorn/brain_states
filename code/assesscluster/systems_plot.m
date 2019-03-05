@@ -6,7 +6,7 @@ load(fullfile(masterdir,'clusterAssignments',['k',num2str(numClusters),name_root
 overallPartition = clusterAssignments.(['k',num2str(numClusters)]).partition;
 centroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
 overallNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
-savedir = fullfile(masterdir,'centroids');
+savedir = fullfile(masterdir,'analyses','centroids');
 mkdir(savedir);
 
 %%
