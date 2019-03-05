@@ -12,7 +12,7 @@ subj_range = (1+n_per_split*(split-1)):(n_per_split*split);
 subj_range(subj_range > nobs) = [];		% truncate subj_range to equal total number of subjects... only happens on last job
 
 T = 1; %control horizon
-for N = 
+for N = subj_range
 	tic
 	disp(['Subject ',num2str(N)])
 	A = SCvolnorm{N};
