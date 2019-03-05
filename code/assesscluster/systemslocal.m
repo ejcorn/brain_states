@@ -1,10 +1,8 @@
-name_root = 'ScanCLaus250Z0corrfinal'; numClusters = 5;
-masterdir = ['~/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/results/',name_root];
-addpath(genpath('~/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/analysiscode'));
-addpath(genpath('~/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/assesskmeanscode'));
-addpath(genpath('~/Dropbox/Cornblath_Bassett_Projects/code/brainmapping2/Colormaps'));
+addpaths;
+masterdir = fullfile(basedir,'results',name_root);
+
 %%
-load([masterdir,'/assign/k',num2str(numClusters),name_root,'.mat']);
+load(fullfile(masterdir,'clusterAssignments',['k',num2str(numClusters),name_root,'.mat']));
 overallPartition = clusterAssignments.(['k',num2str(numClusters)]).partition;
 centroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
 overallNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
@@ -15,9 +13,9 @@ cd(savedir);
 [nparc,numClusters] = size(centroids);
 
 if nparc > 400
-    load('yeo7netlabelsLaus250.mat'); network7labels = network7labels(1:nparc);
+    load('data/yeo7netlabelsLaus250.mat'); network7labels = network7labels(1:nparc);
 else
-    load('yeo7netlabelsLaus125.mat'); network7labels = network7labels(1:nparc);
+    load('data/yeo7netlabelsLaus125.mat'); network7labels = network7labels(1:nparc);
 end
 
 binaryNetVectors = zeros(nparc,14);
