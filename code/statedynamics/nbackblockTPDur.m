@@ -43,6 +43,20 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 	save(['FractionalOccupancy',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockFractionalOccupancy');
 end
 
+%% Compute fractional occupancy for whole n-back task, excluding rest or instruction components
+
+BlockFractionalOccupancy = zeros(nobs,numClusters);
+BlockDuration = sum(ismember(nbackBlocks,BlockLabels);		% number of TRs in 0,1,2 back blocks, i.e. not rest or instructions
+for N = 1:nobs	
+	subjMask = subjInd == N;
+	tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
+	for K = 1:numClusters			
+			% calculate time spent in each state as percentage of time spent in non-rest blocks
+		BlockFractionalOccupancy(N,K) = sum(tmpAssignments(ismember(nbackBlocks,BlockLabels)) == K) / BlockDuration;
+	end
+	save(['nBackRestExcludeFractionalOccupancy_k',num2str(numClusters),name_root,'.mat'],'BlockFractionalOccupancy');
+end
+
 %% Compute dwell times for each state in each n-back block
 
 TR = 3;		%3 seconds/TR in PNC data
@@ -59,6 +73,8 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 	end
 	save(['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
 end
+
+%% Transition probabilities within each block
 
 % *** doesn't address case where blocks are not contiguous in time ***
 for B = 1:numBlocks
