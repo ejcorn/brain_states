@@ -21,13 +21,13 @@ Xf = Xo;	% start and end at same place, i.e. persistence energy
 load(fullfile(datadir,['VolNormSC',num2str(lausanneScaleBOLD),'.mat']));
 T = 1; %control horizon
 
-persistEnergySubjects = zeros(nobs,numClusters);
+subjectPersistenceEnergy = zeros(nobs,numClusters);
 
 for N = 1:nobs
 	disp(['Subject ',num2str(P)])
 	load(fullfile(savedir,['GramianInverse',num2str(lausanneScaleBOLD),'Subject',num2str(N),'.mat']),'WcI_subj');
 	A = SCvolnorm{N};
-	persistEnergySubjects(N,:) = MIN_CONTROL_ENERGY(A,WcI_subj,Xo,Xf,T,true);
+	subjectPersistenceEnergy(N,:) = MIN_CONTROL_ENERGY(A,WcI_subj,Xo,Xf,T,true);
 end
 
-save(fullfile(savedir,['PersistEnergySubjects_k',num2str(numClusters),'.mat']),'persistEnergySubjects');
+save(fullfile(savedir,['SubjectPersistenceEnergy_k',num2str(numClusters),'.mat']),'subjectPersistenceEnergy');
