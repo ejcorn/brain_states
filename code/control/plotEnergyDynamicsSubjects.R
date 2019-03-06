@@ -26,16 +26,18 @@ clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"=
 
 # compare persistence energy to persistence probabilities
 
-matResults <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySubjects_k',numClusters,'.mat',sep = ''))
-energy <- matResults$Epersist
-null_energy <- matResults$Epersist.DLW
+matResults <- readMat(paste(masterdir,'analyses/control_energy/SubjectPersistenceEnergy_k',numClusters,'.mat',sep = ''))
+subjectPersistenceEnergy <- matResults$subjectPersistenceEnergy
 
-rtp <- colMeans(readMat(paste(masterdir,"analyses/transitionprobabilities/",
-                              scanlab[1],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability)
-ntp <- colMeans(readMat(paste(masterdir,"analyses/transitionprobabilities/",
-                              scanlab[2],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability)
+rtp <- readMat(paste(masterdir,"analyses/transitionprobabilities/",
+                              scanlab[1],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability
+ntp <- readMat(paste(masterdir,"analyses/transitionprobabilities/",
+                              scanlab[2],'TransitionProbabilities_k',numClusters,name_root,".mat",sep = ""))$transitionProbability
 
-rpp <- rtp[onDiag]
-npp <- ntp[onDiag]
+# extract persistence probabilities using indices that correspond to diagonal matrix elements
+rpp <- rtp[,onDiag]
+npp <- ntp[,onDiag]
 
-cor.test(as.numeric(energy),rpp)
+nobs <- nrow(rtp)
+restPP.cors <- sapply(1:nobs, function(N) cor(rpp[N,],as.numeric(subjectPersistenceEnergy[N,])))
+nbackPP.cors <- sapply(1:nobs, function(N) cor(npp[N,],as.numeric(subjectPersistenceEnergy[N,])))

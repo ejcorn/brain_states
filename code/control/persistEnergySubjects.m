@@ -24,8 +24,8 @@ T = 1; %control horizon
 subjectPersistenceEnergy = zeros(nobs,numClusters);
 
 for N = 1:nobs
-	disp(['Subject ',num2str(P)])
-	load(fullfile(savedir,['GramianInverse',num2str(lausanneScaleBOLD),'Subject',num2str(N),'.mat']),'WcI_subj');
+	disp(['Subject ',num2str(N)])
+	load(fullfile(datadir,'Gramians',['GramianInverse',num2str(lausanneScaleBOLD),'Subject',num2str(N),'.mat']),'WcI_subj');
 	A = SCvolnorm{N};
 	subjectPersistenceEnergy(N,:) = MIN_CONTROL_ENERGY(A,WcI_subj,Xo,Xf,T,true);
 end
