@@ -39,5 +39,21 @@ rpp <- rtp[,onDiag]
 npp <- ntp[,onDiag]
 
 nobs <- nrow(rtp)
-restPP.cors <- sapply(1:nobs, function(N) cor(rpp[N,],as.numeric(subjectPersistenceEnergy[N,])))
-nbackPP.cors <- sapply(1:nobs, function(N) cor(npp[N,],as.numeric(subjectPersistenceEnergy[N,])))
+restPP.cors.within <- sapply(1:nobs, function(N) cor(rpp[N,],as.numeric(subjectPersistenceEnergy[N,])))
+nbackPP.cors.within <- sapply(1:nobs, function(N) cor(npp[N,],as.numeric(subjectPersistenceEnergy[N,])))
+
+restPP.cors.across <- lapply(1:numClusters, function(K) cor.test(rpp[,K],subjectPersistenceEnergy[,K],use='pairwise.complete.obs'))
+nbackPP.cors.across <- lapply(1:numClusters, function(K) cor.test(npp[,K],subjectPersistenceEnergy[,K],use='pairwise.complete.obs'))
+
+# compare persistence energy to dwell time
+
+rdt <- readMat(paste(masterdir,"analyses/transitionprobabilities/",
+                              scanlab[1],'DwellTime_k',numClusters,name_root,".mat",sep = ""))$DwellTimeMean
+ndt <- readMat(paste(masterdir,"analyses/transitionprobabilities/",
+                              scanlab[2],'DwellTime_k',numClusters,name_root,".mat",sep = ""))$DwellTimeMean
+
+restDT.cors.within <- sapply(1:nobs, function(N) cor(rdt[N,],as.numeric(subjectPersistenceEnergy[N,])))
+nbackDT.cors.within <- sapply(1:nobs, function(N) cor(ndt[N,],as.numeric(subjectPersistenceEnergy[N,])))
+
+restDT.cors.across <- lapply(1:numClusters, function(K) cor.test(rdt[,K],subjectPersistenceEnergy[,K],use='pairwise.complete.obs'))
+nbackDT.cors.across <- lapply(1:numClusters, function(K) cor.test(ndt[,K],subjectPersistenceEnergy[,K],use='pairwise.complete.obs'))
