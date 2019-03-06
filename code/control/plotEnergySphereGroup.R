@@ -25,11 +25,12 @@ savedir = paste(masterdir,'/analyses/control_energy',sep='');
 matResults <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))
 energy <- matResults$Epersist
 null_energy <- matResults$Epersist.Null
-energy.randmio <- matResults$Epersist.Null.mio    
+energy.randmio <- matResults$Epersist.mio   
 null_energy.randmio <- matResults$Epersist.Null.mio
 energy.DLW <- matResults$Epersist.DLW
 null_energy.DLW  <- matResults$Epersist.Null.DLW
 
+# make vectors to plot
 nperms <- nrow(null_energy)
 state <- rep(as.vector(sapply(1:numClusters, function(K) rep(as.character(K),nperms))),3)
 E <- c(as.vector(null_energy),as.vector(null_energy.randmio),as.vector(null_energy.DLW))
@@ -41,9 +42,12 @@ grp.actual <- factor(c(rep('SC',numClusters),rep('Deg. Pres.',numClusters),rep('
 energy.repmat <- kronecker(matrix(1,nperms,1),energy)
 energy.mio.repmat <- kronecker(matrix(1,nperms,1),energy.randmio)
 energy.DLW.repmat <- kronecker(matrix(1,nperms,1),energy.DLW)
+
+# compute p-values, i.e. probability that persistence energy of null states is < actual states for each network type
+
 pvals.orig <- c(p.adjust(colMeans(null_energy < energy.repmat),method='bonferroni'),  # bonferroni correct over each cluster separately for each null model / actual data
   p.adjust(colMeans(null_energy.randmio < energy.mio.repmat),method='bonferroni'),
-  p.adjust(colMeans(null_energy.DLW < energy.DLW.repmat)),method='bonferroni')
+  p.adjust(colMeans(null_energy.DLW < energy.DLW.repmat),method='bonferroni'))
 pvals.size <- ifelse(pvals.orig < 0.05,yes = 2.5,no = 0)    # don't show asterisks for non-sig results by making them size =0
 p.labs <- ifelse(pvals.orig < 0.05,yes = '*',no = '')       # asterisk or no asterisk
 pval.y <- 1.1*c(rep(max(null_energy),numClusters),rep(max(null_energy.randmio),numClusters),rep(max(null_energy.DLW),numClusters))  # height of p-val labels
@@ -66,8 +70,6 @@ if(numClusters == 5){
   p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-p
-
 ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermAllNullModels_k',numClusters,'.pdf',sep =""),
   height = 3,width=4, units = "in",useDingbats=FALSE)
 
@@ -89,9 +91,9 @@ p <- ggplot() + geom_boxplot(aes(x = state,y=E),color = '#005C9FFF',fill = '#005
   ylab('Min. Control Energy') + xlab('') + ggtitle('Min. State Maintenance Energy') + 
   theme_classic() + theme(text = element_text(size= 8)) + theme(plot.title = element_text(hjust = 0.5)) +
   theme(legend.position = 'none')
-p
+
 energy.repmat <- kronecker(matrix(1,nperms,1),energy)
-pvals <- colMeans(null_energy < energy.repmat)
+pvals <- p.adjust(colMeans(null_energy < energy.repmat),method='bonferroni')
 col <- rep('black',numClusters)
 col[pvals < 0.05] <- 'red'
 for(K in 1:numClusters){
