@@ -46,7 +46,7 @@ end
 %% Compute fractional occupancy for whole n-back task, excluding rest or instruction components
 
 BlockFractionalOccupancy = zeros(nobs,numClusters);
-BlockDuration = sum(ismember(nbackBlocks,BlockLabels);		% number of TRs in 0,1,2 back blocks, i.e. not rest or instructions
+BlockDuration = sum(ismember(nbackBlocks,BlockLabels));		% number of TRs in 0,1,2 back blocks, i.e. not rest or instructions
 for N = 1:nobs	
 	subjMask = subjInd == N;
 	tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time
