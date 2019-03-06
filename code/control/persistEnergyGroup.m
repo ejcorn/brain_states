@@ -24,7 +24,7 @@ end
 % empirical states
 load([masterdir,'/clusterAssignments/k',num2str(numClusters),name_root,'.mat'])
 kClusterCentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
-
+clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
 %% normalize states
 
 StateMagnitude = sqrt(sum(kClusterCentroids.^2,1));
@@ -37,6 +37,9 @@ Xf_Null = Xo_Null_all;
 
 %% load structure, normalize, generate nulls
 load(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
+c = 1;
+Anorm = (A / max(eig(A))) - c*eye(length(A));   % normalize by max eigenvalue
+max(eig(Anorm)) % max eigenvalue should be v. close to 1 - c;
 
 T = 1; %control horizon
 %Anorm = (A / max(eigs(A,1))) - eye(length(A));	% normalize A to max eig --> new max eig = 0 --> one dominant eigenmode stationary over time

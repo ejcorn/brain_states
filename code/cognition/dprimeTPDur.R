@@ -41,8 +41,8 @@ if(!dir.exists(savedir)){
 
 restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
                          numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
-nbackREDur <- readMat(paste(masterdir,'analyses/nbackblocks/nBackRestExcludeDwellTime_k',
-                          numClusters,name_root,'.mat',sep = ''))$BlockDwellTime*100
+nbackREDur <- readMat(paste(masterdir,'analyses/nbackblocks/nBackRestExcludeFractionalOccupancy_k',
+                          numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100
 #nbackREDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',
 #                        numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
 
@@ -78,7 +78,7 @@ if(numClusters == 5){
 	p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-ggsave(plot = p,filename = paste(savedir,'RvNOverallDprimeDwellTime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
+ggsave(plot = p,filename = paste(savedir,'RvNOverallDprimeFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
 
 # rest and n-back to overall accuracy
 
@@ -111,14 +111,14 @@ if(numClusters == 5){
 	p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-ggsave(plot = p,filename = paste(savedir,'RvNOverallAccuracyDwellTime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
+ggsave(plot = p,filename = paste(savedir,'RvNOverallAccuracyFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
 
 # n-back block duration to block-specific dprime
 
 BlockNames <- c('0back','1back','2back')
 numBlocks <- length(BlockNames)
-nbackBlockDur <- lapply(1:numBlocks, function(B) readMat(paste(masterdir,'analyses/nbackblocks/DwellTime',
-	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockDwellTime*100)
+nbackBlockDur <- lapply(1:numBlocks, function(B) readMat(paste(masterdir,'analyses/nbackblocks/FractionalOccupancy',
+	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100)
 
 nbackBlockDur.dprime <- vector("list",numBlocks)
 nbackBlockDur.dprime[[1]] <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackBehZerobackDprime ~ nbackBlockDur[[1]][,K] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,
@@ -156,7 +156,7 @@ if(numClusters == 5){
 	p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-ggsave(plot = p,filename = paste(savedir,'RvNBlockDprimeDwellTime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 6)
+ggsave(plot = p,filename = paste(savedir,'RvNBlockDprimeFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 6)
 
 ##############################
 ### Cognition and Dynamics ###
