@@ -40,11 +40,11 @@ if(!dir.exists(savedir)){
 }
 
 restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
-                         numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
+                         numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 nbackREDur <- readMat(paste(masterdir,'analyses/nbackblocks/nBackRestExcludeFractionalOccupancy_k',
                           numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100
 #nbackREDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',
-#                        numClusters,name_root,'.mat',sep = ''))$stateDuration * 100
+#                        numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 
 # rest and n-back to overall d-prime
 
@@ -207,15 +207,18 @@ nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackB
 pdat <- as.data.frame(t(as.data.frame(restTP.dprime, row.names = c('RestB','RestP'))))
 pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
 v <- matrix((pdat$RestB*pdat$RestP), nrow = numClusters, byrow = TRUE)
-p <- TP.beta.plot(v,clusterColors,title = 'Rest: d-prime')
-ggsave(plot = p,filename = paste(savedir,'RestTPDprime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 4,width = 4)
+if(sum(v) != 0){
+	p <- TP.beta.plot(v,clusterColors,title = 'Rest: d-prime')
+	ggsave(plot = p,filename = paste(savedir,'RestTPDprime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 4,width = 4)
+}
 
 pdat <- as.data.frame(t(as.data.frame(nbackTP.dprime, row.names = c('nBackB','nBackP'))))
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'fdr') < 0.05
+pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
 v <- matrix((pdat$nBackB*pdat$nBackP), nrow = numClusters, byrow = TRUE)
-p <- TP.beta.plot(v,clusterColors,title = 'n-back: d-prime')
-ggsave(plot = p,filename = paste(savedir,'nBackTPDprime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 4,width = 4)
-
+if(sum(v) != 0){
+	p <- TP.beta.plot(v,clusterColors,title = 'n-back: d-prime')
+	ggsave(plot = p,filename = paste(savedir,'nBackTPDprime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 4,width = 4)
+}
 
 # restTP.acc <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(Overall_Accuracy ~ restTP[,T] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
 # 	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
