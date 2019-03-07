@@ -59,12 +59,12 @@ restNumTRs = 120; nbackNumTRs = 225;
 restTS = nan(restNumTRs,nparc,nobs);
 nbackTS = nan(nbackNumTRs,nparc,nobs);
 
-restfnames = [repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/rest_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+restfnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/rest_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
     num2str(demoLTN.scanid),... % only load files in demoLTN
-    repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
-nbackfnames = [repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/nback_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+    repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])]);
+nbackfnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/nback_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
     num2str(demoLTN.scanid),... % only load files in demoLTN
-    repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
+    repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])]);
 
 for N = 1:nobs
     disp(['Subject ',num2str(N)])
