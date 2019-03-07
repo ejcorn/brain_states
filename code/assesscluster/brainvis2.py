@@ -65,7 +65,6 @@ hemis = ['lh']
 numClusters = 5
 adv_view = {'lh': {'azimuth': 45, 'elevation': 79},'rh': {'azimuth': 135, 'elevation': 79}}
 
-name_root = 'ScanCLaus250Z0corrfinal'
 savedir = homedir + "/Dropbox/Cornblath_Bassett_Projects/BrainStateTransitions/brain_states/results/" + \
     name_root + '/centroids/'
 if not os.path.exists(savedir):
