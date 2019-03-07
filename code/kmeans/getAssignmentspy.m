@@ -69,7 +69,7 @@ for numClusters = minNumClusters:maxNumClusters
     
     clusterAssignments.(['k',num2str(numClusters)]).sumD = combSumD{K-k_offset}(combBestClusterInd);
     clusterAssignments.(['k',num2str(numClusters)]).clusterNames = NAME_CLUSTERS_ANGLE(combBestClusterCentroids);
-    [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_ANGLE_UP_DOWN(combBestClusterCentroids);
+    [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_UP_DOWN(combBestClusterCentroids);
     clusterAssignments.(['k',num2str(numClusters)]).clusterNamesUp = clusterNamesUp;
     clusterAssignments.(['k',num2str(numClusters)]).clusterNamesDown = clusterNamesDown;
 
