@@ -6,7 +6,7 @@ data
 results
 
 # mac files
-.DS_STORE
+.DS_Store
 
 # History files
 .Rhistory

@@ -95,12 +95,16 @@ end
 
 disp('BOLD Data loaded');
 
-% confirm there isn't any subject without missing data for either rest or n-back
+% remove subjects with missing data for either rest or n-back
 rest_missingdata = ~logical(squeeze(sum(sum(isnan(restTS),1),2)));
 nback_missingdata = ~logical(squeeze(sum(sum(isnan(nbackTS),1),2)));
 
 % will be true only if subject has data for both rest AND n-back
 BOLDMissingDataExclusionMask = and(rest_missingdata,nback_missingdata);
+
+if sum(~BOLDMissingDataExclusionMask) >0
+    disp(['removing ',num2str(sum(~BOLDMissingDataExclusionMask)),' subject(s) with missing structure'])
+end
 
 restTS = restTS(:,:,BOLDMissingDataExclusionMask);
 nbackTS = nbackTS(:,:,BOLDMissingDataExclusionMask);
