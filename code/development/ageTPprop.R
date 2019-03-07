@@ -20,7 +20,7 @@ if(!dir.exists(symmdir)){
 
 print('2')
 
-unifdir <- paste(masterdir,'results/',name_root,'/analyses/development/randnull/',sep = '')
+unifdir <- paste(basedir,'results/',name_root,'/analyses/development/randnull/',sep = '')
 if(!dir.exists(unifdir)){
 	dir.create(unifdir,recursive = TRUE)
 }
