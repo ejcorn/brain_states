@@ -66,10 +66,6 @@ restfnames = [repmat(['data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRe
     repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
 nbackfnames = [repmat(['/data/jag/bassett-lab/Lausanne1601/nback/nbackNetwork_Lausanne',num2str(lausanneScaleBOLD),'/','Lausanne',num2str(lausanneScaleBOLD),'Timeseries/'],[nobs 1]),num2str(demoLTN.scanid),repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
 
-restdir = dir(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/rest_data/Lausanne',num2str(lausanneScaleBOLD),'/*.1D']);
-restfnames = fullfile({restdir.folder},{restdir.name});
-nbackdir = dir(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/nback_data/Lausanne',num2str(lausanneScaleBOLD),'/*.1D']);
-nbackfnames = fullfile({nbackdir.folder},{nbackdir.name});
 for N = 1:nobs
     disp(['Subject ',num2str(N)])
     % default: time series is NaNs
