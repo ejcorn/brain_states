@@ -21,9 +21,7 @@ RNcolors <- c('#005C9F','#FF8400')
 demo <- read.csv(paste(basedir,'data/Demographics',name_root,'.csv',sep =""))
 
 savedir <- paste(masterdir,'analyses/development/blockdur/',sep = '')
-if(!dir.exists(savedir)){
-	dir.create(savedir,recursive = TRUE)
-}
+dir.create(savedir,recursive = TRUE)
 
 restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
                          numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
