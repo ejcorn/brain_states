@@ -55,16 +55,16 @@ disp('SC loaded');
 
 restNumTRs = 120; nbackNumTRs = 225;
 
+% preallocate for time series
 restTS = nan(restNumTRs,nparc,nobs);
 nbackTS = nan(nbackNumTRs,nparc,nobs);
 
 restfnames = [repmat(['data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/rest_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
-    num2str(demoLTN.scanid),...
+    num2str(demoLTN.scanid),... % only load files in demoLTN
     repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
-    restfnames = [repmat(['data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/nback_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
-    num2str(demoLTN.scanid),...
+nbackfnames = [repmat(['data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/nback_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+    num2str(demoLTN.scanid),... % only load files in demoLTN
     repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
-nbackfnames = [repmat(['/data/jag/bassett-lab/Lausanne1601/nback/nbackNetwork_Lausanne',num2str(lausanneScaleBOLD),'/','Lausanne',num2str(lausanneScaleBOLD),'Timeseries/'],[nobs 1]),num2str(demoLTN.scanid),repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])];
 
 for N = 1:nobs
     disp(['Subject ',num2str(N)])
@@ -92,7 +92,6 @@ for N = 1:nobs
         nbackTS(:,:,N) = zscore(tmpn(:,1:nparc),[],2);
     end
 end
-
 
 disp('BOLD Data loaded');
 
