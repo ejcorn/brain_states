@@ -41,8 +41,8 @@ f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 
-savedir = [masterdir,'/choosing_k/dwelltime'];
+savedir = fullfile(masterdir,'analyses','choosing_k');
 mkdir(savedir);
 
-saveas(f,[savedir,'/StateRepresentation',name_root,'.pdf']);
+saveas(f,fullfile(savedir,['StateRepresentation',name_root,'.pdf']));
 

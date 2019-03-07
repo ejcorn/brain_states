@@ -8,6 +8,8 @@ load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load([masterdir,'/clusterAssignments/repkmeansPartitions',distanceMethod,name_root,'.mat']);
 
 savedir = [masterdir,'/clusterAssignments'];
+mkdir(savedir);
+
 %% calculate zrand
 nCombos = nreps*(nreps-1)/2;
 combos = nchoosek(1:nreps,2);
@@ -27,5 +29,4 @@ zRandK(K,1) = mean(zRandPartitions); zRandK(K,2) = std(zRandPartitions);
 disp(['zrand ',num2str(K)]);
 
 %% plot
-cd(savedir);
-save(['zrand_k',num2str(numClusters),name_root,'.mat'],'zRandK');
+save(fullfile(savedir,['zrand_k',num2str(numClusters),name_root,'.mat']),'zRandK');

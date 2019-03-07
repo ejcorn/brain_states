@@ -1,14 +1,16 @@
 
-savedir = [masterdir,'/clusterAssignments'];
+masterdir = fullfile(basedir,name_root);
+savedir = fullfile(masterdir,'analyses','choosing_k');
+mkdir(savedir);
+
 load([masterdir,'/clusterAssignments/repkmeansPartitions',distanceMethod,name_root,'.mat'],'nreps');
-cd(savedir);
 
 minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
 k_offset = minNumClusters - 1;
 zRandAllK = zeros(numK,2);
 %
 for K = clusterRange
-	load(['zrand_k',num2str(K),name_root,'.mat'],'zRandK');
+	load(fullfile(masterdir,'clusterAssignments',['zrand_k',num2str(K),name_root,'.mat']),'zRandK');
 	zRandAllK = zRandAllK + zRandK;
 end
 %}
@@ -26,7 +28,7 @@ prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
-saveas(f,['zRandbyK',num2str(nreps),'reps.pdf'],'pdf');
+saveas(f,fullfile(savedir,['zRandbyK',num2str(nreps),'reps.pdf'],'pdf');
 
 f = figure;
 cv = zRandAllK(:,2)./zRandAllK(:,1)
@@ -42,6 +44,6 @@ prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
-saveas(f,['CVbyK',num2str(nreps),'reps',name_root,'.pdf'],'pdf');
+saveas(f,fullfile(savedir,['CVbyK',num2str(nreps),'reps',name_root,'.pdf']),'pdf');
 
 disp('zrand done');
