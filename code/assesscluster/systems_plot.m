@@ -56,14 +56,14 @@ f = figure;
 imagesc(sim); ax = gca;
 colormap('plasma')
 set(ax,'xaxisLocation','top')
-xticks(1:14); xticklabels(YeoNetNames);
+xticks(1:(numNets*2)); xticklabels(YeoNetNames);
 xtickangle(90);
-for K = 1:14
+for K = 1:(numNets*2)
 	ax.XTickLabel{K} = sprintf('\\color[rgb]{%f,%f,%f}%s', ...
 	YeoColors(K,:), ax.XTickLabel{K});
 end
 yticks(1:numClusters*2); yticklabels(yticklabs(reOrder)');
-for K = 1:10
+for K = 1:(numClusters*2)
 	ax.YTickLabel{K} = sprintf('\\color[rgb]{%f,%f,%f}%s', ...
 	clusterColors(K,:), ax.YTickLabel{K});
 end
@@ -95,7 +95,7 @@ netAngle = linspace(0,2*pi,numNets+1);
 thetaNames = YeoNetNames; thetaNames{8} = '';
 f=figure;
 for K = 1:numClusters
-    ax = subplot(1,5,K,polaraxes); hold on
+    ax = subplot(1,numClusters,K,polaraxes); hold on
     polarplot(netAngle,[net7angle_Up(K,:) net7angle_Up(K,1)],'k');
     polarplot(netAngle,[net7angle_Down(K,:) net7angle_Down(K,1)],'r');
     thetaticks(rad2deg(netAngle)); thetaticklabels(thetaNames);
