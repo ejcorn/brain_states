@@ -14,16 +14,12 @@ masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 print('1')
 
 symmdir <- paste(basedir,'results/',name_root,'/analyses/development/symmetry/',sep = '')
-if(!dir.exists(symmdir)){
-	dir.create(symmdir,recursive = TRUE)
-}
+dir.create(symmdir,recursive = TRUE)
 
 print('2')
 
 unifdir <- paste(basedir,'results/',name_root,'/analyses/development/randnull/',sep = '')
-if(!dir.exists(unifdir)){
-	dir.create(unifdir,recursive = TRUE)
-}
+dir.create(unifdir,recursive = TRUE)
 
 print('2')
 
