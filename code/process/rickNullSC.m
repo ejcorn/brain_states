@@ -3,7 +3,7 @@ addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['VolNormSC',num2str(lausanneScaleBOLD),'.mat']));
 
-fname = ['/data/tesla-data/ecornblath/matlab/brainmapping2/LausanneNifti/ROIv_scale',num2str(lausanneScaleBOLD),'_dilated.nii.gz'];
+fname = ['data/ROIv_scale',num2str(lausanneScaleBOLD),'_dilated.nii.gz'];
 lausnifti = load_nii(fname);
 lauscoor = zeros(nparc,3);
 
