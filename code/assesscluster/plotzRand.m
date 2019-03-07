@@ -28,7 +28,7 @@ prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
-saveas(f,fullfile(savedir,['zRandbyK',num2str(nreps),'reps.pdf'],'pdf');
+saveas(f,fullfile(savedir,['zRandbyK',num2str(nreps),'reps.pdf']),'pdf');
 
 f = figure;
 cv = zRandAllK(:,2)./zRandAllK(:,1)

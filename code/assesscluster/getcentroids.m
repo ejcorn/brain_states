@@ -68,14 +68,14 @@ end
 
 [clusterNames,clusterReorder,clusterNamesSort] = NAME_CLUSTERS_ANGLE(kClusterCentroids);
 
-clusterCorr = corr(kClusterCentroids(:,clusterReorder));
+clusterCorr = corr(kClusterCentroids);
 
 imagesc(clusterCorr); colormap('plasma');
-xticks(1:numClusters); xticklabels(clusterNamesSort); xtickangle(90);
-yticks(1:numClusters); yticklabels(clusterNamesSort); axis square
+xticks(1:numClusters); xticklabels(clusterNames); xtickangle(90);
+yticks(1:numClusters); yticklabels(clusterNames); axis square
 clusterColors = {'AB484F','591A23', 'AA709F','527183','7E874B'};
 if numClusters == 5
-    COLOR_TICK_LABELS(true,true,numClusters,clusterColors(clusterReorder));
+    COLOR_TICK_LABELS(true,true,numClusters,clusterColors);
 end
 h=colorbar; caxis([-1 1]); h.Ticks = [-1 0 1]; h.TickLabels = [-1 0 1];
 title('Spatial Correlation');
