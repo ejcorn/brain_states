@@ -68,7 +68,7 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 		subjMask = subjInd == N;
 		tmpAssignments = kClusterAssignments(subjMask);	% select state labels for one subject at a time			
 		% calculate Dwell Time as mean length of runs of each state
-		mean_dt = CALC_DWELL_TIME(tmpAssignments(nbackBlocks == BlockLabels(B)),numClusters);
+		mean_dt = GET_BLOCK_DWELL_TIME(tmpAssignments,nbackBlocks == BlockLabels(B),numClusters);
 		BlockDwellTime(N,:) = mean_dt*TR;	% store dwell time *in seconds*		
 	end
 	save(['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
@@ -77,13 +77,14 @@ end
 %% Transition probabilities within each block
 
 % *** doesn't address case where blocks are not contiguous in time ***
-for B = 1:numBlocks
-	% will go: 0-back, 1-back, 2-back, rest
-	BlockMask = repmat(nbackBlocks == BlockLabels(B),[nobs 1]);	%select only time points in each block
-	BlockSubjInd = subjInd(BlockMask);
-	tmpAssignments = kClusterAssignments(BlockMask);
-	[transitionProbability, transitionProbabilityMats] = GET_TRANS_PROBS(tmpAssignments,BlockSubjInd);
-	save(['TransProbs',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'transitionProbability','transitionProbabilityMats');
 
+for B = 1:numBlocks
+	BlockTransitionProbability = zeros(nobs,numClusters^2);
+	BlockTransitionProbabilityMats = zeros(nobs,numClusters,numClusters);	% preallocate transition probability matrices
+	for N = 1:nobs
+		subjPartition = kClusterAssignments(subjInd == N);
+		[BlockTransitionProbabilityMats(N,:,:),BlockTransitionProbability(N,:)] = GET_BLOCK_TRANS_PROBS(subjPartition,nbackBlocks == BlockLabels(B),numClusters);
+	end	
+	save(['TransProbs',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockTransitionProbability','BlockTransitionProbabilityMats');
 end
 
