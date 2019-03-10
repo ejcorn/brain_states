@@ -37,12 +37,8 @@ Xf_Null = Xo_Null_all;
 
 %% load structure, normalize, generate nulls
 load(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
-c = 1;
-Anorm = (A / max(eig(A))) - c*eye(length(A));   % normalize by max eigenvalue
-max(eig(Anorm)) % max eigenvalue should be v. close to 1 - c;
 
 T = 1; %control horizon
-%Anorm = (A / max(eigs(A,1))) - eye(length(A));	% normalize A to max eig --> new max eig = 0 --> one dominant eigenmode stationary over time
 % make degree preserving null model using BCT function
 Arandmio = randmio_und(A,10);	% for some reason randmio_und makes diagonal 0
 % make degree preserving, length distribution, edge weight-length distribution preserving null model using RFB function

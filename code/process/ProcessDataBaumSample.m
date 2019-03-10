@@ -34,9 +34,11 @@ dtifnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornbl
 % check if structure exists for every subject -- this removes 4 subjects in 462 node scale
 StructureExist = logical(cellfun(@(x) exist(x,'file'),dtifnames));
 demoLTN = demoLTN(StructureExist,:);
+
 if sum(StructureExist) < nobs
     disp(['removing ',num2str(nobs-sum(StructureExist)),' subject(s) with missing structure'])
 end
+
 nobs = sum(StructureExist);
 SCvolnorm = cell(nobs,1);
 dtifnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/diffusion_data/volNormSC/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
@@ -46,7 +48,9 @@ dtifnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornbl
 % iterate through subjects, store structural connectivity matrices in a cell
 for N = 1:nobs
     load(dtifnames{N});
-    SCvolnorm{N} = volNorm_connectivity(1:nparc,1:nparc);  % remove brainstem  
+    A = volNorm_connectivity(1:nparc,1:nparc);  % remove brainstem  
+    A(~~eye(nparc)) = 0;    % make sure diagonals are all 0
+    SCvolnorm{N} = A;
 end
 
 disp('SC loaded');

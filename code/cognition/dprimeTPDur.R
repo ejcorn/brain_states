@@ -34,10 +34,8 @@ data <- cbind(demo, cnb[,grepl('Accuracy',colnames(cnb))], nbbeh[,grepl('Dprime'
 ### Cognition and Dwell Times ###
 #################################
 
-savedir <- paste(masterdir,'analyses/cognition/dwelltime/',sep = '')
-if(!dir.exists(savedir)){
-	dir.create(savedir,recursive = TRUE)
-}
+savedir <- paste(masterdir,'analyses/cognition/fractionaloccupancy/',sep = '')
+dir.create(savedir,recursive = TRUE)
 
 restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
                          numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
@@ -158,37 +156,12 @@ if(numClusters == 5){
 
 ggsave(plot = p,filename = paste(savedir,'RvNBlockDprimeFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 6)
 
-##############################
-### Cognition and Dynamics ###
-##############################
-
-symmvars <- readMat(paste(masterdir,'/analyses/transitionprobabilities/symmetry/RvNSymmetryScorev2_k',
-		numClusters,'.mat',sep = ''))
-restSymm <- symmvars$restSymmetryScore
-nbackSymm <-symmvars$nBackSymmetryScore
-
-summary(lm(nbackBehAllDprime ~ restSymm + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex,
-	data = data))
-summary(lm(nbackBehAllDprime ~ nbackSymm + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,
-	data = data))
-
-# MI <- readMat(paste(masterdir,'analyses/transitionprobabilities/MutualInfoGap1to6_k',numClusters,name_root,'.mat',sep = ''))$subjectMI
-# restMI <- as.matrix(MI[[1]][[1]][,1])
-# nbackMI <- as.matrix(MI[[2]][[1]][,1])
-
-# summary(lm(nbackBehAllDprime ~ restMI + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex,
-# 	data = data))
-# summary(lm(nbackBehAllDprime ~ nbackMI + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,
-# 	data = data))
-
 #################################
 ### Cognition and Trans Probs ###
 #################################
 
 savedir <- paste(masterdir,'analyses/cognition/transprobs/',sep = '')
-if(!dir.exists(savedir)){
-	dir.create(path = savedir,recursive = TRUE)
-}
+dir.create(path = savedir,recursive = TRUE)
 
 restTP <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombTransitionProbabilities_k',
 	numClusters,name_root,'.mat',sep = ''))$transitionProbability

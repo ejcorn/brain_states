@@ -16,7 +16,7 @@ for N = subj_range
 	tic
 	disp(['Subject ',num2str(N)])
 	A = SCvolnorm{N};
-	Anorm = (A / max(eigs(A,1))) - eye(length(A));	% normalize A to max eig --> new max eig = 1 --> one dominant eigenmode stationary over time
+	Anorm = (A / max(eig(A))) - eye(length(A));	% normalize A to max eig --> new max eig = 1 --> one dominant eigenmode stationary over time
 	WcI_subj = GRAMIAN(Anorm,T,false);
 	save(fullfile(savedir,['GramianInverse',num2str(lausanneScaleBOLD),'Subject',num2str(N),'.mat']),'WcI_subj');
 	toc

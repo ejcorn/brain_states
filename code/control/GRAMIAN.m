@@ -13,7 +13,8 @@ end
 
 % Normalize
 if normalize
-	A = (A / max(eigs(A,1))) - eye(length(A));
+	A = (A / (max(eig(A)))) - eye(length(A));
+	disp(['After normalization, max eigenvalue of A is ',num2str(max(eig(A)))])
 end
 % Gramian
 Wc = integral(@(t)expm((A+A')*t), 0, T, 'ArrayValued', 1);

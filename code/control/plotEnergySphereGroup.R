@@ -10,12 +10,14 @@ library(R.matlab)
 library(RColorBrewer)
 
 source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
+source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 scanlab <- c("RestComb","nBackComb")
 persistExclude = (1:numClusters) + (numClusters*(0:(numClusters-1)))
 scanttl <- c('Rest','n-back')
 RNcolors <- c('#005C9F','#FF8400')  
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
+clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
 
 savedir = paste(masterdir,'/analyses/control_energy',sep='');
@@ -58,7 +60,7 @@ p <- ggplot() + geom_boxplot(aes(x = state,y=E,color = grp,fill=grp),position = 
    #             color=grp.actual[!is.na(pvals)]),label = '*',position = position_dodge(width=1)) +
   geom_text(aes(x=state.actual,y=as.numeric(pval.y),size=pvals.size,
                 color=grp.actual,label = p.labs), position = position_dodge(width=1)) +
-  scale_x_discrete(limits = 1:numClusters,breaks = 1:numClusters,labels = clusterNames) +
+  scale_x_discrete(limits = 1:numClusters,breaks = 1:numClusters,labels = list(clusterNames)) +
   scale_size_continuous(guide = FALSE) + 
   scale_color_manual(limits = c('Deg. Pres.','Space Pres.','SC'),breaks = c('Deg. Pres.','Space Pres.','SC'),values = c('#005C9FFF','#71AABEFF','#E2492FFF')) +
   scale_fill_manual(limits = c('Deg. Pres.','Space Pres.','SC'),breaks = c('Deg. Pres.','Space Pres.','SC'),values = c('#005C9F1A','#71AABE1A','#E2492F1A')) +
@@ -77,27 +79,28 @@ ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/Persistence
 energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))$Epersist
 null_energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))$Epersist.Null
 nperms <- nrow(null_energy)
-state <- as.vector(sapply(1:numClusters, function(K) rep(as.character(K),nperms)))
+state <- as.vector(sapply(clusterNames, function(K) rep(K,nperms)))
 E <- as.vector(null_energy)
 grp <- rep('SC',nperms*numClusters)
 E.actual <- as.vector(energy)
-state.actual <- rep(as.character(1:numClusters),1)
+state.actual <- rep(clusterNames,1)
 grp.actual <- rep('SC',numClusters)
 p <- ggplot() + geom_boxplot(aes(x = state,y=E),color = '#005C9FFF',fill = '#005C9F1A',position = position_dodge(width = 1),outlier.shape=20,outlier.size = 0.5,lwd = 0.5) + 
   geom_point(aes(x=state.actual,y=as.numeric(E.actual),color = grp.actual),
              shape = 24,stroke = 0,size = 1,fill = '#CE2B37',position = position_dodge(width=1)) +
   scale_color_manual(limits = c('SC','Null'),breaks = c('SC','Null'),values = c('#005C9F','#71AABE')) +
-  scale_x_discrete(limits = 1:numClusters,breaks = 1:numClusters,labels = clusterNames) +
+  scale_x_discrete(limits = clusterNames,breaks = clusterNames,labels = list(clusterNames)) +
   ylab('Min. Control Energy') + xlab('') + ggtitle('Min. State Maintenance Energy') + 
   theme_classic() + theme(text = element_text(size= 8)) + theme(plot.title = element_text(hjust = 0.5)) +
   theme(legend.position = 'none')
 
 energy.repmat <- kronecker(matrix(1,nperms,1),energy)
 pvals <- p.adjust(colMeans(null_energy < energy.repmat),method='bonferroni')
+p.labs <- pval.label.np(pvals,nperms)
 col <- rep('black',numClusters)
 col[pvals < 0.05] <- 'red'
 for(K in 1:numClusters){
-  p <- p + annotate("text", x = as.character(K), y = 1.1*max(c(energy,null_energy)),label = paste('p =',signif(pvals[K],2)),color = col[K])
+  p <- p + annotate("text", x = clusterNames, y = 1.1*max(c(energy,null_energy)),label = p.labs,color = col[K])
 }
 
 if(numClusters == 5){
