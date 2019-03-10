@@ -35,9 +35,7 @@ data <- cbind(demo, cnb[,grepl('Accuracy',colnames(cnb))], nbbeh[,grepl('Dprime'
 ####################################
 
 savedir <- paste(masterdir,'analyses/cognition/transprobs/',sep = '')
-if(!dir.exists(savedir)){
-	dir.create(path = savedir)
-}
+dir.create(path = savedir,recursive=TRUE)
 
 restTP <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombTransitionProbabilities_k',
 	numClusters,name_root,'.mat',sep = ''))$transitionProbability
@@ -54,16 +52,19 @@ restTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBe
 pdat <- as.data.frame(t(as.data.frame(restTP.dprime, row.names = c('RestB','RestP'))))
 rownames(pdat) <- 1:numTransitions
 pdat$RestPCorrect <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-transInd <- which(pdat$RestPCorrect)[1]
-dp.resid <- residuals(lm(nbackBehAllDprime ~ restTP[,transInd] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex,data=data))
-d <- as.data.frame(cbind(x = restTP[,transInd],y= dp.resid + restTP[,transInd]*pdat$RestB[transInd]))
+if(sum(pdat$RestPCorrect) > 0){
+	transInd <- which(pdat$RestPCorrect)[1]
+	dp.resid <- residuals(lm(nbackBehAllDprime ~ restTP[,transInd] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex,data=data))
+	d <- as.data.frame(cbind(x = restTP[,transInd],y= dp.resid + restTP[,transInd]*pdat$RestB[transInd]))
 
-p <- ggplot(data = d,aes(x=x,y=y)) + geom_point(color = 'grey70',stroke =0,size = 1, alpha = 0.6) + 
-	geom_smooth(fill=RNcolors[1],color=RNcolors[1],method = 'lm') + xlab(paste('P(',transLabels[transInd],')',sep='')) +
-	geom_text(aes(x=0.06+ min(d$x),y=max(d$y),label = paste('p = ',signif(pdat$RestP[transInd],2),sep='')),size=2.5) +
-	ggtitle('Rest') + ylab('WM Performance') + theme_classic() + theme(text = element_text(size = 8)) +
-	theme(plot.title = element_text(size = 8,hjust = 0.5))
-ggsave(plot = p,filename = paste(savedir,'Rest',transLabels[transInd],'Dprime_k',numClusters,'.pdf',sep =''),units = 'in',height = 2,width = 2.5)
+	p <- ggplot(data = d,aes(x=x,y=y)) + geom_point(color = 'grey70',stroke =0,size = 1, alpha = 0.6) + 
+		geom_smooth(fill=RNcolors[1],color=RNcolors[1],method = 'lm') + xlab(paste('P(',transLabels[transInd],')',sep='')) +
+		geom_text(aes(x=0.06+ min(d$x),y=max(d$y),label = paste('p = ',signif(pdat$RestP[transInd],2),sep='')),size=2.5) +
+		ggtitle('Rest') + ylab('WM Performance') + theme_classic() + theme(text = element_text(size = 8)) +
+		theme(plot.title = element_text(size = 8,hjust = 0.5))
+	ggsave(plot = p,filename = paste(savedir,'Rest',transLabels[transInd],'Dprime_k',numClusters,'.pdf',sep =''),units = 'in',height = 2,width = 2.5)
+}
+
 
 nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBehAllDprime ~ nbackTP[,T] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
 	data = data)))$coefficients[2,c('Estimate','Pr(>|t|)')])
@@ -71,14 +72,16 @@ nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackB
 pdat <- as.data.frame(t(as.data.frame(nbackTP.dprime, row.names = c('nBackB','nBackP'))))
 rownames(pdat) <- 1:numTransitions
 pdat$nBackPCorrect <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-transInd <- which(pdat$nBackPCorrect)[1]
-dp.resid <- residuals(lm(nbackBehAllDprime ~ nbackTP[,transInd] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,data=data))
-d <- as.data.frame(cbind(x = nbackTP[,transInd], y = dp.resid + nbackTP[,transInd]*pdat$nBackB[transInd]))		# store partial residuals for plotting
+if(sum(pdat$nBackPCorrect) > 0){
+	transInd <- which(pdat$nBackPCorrect)[1]
+	dp.resid <- residuals(lm(nbackBehAllDprime ~ nbackTP[,transInd] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,data=data))
+	d <- as.data.frame(cbind(x = nbackTP[,transInd], y = dp.resid + nbackTP[,transInd]*pdat$nBackB[transInd]))		# store partial residuals for plotting
 
-p <- ggplot(data = d,aes(x=x,y=y)) + geom_point(color = 'grey70',stroke =0,size = 1, alpha = 0.6) + 
-	geom_smooth(fill=RNcolors[2],color=RNcolors[2],method = 'lm') + 
-	geom_text(aes(x=0.04+ min(d$x),y=max(d$y),label = paste('p = ',signif(pdat$nBackP[transInd],2),sep='')),size=2.5) +
-	xlab(paste('P(',transLabels[transInd],')',sep='')) +
-	ggtitle('n-back') + ylab('WM Performance') + theme_classic() + theme(text = element_text(size = 8)) +
-	theme(plot.title = element_text(size = 8,hjust = 0.5))
-ggsave(plot = p,filename = paste(savedir,'nBack',transLabels[transInd],'Dprime_k',numClusters,'.pdf',sep =''),units = 'in',height = 2,width = 2.5)
+	p <- ggplot(data = d,aes(x=x,y=y)) + geom_point(color = 'grey70',stroke =0,size = 1, alpha = 0.6) + 
+		geom_smooth(fill=RNcolors[2],color=RNcolors[2],method = 'lm') + 
+		geom_text(aes(x=0.04+ min(d$x),y=max(d$y),label = paste('p = ',signif(pdat$nBackP[transInd],2),sep='')),size=2.5) +
+		xlab(paste('P(',transLabels[transInd],')',sep='')) +
+		ggtitle('n-back') + ylab('WM Performance') + theme_classic() + theme(text = element_text(size = 8)) +
+		theme(plot.title = element_text(size = 8,hjust = 0.5))
+	ggsave(plot = p,filename = paste(savedir,'nBack',transLabels[transInd],'Dprime_k',numClusters,'.pdf',sep =''),units = 'in',height = 2,width = 2.5)
+}

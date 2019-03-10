@@ -40,7 +40,7 @@ p.lab <- pval.label.np(pvals,nperms)		# make p-value labels that don't say p = 0
 
 p <- ggplot() + geom_boxplot(aes(y = null_energy, x= states),color ='#71AABE',fill = '#71AABE1A') +
   geom_point(aes(x= clusterNames,y=energy),fill = '#CE2B37',color = '#CE2B37',size = 1,shape = 25) +
-  geom_text(aes(x = clusterNames, y = 1.1*max(null_energy),label = p.lab),size=2) +
+  geom_text(aes(x = clusterNames, y = 1.1*max(null_energy),label = p.lab,color=col),size=1.5) +
   scale_x_discrete(limits = clusterNames, breaks=clusterNames, labels = list(clusterNames)) +
   #scale_color_manual(limits = c('p > 0.05','p < 0.05'),values = c('#71AABE','#005C9F')) + 
   xlab('') + ylab('Min. Control Energy') +
