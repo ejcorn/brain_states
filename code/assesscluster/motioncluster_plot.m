@@ -12,7 +12,12 @@ PNCcentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
 PNCnames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
 PNCvsScrub = corr(scrubbed_centroids,PNCcentroids);
 [~,shuffleIdx] = max(PNCvsScrub,[],1);
-scrubbed_centroidsPNCorder = scrubbed_centroids(:,shuffleIdx);
+
+if length(unique(shuffleIdx)) == length(shuffleIdx)
+	scrubbed_centroidsPNCorder = scrubbed_centroids(:,shuffleIdx);
+else
+	scrubbed_centroidsPNCorder = scrubbed_centroids;
+end
 clusterNames = NAME_CLUSTERS_ANGLE(scrubbed_centroidsPNCorder);
 [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_UP_DOWN(scrubbed_centroidsPNCorder);
 
@@ -31,5 +36,5 @@ f.PaperSize = [2.7 2.7];
 f.PaperPosition = [0 0 2.7 2.7];
 saveas(f,fullfile(savedir,['MotionScrub',num2str(motion_thresh),'mm_SpatialCorr_k',num2str(numClusters),name_root,'.pdf']),'pdf');
 
-kClusterCentroids = scrubbed_centroids;	% rename centroid variable to use with one plotting script
-save(fullfile(savedir,['CentroidsMotionScrubbed',num2str(motion_thresh),'mm_k',num2str(numClusters),'.mat']),'scrubbed_centroids','clusterNames','clusterNamesUp','clusterNamesDown');
+kClusterCentroids = scrubbed_centroidsPNCorder;	% rename centroid variable to use with one plotting script
+save(fullfile(savedir,['CentroidsMotionScrubbed',num2str(motion_thresh),'mm_k',num2str(numClusters),'.mat']),'kClusterCentroids','scrubbed_centroids','clusterNames','clusterNamesUp','clusterNamesDown');

@@ -40,10 +40,13 @@ blocks <- as.vector(do.call(cbind,blocks))
 
 BlockNames <- c('Rest','0-back','1-back','2-back')
 
+ylim <- c(min(nbackDwell - 2*nbackDwellSEM),max(nbackDwell + 2*nbackDwellSEM))
+ylim.stretch <- 0.05*(ylim[2] - ylim[1])*c(-1,1)     # amount by which to pad y limits
+ylim <- ylim + ylim.stretch
 p <- ggplot() + geom_line(aes(x = blocks, y = nbackDwell, color = states), size = 0.4) +
   geom_errorbar(aes(ymin = nbackDwell - 2*nbackDwellSEM,ymax = nbackDwell + 2*nbackDwellSEM, x = blocks, color = states),width = 0.1,size = 0.25) +
   scale_x_continuous(limits = c(0.7,numBlocks+0.25),breaks= c(1:numBlocks),label=BlockNames,expand = c(0,0)) +
-  scale_y_continuous(expand = c(0,0)) + 
+  scale_y_continuous(expand = c(0,0),limits=ylim) + 
   xlab("Task Block") + ylab("Dwell Time (seconds)") + 
   theme_classic() + theme(text = element_text(size = 8),legend.position = 'none')
 

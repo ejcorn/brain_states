@@ -42,16 +42,25 @@ restTP <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombTran
 nbackTP <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombTransitionProbabilities_k',
 	numClusters,name_root,'.mat',sep = ''))$transitionProbability
 
+nbackTP <- readMat(paste(masterdir,'analyses/nbackblocks/TransProbs2back_k',numClusters,name_root,'.mat',sep = ''))$BlockTransitionProbability
+
 numTransitions <- ncol(restTP)
 transLabels <- as.vector(sapply(1:numClusters, function(i) sapply(1:numClusters,function(j) paste(clusterNames[i],'to',clusterNames[j]))))	#label transitions
 
 # overall d prime
 restTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBehAllDprime ~ restTP[,T] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
 	data = data)))$coefficients[2,c('Estimate','Pr(>|t|)')])
+nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBehAllDprime ~ nbackTP[,T] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
+	data = data)))$coefficients[2,c('Estimate','Pr(>|t|)')])
 
-pdat <- as.data.frame(t(as.data.frame(restTP.dprime, row.names = c('RestB','RestP'))))
-rownames(pdat) <- 1:numTransitions
-pdat$RestPCorrect <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
+pdat <- as.data.frame(cbind(t(as.data.frame(restDur.dprime, row.names = c('RestB','RestP'))),t(as.data.frame(nbackREDur.dprime,row.names = c('nBackB','nBackP')))))
+p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')	# bonferroni correct over rest and n-back
+rownames(pdat) <- transLabels
+pdat$RestP <- p.list[[1]]	# store p-val for plot
+pdat$nBackP <- p.list[[2]]
+pdat$RestPCorrect <- p.list[[1]] < 0.05	# significance binary for whether to plot.
+pdat$nBackPCorrect <- p.list[[2]] < 0.05
+
 if(sum(pdat$RestPCorrect) > 0){
 	transInd <- which(pdat$RestPCorrect)[1]
 	dp.resid <- residuals(lm(nbackBehAllDprime ~ restTP[,transInd] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex,data=data))
@@ -66,12 +75,6 @@ if(sum(pdat$RestPCorrect) > 0){
 }
 
 
-nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBehAllDprime ~ nbackTP[,T] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
-	data = data)))$coefficients[2,c('Estimate','Pr(>|t|)')])
-
-pdat <- as.data.frame(t(as.data.frame(nbackTP.dprime, row.names = c('nBackB','nBackP'))))
-rownames(pdat) <- 1:numTransitions
-pdat$nBackPCorrect <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
 if(sum(pdat$nBackPCorrect) > 0){
 	transInd <- which(pdat$nBackPCorrect)[1]
 	dp.resid <- residuals(lm(nbackBehAllDprime ~ nbackTP[,transInd] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,data=data))

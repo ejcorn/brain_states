@@ -2,7 +2,7 @@ load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
 
 scanlab = {'RestComb','nBackComb'};
-minNumClusters = 2; maxNumClusters = 18; 
+minNumClusters = 2; maxNumClusters = 11; 
 clusterRange = minNumClusters:maxNumClusters; 
 numK = 1 + maxNumClusters-minNumClusters;
 
@@ -33,7 +33,7 @@ RNcolors = {'#005C9F','#FF8400'};
 RNcolors = hex2rgb(RNcolors);
 f = figure;
 bar([restAbsentStateCount;nbackAbsentStateCount]','FaceAlpha',.5);
-xticks(1:2:numK);xticklabels(minNumClusters:2:maxNumClusters);
+xticks(1:numK);xticklabels(minNumClusters:maxNumClusters);
 ylabel('% Subjects'); xlabel('k','FontWeight','bold'); title('Absent States');
 legend({'Rest','n-back'},'Location','northwest')
 prettifyEJC;

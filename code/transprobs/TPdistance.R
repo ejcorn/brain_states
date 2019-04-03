@@ -16,7 +16,7 @@ demo <- read.csv(paste(basedir,'data/Demographics',name_root,'.csv',sep =""))
 
 clusterAssignments <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterAssignments$clusterAssignments[[1]][[5]])
-kClusterCentroids <- unlist(clusterAssignments$clusterAssignments[[1]][[1]])
+kClusterCentroids <- clusterAssignments$clusterAssignments[[1]][[2]]
 
 savedir = paste(masterdir,'/analyses/control_energy',sep='');
 if(!dir.exists(savedir)){

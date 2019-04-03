@@ -12,6 +12,7 @@ library(viridis)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
+source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
@@ -45,10 +46,13 @@ restBeta.z <- lapply(1:numClusters, function(K) (restDwell.age[[K]]['Standardize
 restBeta.p <- lapply(1:numClusters, function(K) restDwell.age[[K]]['Standardized'] > restBeta.null[[K]])
 
 pdat <- as.data.frame(cbind(t(as.data.frame(restDwell.age, row.names = c('RestB','RestP'))),t(as.data.frame(nbackDwell.age,row.names = c('nBackB','nBackP')))))
-pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-pdat$RestP <- ifelse(pdat$RestP,'*','')
-pdat$nBackP <- ifelse(pdat$nBackP,'*','')
+# pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
+# pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
+# pdat$RestP <- ifelse(pdat$RestP,'*','')
+# pdat$nBackP <- ifelse(pdat$nBackP,'*','')
+p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
+pdat$RestP <- ifelse(p.list[[1]] < 0.05,'*','')
+pdat$nBackP <- ifelse(p.list[[2]] < 0.05,'*','')
 colnames(pdat) <- rep(c('B','p'),2)
 pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4]))
 pdat$Scan = c(rep('Rest',numClusters),rep('n-back',numClusters))

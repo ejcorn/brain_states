@@ -1,5 +1,5 @@
 addpaths;
-minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
+minNumClusters = 2; maxNumClusters = 11; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
 k_offset = minNumClusters - 1;
 
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));

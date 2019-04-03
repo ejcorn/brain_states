@@ -22,8 +22,9 @@ PNCvsHCP = corr(HCPcentroids,PNCcentroids);
 HCPcentroidsPNCorder = HCPcentroids(:,shuffleIdx);
 clusterNames = NAME_CLUSTERS_ANGLE(HCPcentroidsPNCorder);
 [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_UP_DOWN(HCPcentroidsPNCorder);
+kClusterCentroids = HCPcentroidsPNCorder;	% use for general plotting script
 save(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.mat']),...
-    'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown','distanceMethod');
+    'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown','distanceMethod','kClusterCentroids');
 
 f = figure;
 imagesc(PNCvsHCP(shuffleIdx,:)); colormap('plasma');

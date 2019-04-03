@@ -20,7 +20,8 @@ RNcolors <- c('#005C9F','#FF8400')
 
 grps <- rbind(matrix('Rest',nrow = nrow(restDwell),ncol = ncol(restDwell)),matrix('n-back',nrow = nrow(nbackDwell),ncol = ncol(nbackDwell)))
 states <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(restDwell)))
-p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(states,states)) ,y = as.vector(rbind(restDwell,nbackDwell)),fill = as.vector(grps))) + theme_classic() +
+df <- data.frame(states=as.vector(rbind(states,states)),grps = as.vector(grps),dt=as.vector(rbind(restDwell,nbackDwell)))
+p <- ggplot(data=df) + geom_split_violin(aes(x = states, y = dt,fill = grps)) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + 
   ylab("Dwell Time (seconds)") + xlab("") +theme(text = element_text(size = 8)) +
   theme(legend.title = element_blank()) + 
@@ -28,8 +29,10 @@ p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(states,states)) ,y = a
   theme(legend.key.size = unit(0.5,'line'))
 
 diffs.full <- lapply(1:numClusters, function(i) t.test(restDwell[,i],nbackDwell[,i],paired=TRUE))
+print(diffs.full)
 diffs <- sapply(diffs.full, function(x) x$p.value)
 diffs <- p.adjust(diffs,method = "bonf")
+print(diffs)
 for(K in 1:numClusters){
   if(diffs[K] < 10^-15){
     p <- p + annotate("text", x = K, y = 1.1*max(rbind(restDwell,nbackDwell)),label = "**",color = 'red')

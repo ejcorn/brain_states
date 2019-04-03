@@ -1,8 +1,6 @@
-function [persistenceProbability] = GET_PERSIST_PROBS(kClusterAssignments,subjInd)
+function [persistenceProbability] = GET_NULL_PERSIST_PROBS(kClusterAssignments,subjInd)
 
-% Calculate transition probabilities from sequential cluster assignments
-% Return 2D (for regression) or 3D versions of matrix (for eigen
-% decompositions and plotting)
+% Calculate persistence probabilities for null model
 
 kClusterAssignments = reshape(kClusterAssignments,length(kClusterAssignments),1); %convert to row vector
 nobs = max(subjInd);
@@ -19,5 +17,5 @@ for N = 1:nobs
     end
 end
 
-persistenceProbability(isnan(persistenceProbability)) = 0;
+persistenceProbability(isnan(persistenceProbability)) = 0;	% only applies if state not present
 

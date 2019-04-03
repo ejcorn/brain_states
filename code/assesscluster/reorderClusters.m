@@ -1,7 +1,7 @@
 % script to reorder states for k = 5 so +/- states can be easily compared
 
 a = clock; rng(a(6));
-minNumClusters = 2; maxNumClusters = 18; clusterRange = minNumClusters:maxNumClusters;
+minNumClusters = 2; maxNumClusters = 11; clusterRange = minNumClusters:maxNumClusters;
 
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat']));

@@ -1,4 +1,4 @@
-function [mean_dt,median_dt,max_dt,run_lengths] = CALC_DWELL_TIME(partition,k)
+function [mean_dt,median_dt,max_dt,run_lengths,n_runs_k] = CALC_DWELL_TIME(partition,k)
 
 % given a partition with possible entries 1:k
 % find the length of runs of each cluster
@@ -25,9 +25,11 @@ median_dt = zeros(k,1);
 max_dt = zeros(k,1);
 run_lengths = cell(k,1);
 for k_i = 1:k
-    % store mean length of runs for each cluster
+    % store mean,max,median length of runs for each cluster
     run_lengths{k_i} = cellfun(@length,temp_runs{k_i});
     mean_dt(k_i) = mean(run_lengths{k_i});
     median_dt(k_i) = median(run_lengths{k_i});
     max_dt(k_i) = max(run_lengths{k_i});
 end
+
+n_runs_k = cellfun(@length,temp_runs);

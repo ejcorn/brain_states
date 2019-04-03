@@ -1,3 +1,5 @@
+library(gsubfn)
+
 pval.2tail.np <- function(test.val,dist){
 	# test.val: individual value being compared to distribution
 	# dist: vector,distribution of values under some null model, or otherwise
@@ -20,4 +22,10 @@ pval.label.np <- function(pvals,n,sig.fig=2){
 	# replace p = 0 with p < 1/n
 	pval.txt[pvals == 0] <- paste('p <',signif(1/n,sig.fig))
 	return(pval.txt)
+}
+
+list.posthoc.correct <- function(X,method){
+  # unlist a list, posthoc correct over all values according to "method"
+  # relist the list in the same structure and return
+  return(relist(flesh=p.adjust(unlist(X),method=method),skeleton=X))
 }

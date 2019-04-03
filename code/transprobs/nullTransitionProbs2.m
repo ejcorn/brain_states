@@ -13,7 +13,7 @@ elseif scan == 'C'
     scanlab = {'RestComb','nBackComb'}; numTRs = [120 225]; % index rest num TRs (120) and nback to loop through
     scanttl = {'Rest','n-back'};
 end
-savedir = [masterdir,'/analyses/transitionprobabilities/randnull'];
+savedir = fullfile(masterdir,'/analyses/transitionprobabilities/randnull');
 mkdir(savedir);
 
 a = clock; rng(a(6));
@@ -49,7 +49,6 @@ for i = 1:numel(scanlab)
 
     probExceedNull = reshape(mean(probExceedNull,1),numClusters,numClusters)';
     
-    cd(savedir);
     f=figure;
     imagesc((probExceedNull)); colormap('plasma');
     xticks(1:numClusters); xticklabels(clusterNames); xtickangle(90);
@@ -69,7 +68,7 @@ for i = 1:numel(scanlab)
     f.PaperUnits = 'inches';
     f.PaperSize = [8/3 2];
     f.PaperPosition = [0 0 8/3 2];
-    saveas(f,[scanlab{i},'TPvsNull_k',num2str(numClusters),'.pdf']);
-    save([scanlab{i},'Null_ShuffledStatesD_k',num2str(numClusters),'.mat'],'probExceedNull');
+    saveas(f,fullfile(savedir,[scanlab{i},'TPvsNull_k',num2str(numClusters),'.pdf']));
+    save(fullfile(savedir,[scanlab{i},'Null_ShuffledStatesD_k',num2str(numClusters),'.mat']),'probExceedNull');
 
 end

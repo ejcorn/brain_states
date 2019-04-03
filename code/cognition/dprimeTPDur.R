@@ -12,6 +12,7 @@ library(viridis)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
+source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
@@ -30,9 +31,9 @@ cnb <- cnb[order(cnb$scanid),]
 
 data <- cbind(demo, cnb[,grepl('Accuracy',colnames(cnb))], nbbeh[,grepl('Dprime',colnames(nbbeh))])
 
-#################################
-### Cognition and Dwell Times ###
-#################################
+##########################################
+### Cognition and Fractional Occupancy ###
+##########################################
 
 savedir <- paste(masterdir,'analyses/cognition/fractionaloccupancy/',sep = '')
 dir.create(savedir,recursive = TRUE)
@@ -41,8 +42,6 @@ restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFra
                          numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 nbackREDur <- readMat(paste(masterdir,'analyses/nbackblocks/nBackRestExcludeFractionalOccupancy_k',
                           numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100
-#nbackREDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',
-#                        numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 
 # rest and n-back to overall d-prime
 
@@ -54,10 +53,10 @@ nbackREDur.dprime <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackB
 # plot
 
 pdat <- as.data.frame(cbind(t(as.data.frame(restDur.dprime, row.names = c('RestB','RestP'))),t(as.data.frame(nbackREDur.dprime,row.names = c('nBackB','nBackP')))))
-pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-pdat$RestP <- ifelse(pdat$RestP,'*','')
-pdat$nBackP <- ifelse(pdat$nBackP,'*','')
+p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')	# bonferroni correct over rest and n-back
+pdat$RestP <- ifelse(p.list[[1]] < 0.05,'*','')
+pdat$nBackP <- ifelse(p.list[[2]] < 0.05,'*','')
+
 colnames(pdat) <- rep(c('B','p'),2)
 pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4]))
 pdat$Scan = c(rep('Rest',numClusters),rep('n-back',numClusters))
@@ -65,7 +64,7 @@ pdat$State = rep(clusterNames,2)
 
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
 	geom_bar(stat = "identity", position = position_dodge(width = NULL), color = 'black') +
-  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["DT"])) + ggtitle('Overall WM Performance') +
+  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["FO"])) + ggtitle('Overall WM Performance') +
   scale_y_continuous(limits = c(1.05*min(pdat$B),1.1*max(pdat$B))) +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + scale_x_discrete(limits = clusterNames,breaks = clusterNames) + 
   theme_classic() + theme(text = element_text(size = 8)) + theme(legend.position = 'none',plot.title = element_text(hjust =0.5,size = 8)) +
@@ -77,39 +76,6 @@ if(numClusters == 5){
 }
 
 ggsave(plot = p,filename = paste(savedir,'RvNOverallDprimeFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
-
-# rest and n-back to overall accuracy
-
-restDur.acc <- lapply(1:numClusters, function(K) summary(lm.beta(lm(Overall_Accuracy ~ restDur[,K] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
-nbackREDur.acc <- lapply(1:numClusters, function(K) summary(lm.beta(lm(Overall_Accuracy ~ nbackREDur[,K] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
-
-# plot
-
-pdat <- as.data.frame(cbind(t(as.data.frame(restDur.acc, row.names = c('RestB','RestP'))),t(as.data.frame(nbackREDur.acc,row.names = c('nBackB','nBackP')))))
-pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-pdat$RestP <- ifelse(pdat$RestP,'*','')
-pdat$nBackP <- ifelse(pdat$nBackP,'*','')
-colnames(pdat) <- rep(c('B','p'),2)
-pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4]))
-pdat$Scan = c(rep('Rest',numClusters),rep('n-back',numClusters))
-pdat$State = rep(clusterNames,2)
-
-p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
-	geom_bar(stat = "identity", position = position_dodge(width = NULL), color = 'black') +
-  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["DT"])) + ggtitle('Overall Accuracy') +
-  scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + scale_x_discrete(limits = clusterNames,breaks = clusterNames) + 
-  scale_y_continuous(limits = c(1.05*min(pdat$B),1.1*max(pdat$B))) + theme(legend.position = 'none') +
-  theme_classic() + theme(text = element_text(size = 8)) + theme(legend.title = element_blank(),plot.title = element_text(hjust =0.5)) + 
-  theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))
-
-if(numClusters == 5){
-	p <- p + theme(axis.text.x = element_text(color = clusterColors))
-}
-
-ggsave(plot = p,filename = paste(savedir,'RvNOverallAccuracyFractionalOccupancy_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 5)
 
 # n-back block duration to block-specific dprime
 
@@ -131,12 +97,16 @@ nbackBlockDur.dprime[[3]] <- lapply(1:numClusters, function(K) summary(lm.beta(l
 pdat <- as.data.frame(cbind(t(as.data.frame(nbackBlockDur.dprime[[1]], row.names = c('ZbackB','ZbackP'))),
 	t(as.data.frame(nbackBlockDur.dprime[[2]],row.names = c('ObackB','ObackP'))),
 	t(as.data.frame(nbackBlockDur.dprime[[3]],row.names = c('TbackB','TbackP')))))
-pdat$ZbackP <- p.adjust(pdat$ZbackP,method = 'bonf') < 0.05
-pdat$ObackP <- p.adjust(pdat$ObackP,method = 'bonf') < 0.05
-pdat$TbackP <- p.adjust(pdat$TbackP,method = 'bonf') < 0.05
-pdat$ZbackP <- ifelse(pdat$ZbackP,'*','')
-pdat$ObackP <- ifelse(pdat$ObackP,'*','')
-pdat$TbackP <- ifelse(pdat$TbackP,'*','')
+# pdat$ZbackP <- p.adjust(pdat$ZbackP,method = 'bonf') < 0.05
+# pdat$ObackP <- p.adjust(pdat$ObackP,method = 'bonf') < 0.05
+# pdat$TbackP <- p.adjust(pdat$TbackP,method = 'bonf') < 0.05
+# pdat$ZbackP <- ifelse(pdat$ZbackP,'*','')
+# pdat$ObackP <- ifelse(pdat$ObackP,'*','')
+# pdat$TbackP <- ifelse(pdat$TbackP,'*','')
+p.list <- list.posthoc.correct(list(pdat$ZbackP,pdat$ObackP,pdat$TbackP),method = 'bonf') # bonferroni correct over all blocks
+pdat$ZbackP <- ifelse(p.list[[1]] < 0.05,'*','')
+pdat$ObackP <- ifelse(p.list[[2]] < 0.05,'*','')
+pdat$TbackP <- ifelse(p.list[[3]] < 0.05,'*','')
 colnames(pdat) <- rep(c('B','p'),3)
 pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4],pdat[1:numClusters,5:6]))
 pdat$Scan = c(rep('0-back',numClusters),rep('1-back',numClusters),rep('2-back',numClusters))
@@ -144,7 +114,7 @@ pdat$State = rep(clusterNames,3)
 
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
 	geom_bar(stat = "identity", position = position_dodge(width = NULL),alpha = 0.8, color = 'black') +
-  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["DT"])) + ggtitle('Block WM Performance') +
+  geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["FO"])) + ggtitle('Block WM Performance') +
   scale_fill_brewer(limits = unique(pdat$Scan), palette = 'Pastel1') + scale_x_discrete(limits = clusterNames,breaks = clusterNames) + 
   scale_y_continuous(limits = c(1.05*min(pdat$B),1.1*max(pdat$B)))+ 
   theme_classic() + theme(text = element_text(size = 8)) + theme(legend.key.size = unit(0.5,'line')) + theme(axis.text.x = element_text(angle = 90,vjust = 0.5,hjust = 0.95)) +
@@ -168,6 +138,8 @@ restTP <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombTran
 nbackTP <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombTransitionProbabilities_k',
 	numClusters,name_root,'.mat',sep = ''))$transitionProbability
 
+nbackTP <- readMat(paste(masterdir,'analyses/nbackblocks/TransProbs2back_k',numClusters,name_root,'.mat',sep = ''))$BlockTransitionProbability
+
 numTransitions <- ncol(restTP)
 transLabels <- as.vector(sapply(1:numClusters, function(i) sapply(1:numClusters,function(j) paste(clusterNames[i],'to',clusterNames[j]))))	#label transitions
 
@@ -177,18 +149,19 @@ restTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBe
 nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBehAllDprime ~ nbackTP[,T] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
 	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
 
-pdat <- as.data.frame(t(as.data.frame(restTP.dprime, row.names = c('RestB','RestP'))))
-pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-v <- matrix((pdat$RestB*pdat$RestP), nrow = numClusters, byrow = TRUE)
-if(sum(v) != 0){
+pdat <- cbind(as.data.frame(t(as.data.frame(restTP.dprime, row.names = c('RestB','RestP')))),as.data.frame(t(as.data.frame(nbackTP.dprime, row.names = c('nBackB','nBackP')))))
+p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
+pdat$RestP <- p.list[[1]] < 0.05
+pdat$nBackP <- p.list[[2]] < 0.05
+
+if(sum(pdat$RestP) < 0){
+	v <- matrix((pdat$RestB*pdat$RestP), nrow = numClusters, byrow = TRUE)
 	p <- TP.beta.plot(v,clusterColors,title = 'Rest: d-prime')
 	ggsave(plot = p,filename = paste(savedir,'RestTPDprime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 4,width = 4)
 }
 
-pdat <- as.data.frame(t(as.data.frame(nbackTP.dprime, row.names = c('nBackB','nBackP'))))
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-v <- matrix((pdat$nBackB*pdat$nBackP), nrow = numClusters, byrow = TRUE)
-if(sum(v) != 0){
+if(sum(pdat$nBackP) < 0){
+	v <- matrix((pdat$nBackB*pdat$nBackP), nrow = numClusters, byrow = TRUE)
 	p <- TP.beta.plot(v,clusterColors,title = 'n-back: d-prime')
 	ggsave(plot = p,filename = paste(savedir,'nBackTPDprime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 4,width = 4)
 }

@@ -15,7 +15,7 @@ kClusterAssignments = clusterAssignments.(['k',num2str(numClusters)]).partition;
 rPP = diag(squeeze(mean(restTransitionProbabilityMats,1)))';
 nPP = diag(squeeze(mean(nBackTransitionProbabilityMats,1)))';
 maxval = max([rPP,nPP])
-nperms = 1000; 
+nperms = 2500; 
 
 %% rest
 disp('starting to calculate shuffled persistence probabilities Rest');
@@ -35,7 +35,7 @@ disp('done shuffling transition probabilities');
 toc
 probExceedNull = mean(probExceedNull,1);	% p-value
 
-lt = 0.05/(numClusters); ut = 1-lt;   % Bonferroni corrected thresholds
+lt = 0.025/(2*numClusters^2); ut = 1-lt;   % two-tailed Bonferroni corrected thresholds over whole matrix
 [ygt,xgt] = find((probExceedNull > ut));
 [ylt,xlt] = find((probExceedNull < lt));
 
@@ -74,7 +74,7 @@ disp('done shuffling transition probabilities');
 toc
 probExceedNull = mean(probExceedNull,1);	% p-value
 
-lt = 0.05/(numClusters); ut = 1-lt;   % Bonferroni corrected thresholds
+lt = 0.025/(2*numClusters^2); ut = 1-lt;   % two-tailed Bonferroni corrected thresholds over whole matrix
 [ygt,xgt] = find((probExceedNull > ut));
 [ylt,xlt] = find((probExceedNull < lt));
 

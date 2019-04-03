@@ -12,7 +12,8 @@ perm_range = (1+n_per_split*(split-1)):(n_per_split*split);
 
 % load group representative SC
 load(fullfile(masterdir,'analyses','control_energy',['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
-Anorm = (A / max(eig(A))) - eye(length(A));	% normalize A to max eig --> new max eig = 1 --> one dominant eigenmode stationary over time
+%Anorm = (A / max(eig(A))) - eye(length(A));	% normalize A to max eig --> new max eig = 1 --> one dominant eigenmode stationary over time
+Anorm = NORMALIZE(A);
 
 T = 1; %control horizon
 nbins = 11; nrewire = 1e5; 	% parameters for spatial null model

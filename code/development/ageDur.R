@@ -12,6 +12,7 @@ library(viridis)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
+source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
@@ -26,27 +27,22 @@ dir.create(savedir,recursive = TRUE)
 restDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombFractionalOccupancy_k',
                          numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 nbackDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombFractionalOccupancy_k',
-                        numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
+                         numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 
 restDur.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(restDur[,K] ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
 	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
 nbackDur.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackDur[,K] ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
 	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
 
-# permutation testing
-nperms <- 500
-age_orig <- demo$age_in_yrs
-restDur.age.Null <- lapply(1:nperms, function(n) lapply(1:numClusters, function(K) summary(lm.beta(lm(restDur[,K] ~ age_orig + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
-  data = demo[sample(nrow(demo),replace=F),])))$coefficients[2,c('Standardized','Pr(>|t|)')]))
-restBeta.null <- lapply(1:numClusters, function(K) sapply(1:nperms, function(n) restDur.age.Null[[n]][[K]]['Standardized']))
-restBeta.z <- lapply(1:numClusters, function(K) (restDur.age[[K]]['Standardized'] - mean(restBeta.null[[K]])) /sd(restBeta.null[[K]]))
-restBeta.p <- lapply(1:numClusters, function(K) restDur.age[[K]]['Standardized'] > restBeta.null[[K]])
-
 pdat <- as.data.frame(cbind(t(as.data.frame(restDur.age, row.names = c('RestB','RestP'))),t(as.data.frame(nbackDur.age,row.names = c('nBackB','nBackP')))))
-pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-pdat$RestP <- ifelse(pdat$RestP,'*','')
-pdat$nBackP <- ifelse(pdat$nBackP,'*','')
+# pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
+# pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
+# pdat$RestP <- ifelse(pdat$RestP,'*','')
+# pdat$nBackP <- ifelse(pdat$nBackP,'*','')
+p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
+pdat$RestP <- ifelse(p.list[[1]] < 0.05,'*','')
+pdat$nBackP <- ifelse(p.list[[2]] < 0.05,'*','')
+
 colnames(pdat) <- rep(c('B','p'),2)
 pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4]))
 pdat$Scan = c(rep('Rest',numClusters),rep('n-back',numClusters))

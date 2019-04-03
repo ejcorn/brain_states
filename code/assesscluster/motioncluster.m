@@ -8,7 +8,12 @@ savedir = fullfile(masterdir,'analyses','centroids','motion_scrub');
 mkdir(savedir);
 concTS = csvread(fullfile(datadir,['ConcTSCSV_',name_root,'.csv']));
 
-% load motion files
+nback_fd = dlmread('data/framewisediplacement_nback.csv');
+nback_fd = sortrows(nback_fd,2);	% sort by scan id
+nback_fd = nback_fd(ismember(nback_fd(:,2),demoLTN.scanid),:);	% exclude subjects
+nback_fd = nback_fd(:,10:234);	% remove scan ID and bbl id, column of 0's, and first 6 volumes
+
+% load rest motion files and concatenate into group motion time series
 
 rTR = 120; nTR = 225;
 motion_concTS = zeros(nobs*(rTR+nTR),1);
@@ -17,6 +22,8 @@ for N = 1:nobs
 	restfname = ['data/motion_files/',num2str(demoLTN.bblid(N)),'_',num2str(demoLTN.scanid(N)),'_relRMS.1D'];
 	% store rest motion in vector corresponding to each TR in concTS
 	motion_concTS((1+rTR*(N-1)):(rTR*N)) = dlmread(restfname);
+	% store n-back motion in vector corresponding to each TR in concTS
+	motion_concTS((1+rTR*nobs+nTR*(N-1)):(rTR*nobs+nTR*N)) = nback_fd(N,:);
 end
 
 motion_thresh = 0.1;		% remove frames with motion > 2mm

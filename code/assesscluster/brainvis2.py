@@ -20,7 +20,7 @@ numClusters = int(sys.argv[2])
 lausanneScaleBOLD = int(sys.argv[3])
 scan = sys.argv[4]
 scan_ind = int(sys.argv[5])
-homedir = "/Users/elicornblath"
+homedir = "/Users/Eli"
 
 # index in humanRegionNames.mat corresponding to parcellation scale in lausanneScaleBOLD
 
@@ -62,7 +62,6 @@ thrsh = -100
 subject_id = 'fsaverage'
 surf = 'pial'
 hemis = ['lh']
-numClusters = 5
 adv_view = {'lh': {'azimuth': 45, 'elevation': 79},'rh': {'azimuth': 135, 'elevation': 79}}
 
 savedir = homedir + "/Dropbox/Cornblath_Bassett_Projects/BrainStateTransitions/brain_states/results/" + \

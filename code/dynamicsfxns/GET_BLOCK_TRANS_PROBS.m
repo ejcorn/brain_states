@@ -12,6 +12,7 @@ for j = 1:n_runs
 	numTransitionsByBlock{j} = GET_NUM_TRANSITIONS(runs{j},numClusters);
 end
 
+% sum transition counts over all blocks
 numTransitionsCondition = sum(cat(3,numTransitionsByBlock{:}),3);
 
 % divide row elements by respective row sums

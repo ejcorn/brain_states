@@ -55,7 +55,7 @@ for(i in 1:length(scanlab)){
 	}
 
 	age.symm <- lm.beta(lm(symm ~ age_in_yrs + BrainSegVol + handedness + hm + Sex, data = demo))
-	pval <- signif(summary(age.symm)$coefficients['age_in_yrs','Pr(>|t|)'],2)
+	pval <- signif(summary(age.symm)$coefficients['age_in_yrs','Pr(>|t|)']*2,2)	# bonferroni correct over rest and n-back
 	# get partial residuals
 	Asymmetry <- residuals(age.symm) + summary(age.symm)$coefficients['age_in_yrs','Estimate']*demo$age_in_yrs
 	Age <- demo$age_in_yrs	

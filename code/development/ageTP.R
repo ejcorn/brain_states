@@ -12,6 +12,7 @@ library(viridis)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
+source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
@@ -43,18 +44,18 @@ nbackTP.age<- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackTP[,T
 	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
 names(restTP.age) <- transLabels
 names(nbackTP.age) <- transLabels
-pdat <- as.data.frame(t(as.data.frame(restTP.age, row.names = c('RestB','RestP'))))
-pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
+pdat <- cbind(as.data.frame(t(as.data.frame(restTP.age, row.names = c('RestB','RestP')))),as.data.frame(t(as.data.frame(nbackTP.age, row.names = c('nBackB','nBackP')))))
+p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
+pdat$RestP <- p.list[[1]] < 0.05
+pdat$nBackP <- p.list[[2]] < 0.05
+
 v <- matrix((pdat$RestB*pdat$RestP), nrow = numClusters, byrow = TRUE)
 p <- TP.beta.plot(v,clusterColors,title = 'Rest: Age')
 ggsave(plot = p,filename = paste(savedir,'RestTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 6,width = 6)
 
-pdat <- as.data.frame(t(as.data.frame(nbackTP.age, row.names = c('nBackB','nBackP'))))
-pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
 v <- matrix((pdat$nBackB*pdat$nBackP), nrow = numClusters, byrow = TRUE)
 p <- TP.beta.plot(v,clusterColors,title = 'n-back: Age')
 ggsave(plot = p,filename = paste(savedir,'nBackTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 6,width = 6)
-
 
 # restTP.acc <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(Overall_Accuracy ~ restTP[,T] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
 # 	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])

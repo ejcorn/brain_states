@@ -25,10 +25,11 @@ subjectPersistenceEnergy = zeros(nobs,numClusters);
 
 for N = 1:nobs
 	disp(['Subject ',num2str(N)])
-	load(fullfile(datadir,'Gramians',['GramianInverse',num2str(lausanneScaleBOLD),'Subject',num2str(N),'.mat']),'WcI_subj');
+	load(fullfile(datadir,'Gramians_to0',['GramianInverse',num2str(lausanneScaleBOLD),'Subject',num2str(N),'.mat']),'WcI_subj');
 	A = SCvolnorm{N};
 	A(~~eye(length(A))) = 0; % one of these matrices randomly had a NaN on diagonal
-	subjectPersistenceEnergy(N,:) = MIN_CONTROL_ENERGY(A,WcI_subj,Xo,Xf,T,true);
+	A = NORMALIZE(A);
+	subjectPersistenceEnergy(N,:) = MIN_CONTROL_ENERGY(A,WcI_subj,Xo,Xf,T,false);
 end
 
 save(fullfile(savedir,['SubjectPersistenceEnergy_k',num2str(numClusters),'.mat']),'subjectPersistenceEnergy');

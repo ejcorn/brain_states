@@ -6,16 +6,7 @@ mkdir(savedir);
 
 %% get coordinates of spatial embedding
 
-fname = ['data/ROIv_scale',num2str(lausanneScaleBOLD),'_dilated.nii.gz'];
-lausnifti = load_nii(fname);
-lauscoor = zeros(nparc,3);
-
-for i = 1:nparc
-    [xind,yind,zind] = ind2sub(size(lausnifti.img),find(ismember(lausnifti.img,i)));
-    lauscoor(i,:) = mean([xind,yind,zind],1);
-end
-
-D = squareform(pdist(lauscoor,'Euclidean'));
+load(fullfile(datadir,['Lausanne',num2str(lausanneScaleBOLD),'DistanceMatrix.mat']),'D');
 
 %% generate representative group SC matrix
 
@@ -32,6 +23,8 @@ frac = 1;                       % frac = 1 means your average matrix with have s
 rightnodes = 230;
 hemi = [ones(rightnodes,1);2*ones(nparc - rightnodes,1)];
 G = fcn_distance_dependent_threshold(A,D,hemi,frac);    % generate binary mask
+%nbins = ceil(sqrt(nparc*(nparc-1)/2));	% set nbins equal to number of 
+%G_nparc = fcn_group_bins(A,D,hemi,nbins);    % generate binary mask
 
 % you'll need to decide how to weight G -- in the past I've done the following:
 A(A == 0) = nan;    % set A = 0 to nan

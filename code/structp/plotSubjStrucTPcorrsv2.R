@@ -38,9 +38,15 @@ nTPSC <- sapply(1:nobs, function(i) cor(nTP[i,],SC[i,], use = "pairwise.complete
 nTPSTP <- sapply(1:nobs, function(i) cor(nTP[i,],STP[i,], use = "pairwise.complete.obs"))
 nTPComm <- sapply(1:nobs, function(i) cor(nTP[i,],Comm[i,], use = "pairwise.complete.obs"))
 
+print(summary(rTPSC))
+print(summary(rTPSTP))
+print(summary(rTPComm))
+print(summary(nTPSC))
+print(summary(nTPSTP))
+print(summary(nTPComm))
+
 rest <- cbind(rTPSC,rTPSTP,rTPComm)
 nback <- cbind(nTPSC,nTPSTP,nTPComm)
-
 
 grps <- rbind(matrix('Rest',nrow = nrow(rest),ncol = ncol(rest)),matrix('n-back',nrow = nrow(nback),ncol = ncol(nback)))
 metrics <- sapply(1:ncol(rest), function(K) rep(as.character(K),nrow(rest)))

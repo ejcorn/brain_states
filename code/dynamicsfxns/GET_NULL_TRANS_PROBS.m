@@ -12,10 +12,10 @@ numTransitions = zeros(nobs,numClusters,numClusters);
 transProbEndGivenStart = zeros(size(numTransitions));
 
 for N = 1:nobs
-    subjMask = subjInd == N;
-    subjMask = kClusterAssignments(subjMask)';
-    subjMask = subjMask(randperm(length(subjMask)));
-    subjMask = [subjMask(find(diff(subjMask) ~= 0)),subjMask(end)];
+    subjMask = subjInd == N; 
+    subjMask = kClusterAssignments(subjMask)';  % get partition for subject
+    subjMask = [subjMask(find(diff(subjMask) ~= 0)),subjMask(end)]; % remove persistence
+    subjMask = subjMask(randperm(length(subjMask)));    % shuffle
     for Kinitial = 1:numClusters
         for Kfinal = 1:numClusters
             numTransitions(N,Kinitial,Kfinal) = length(strfind(subjMask,[Kinitial Kfinal]));

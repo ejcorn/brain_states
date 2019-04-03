@@ -42,7 +42,7 @@ p <- ggplot() + geom_boxplot(aes(y = null_energy, x= states),color ='#71AABE',fi
   geom_point(aes(x= clusterNames,y=energy),fill = '#CE2B37',color = '#CE2B37',size = 1,shape = 25) +
   geom_text(aes(x = clusterNames, y = 1.1*max(null_energy),label = p.lab,color=col),size=1.5) +
   scale_x_discrete(limits = clusterNames, breaks=clusterNames, labels = list(clusterNames)) +
-  #scale_color_manual(limits = c('p > 0.05','p < 0.05'),values = c('#71AABE','#005C9F')) + 
+  scale_color_manual(limits = c('black','red'),values = c('black','red')) + 
   xlab('') + ylab('Min. Control Energy') +
   ggtitle('Persistence Energy') +
   theme_classic() + theme(text = element_text(size = 8)) + theme(plot.title = element_text(size=8,hjust=0.5)) +

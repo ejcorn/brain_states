@@ -54,7 +54,7 @@ col[pvals < 0.05 | pvals > 0.95] <- 'red'
 
 p <- ggplot() + geom_boxplot(aes(y = c(rest.DT.r,nback.DT.r),x=grp),color ='#71AABE',fill = '#71AABE1A') +
   geom_point(aes(x=c('Rest','n-back'),y=actual),color = '#CE2B37',fill = '#CE2B37',size = 1,shape = 25) +
-  scale_color_manual(limits = c('p > 0.05','p < 0.05'),values = c('#71AABE','#005C9F')) + xlab('') + ylab('r(Energy,PP)') +
+  scale_color_manual(limits = c('p > 0.05','p < 0.05'),values = c('#71AABE','#005C9F')) + xlab('') + ylab('r(Energy,DT)') +
   scale_y_continuous(limits = c(-1,1)) + scale_x_discrete(limits=c('Rest','n-back')) +
   ggtitle('Min. Persistence Energy') +
   theme_classic() + theme(text = element_text(size = 8)) + theme(plot.title = element_text(size=8,hjust=0.5)) +
