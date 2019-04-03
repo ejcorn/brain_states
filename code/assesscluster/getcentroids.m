@@ -13,6 +13,7 @@ elseif scan == 'C'
 
 end
 savedir = [masterdir,'/analyses/transitionprobabilities'];
+mkdir(savedir);
 
 for i = 1:numel(scanlab)
     
