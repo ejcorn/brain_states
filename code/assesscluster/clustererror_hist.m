@@ -8,7 +8,7 @@ mkdir(savedir);
 minNumClusters = 2; maxNumClusters = 11; clusterRange = minNumClusters:maxNumClusters; numK = 1 + maxNumClusters-minNumClusters;
 k_offset = minNumClusters - 1;
 
-for numClusters = 2:11
+for numClusters = minNumClusters:maxNumClusters
 	f=figure;
 	histogram(combSumD{numClusters-k_offset});
 	xlabel('Cluster Solution Error');
