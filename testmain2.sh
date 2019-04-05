@@ -56,8 +56,27 @@ NB={}
 #qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RPATH -hold_jid $NB ageTPDur.sh
 #qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$SYMM" ageTPprop.sh
 
+################
+### Struc TP ###
+################
 
+STRUC='struc'$ROOT
+STRUCNULL='strucnull'$ROOT
+BCTSTRUCNULL='BCTstrucnull'$ROOT
+BEGINCOMMENT
+for THRESH in $(seq -1.5 0.1 1.5)  
+do
+#qsub -N "$STRUC" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,THRESH=$THRESH,BD=$BASEDIR,MP=$MATPATH -hold_jid $TP SCSTPtrans.sh
+#qsub -N "$STRUCNULL" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,THRESH=$THRESH,BD=$BASEDIR,MP=$MATPATH -hold_jid $NULLSC,$TP nullSCSTPtrans.sh
+#qsub -N "$BCTSTRUCNULL" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,THRESH=$THRESH,BD=$BASEDIR,MP=$MATPATH -hold_jid $NULLSC,$TP BCTnullSCSTPtrans.sh
 
+#qsub -N "plotstruc" -l h_vmem=3.5G,s_vmem=3G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,THRESH=$THRESH,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$STRUC" plotStrucTP.sh
+qsub -N "plotsubjstrucv2" -l h_vmem=3.5G,s_vmem=3G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,THRESH=$THRESH,BD=$BASEDIR,RP=$RPATH -hold_jid "$STRUC" plotsubjStrucTPv2.sh
+#qsub -N "plotnullstruc" -l h_vmem=3.5G,s_vmem=3G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,THRESH=$THRESH,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$STRUCNULL" plotNULLStrucTP.sh
+#qsub -l h_vmem=3.5G,s_vmem=3G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,SCAN=$SCAN,THRESH=$THRESH,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$BCTSTRUCNULL" plotBCTNULLStrucTP.sh
+done
+
+ENDCOMMENT
 ###############
 ### Control ###
 ###############
@@ -101,14 +120,14 @@ K=5
 # compute persistence energy for distribution of null activity patterns in single null networks
 GRP_ENERGY=$(qsub -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v D=$ROOT,NSPLITS=$NSPLITS_SPHERE,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid "SPHERE_NULL$NSPLITS_SPHERE$K",$GROUPSC,5065512 persistEnergyGroup.sh)
 GRP_ENERGY="${GRP_ENERGY//[!0-9]/}"
-qsub -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid $GRP_ENERGY plotEnergySphereGroup.sh
-BEGINCOMMENT
+qsub -l h_vmem=3.5G,s_vmem=3G -q $QUEUE -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid $GRP_ENERGY plotEnergySphereGroup.sh
+#BEGINCOMMENT
 # compute persistence energy for actual activity patterns in distribution of null networks vs. single group representative network
 DLWNULL_ENERGY=$(qsub -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v D=$ROOT,NPERMS=$NPERMS_DLWNULL,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid "DLW_NULL$NSPLITS_DLWNULL",5065512 persistEnergyDLWNulls.sh)
 DLWNULL_ENERGY="${DLWNULL_ENERGY//[!0-9]/}"
-qsub -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid $DLWNULL_ENERGY,$GRP_ENERGY plotEnergyDynamicsGroup.sh
+qsub -l h_vmem=3.5G,s_vmem=3G -q $QUEUE -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid $DLWNULL_ENERGY,$GRP_ENERGY plotEnergyDynamicsGroup.sh
 
 # compute correlation between persistence energy and bootstrapped group representative networks
 BOOTSC_ENERGY=$(qsub -l h_vmem=20.5G,s_vmem=20G -q $QUEUE -v D=$ROOT,NPERMS=$NPERMS_BOOTSC,K=$K,BD=$BASEDIR,MP=$MATPATH,RP=$RPATH -hold_jid "BOOTSC$NSPLITS_BOOTSC",5065512 persistEnergyBootstrapGroup.sh)
 BOOTSC_ENERGY="${BOOTSC_ENERGY//[!0-9]/}"
-ENDCOMMENT
+#ENDCOMMENT

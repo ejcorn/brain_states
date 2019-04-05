@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euxo pipefail
 
-rsync -avzh swapmain.sh ecornblath@chead:/data/tesla-data/ecornblath/brain_states/
+rsync -avzh testmain2.sh ecornblath@chead:/data/tesla-data/ecornblath/brain_states/

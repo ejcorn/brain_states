@@ -46,12 +46,12 @@ msz = 3; % marker size
 f = figure;
 for K = 1:numClusters
 	subplot(1,numClusters,K);
-	scatter(PNCcentroids(:,K),scrubbed_centroidsPNCorder(:,K),msz,'MarkerFaceColor',purple,'MarkerFaceAlpha',0.3,'MarkerEdgeAlpha',0);
+	scatter(zscore(PNCcentroids(:,K)),zscore(scrubbed_centroidsPNCorder(:,K)),msz,'MarkerFaceColor',purple,'MarkerFaceAlpha',0.3,'MarkerEdgeAlpha',0);
 	prettifyEJC;
 	ylabel([clusterNames{K}]); xlabel([PNCnames{K}]); axis square
 	title(['r = ',num2str(round(corr(PNCcentroids(:,K),scrubbed_centroidsPNCorder(:,K)),2,'significant'))]);
 end
 f.PaperUnits = 'centimeters';
-f.PaperSize = [22 6];
-f.PaperPosition = [0 0 22 6];
+f.PaperSize = [21 6];
+f.PaperPosition = [0 0 21 6];
 saveas(f,fullfile(savedir,['MotionScrubbedVsOriginal_Scatter_k',num2str(numClusters),name_root,'.pdf']),'pdf');

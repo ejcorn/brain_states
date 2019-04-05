@@ -4,6 +4,8 @@ numClusters <- as.numeric(args[2])
 thrsh <- as.numeric(args[3])
 basedir <- args[4]
 
+print(paste('Threshold:',thrsh))
+
 library(R.matlab)
 library(reshape2)
 library(ggplot2)
@@ -38,11 +40,17 @@ nTPSC <- sapply(1:nobs, function(i) cor(nTP[i,],SC[i,], use = "pairwise.complete
 nTPSTP <- sapply(1:nobs, function(i) cor(nTP[i,],STP[i,], use = "pairwise.complete.obs"))
 nTPComm <- sapply(1:nobs, function(i) cor(nTP[i,],Comm[i,], use = "pairwise.complete.obs"))
 
+print('SC, rest')
 print(summary(rTPSC))
+print('STP, rest')
 print(summary(rTPSTP))
+print('Comm, rest')
 print(summary(rTPComm))
+print('SC, n-back')
 print(summary(nTPSC))
+print('STP, n-back')
 print(summary(nTPSTP))
+print('Comm, n-back')
 print(summary(nTPComm))
 
 rest <- cbind(rTPSC,rTPSTP,rTPComm)
