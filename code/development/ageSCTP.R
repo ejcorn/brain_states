@@ -44,6 +44,7 @@ nbackSCTPCor.r <- sapply(1:nobs, function(N) cor.test(nbackTP[N,],SC[N,])$estima
 
 mdl <- lm.beta(lm(nbackSCTPCor.r ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, data = demo))
 print(summary(mdl))
+print(paste('Cohen\'s f^2 for age:',cohens.f2(mdl,'age_in_yrs')))
 # construct data frame with partial residuals WRT age and age
 df <- data.frame(y = residuals(mdl) + summary(mdl)$coef['age_in_yrs','Estimate']*demo$age_in_yrs, x = demo$age_in_yrs)
 names(df) <- c('r(SC,TP)','Age')

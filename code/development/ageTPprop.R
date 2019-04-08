@@ -10,6 +10,7 @@ library(R.matlab)
 library(lm.beta)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
+source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 print('1')
 
@@ -56,6 +57,7 @@ for(i in 1:length(scanlab)){
 
 	age.symm <- lm.beta(lm(symm ~ age_in_yrs + BrainSegVol + handedness + hm + Sex, data = demo))
 	pval <- signif(summary(age.symm)$coefficients['age_in_yrs','Pr(>|t|)']*2,2)	# bonferroni correct over rest and n-back
+	print(paste(scanlab[i],', ','Cohen\'s f^2 for age: ',cohens.f2(age.symm,'age_in_yrs'),sep=''))
 	# get partial residuals
 	Asymmetry <- residuals(age.symm) + summary(age.symm)$coefficients['age_in_yrs','Estimate']*demo$age_in_yrs
 	Age <- demo$age_in_yrs	
@@ -67,7 +69,5 @@ for(i in 1:length(scanlab)){
 	theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))
 
 	ggsave(plot = p, filename = paste(symmdir, scanlab[i],'SymmVsAge_k',numClusters,'.pdf',sep =''),units = 'in', width = 2,height = 2)
-	# non-uniformity
-
 
 }

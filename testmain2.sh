@@ -56,6 +56,8 @@ NB={}
 #qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RPATH -hold_jid $NB ageTPDur.sh
 #qsub -l h_vmem=15.5G,s_vmem=15G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -hold_jid "$SYMM" ageTPprop.sh
 
+qsub -N "nullts" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC makenullts.sh
+qsub -N "nullcluster" -l h_vmem=24.5G,s_vmem=24G -q all.q,basic.q,all.short.q,himem.q -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullts" clusternullts.sh
 ################
 ### Struc TP ###
 ################
@@ -113,7 +115,7 @@ BEGINCOMMENT
 for S in $(seq $NSPLITS_BOOTSC); do 	# bootstrap group average SC
 	qsub -N "BOOTSC$S" -l h_vmem=12.5G,s_vmem=12G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,BD=$BASEDIR,MP=$MATPATH,NSPLITS=$NSPLITS_BOOTSC,NPERMS=$NPERMS_BOOTSC,S=$S -hold_jid $DMAT precomputeBootstrapSC.sh
 done
-ENDCOMMENT
+
 
 K=5
 
@@ -131,3 +133,4 @@ qsub -l h_vmem=3.5G,s_vmem=3G -q $QUEUE -v D=$ROOT,K=$K,BD=$BASEDIR,RP=$RPATH -h
 BOOTSC_ENERGY=$(qsub -l h_vmem=20.5G,s_vmem=20G -q $QUEUE -v D=$ROOT,NPERMS=$NPERMS_BOOTSC,K=$K,BD=$BASEDIR,MP=$MATPATH,RP=$RPATH -hold_jid "BOOTSC$NSPLITS_BOOTSC",5065512 persistEnergyBootstrapGroup.sh)
 BOOTSC_ENERGY="${BOOTSC_ENERGY//[!0-9]/}"
 #ENDCOMMENT
+ENDCOMMENT
