@@ -50,6 +50,7 @@ ASSIGN={}
 NULL={}
 TP={}
 NB={}
+PROC={}
 
 #qsub -l h_vmem=16.5G,s_vmem=16G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid $TP persistNull.sh
 #qsub -l h_vmem=6.5G,s_vmem=6G -q all.q,basic.q,all.short.q,himem.q -v D=$ROOT,K=$K,SCAN=$SCAN,BD=$BASEDIR,RP=$RPATH -hold_jid $NB dprimeTPDur.sh

@@ -27,7 +27,12 @@ save(fullfile(savedir,['HCP_XHcentroids_k',num2str(numClusters),'_R',num2str(rTR
     'HCPcentroidsPNCorder','clusterNames','clusterNamesUp','clusterNamesDown','distanceMethod','kClusterCentroids');
 
 f = figure;
-imagesc(PNCvsHCP(shuffleIdx,:)); colormap('plasma');
+PNCvsHCPorder = PNCvsHCP(shuffleIdx,:);
+imagesc(PNCvsHCPorder); colormap('plasma');
+% label diagonal with r-values
+r_labels = cellstr(num2str(round(diag(PNCvsHCPorder),2,'significant')))';
+text((1:numClusters)-0.1,(1:numClusters),r_labels,'Color','k','FontSize',6)
+
 ylabel('HCP'); xlabel('PNC'); axis square
 yticks(1:numClusters); xticks(1:numClusters);
 yticklabels(clusterNames); xticklabels(PNCnames);
@@ -45,6 +50,8 @@ saveas(f,fullfile(savedir,['HCP_XHClusterSpatialCorr_k',num2str(numClusters),'_R
 
 f = figure;
 imagesc(corr(HCPcentroidsPNCorder)); colormap('plasma');
+r_labels = cellstr(num2str(round(diag(corr(HCPcentroidsPNCorder)),2,'significant')))';
+text((1:numClusters)-0.1,(1:numClusters),r_labels,'Color','k','FontSize',6)
 ylabel('HCP'); xlabel('HCP'); axis square
 yticks(1:numClusters); xticks(1:numClusters);
 yticklabels(clusterNames); xticklabels(PNCnames);
