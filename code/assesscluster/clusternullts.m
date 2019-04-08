@@ -5,9 +5,9 @@ load(['data/iprtimeseries',name_root,'.mat'],'iprTS');
 savedir = fullfile(masterdir,'clusterAssignments');
 
 nreps = 10;
-% [partition_ipr] = kmeans(iprTS,numClusters,'Distance',distanceMethod,'Replicates',nreps);
-% save(fullfile(savedir,['IPRpartition_k',num2str(numClusters)]),'partition_ipr')
-% clear iprTS
+[partition_ipr] = kmeans(iprTS,numClusters,'Distance',distanceMethod,'Replicates',nreps);
+save(fullfile(savedir,['IPRpartition_k',num2str(numClusters)]),'partition_ipr')
+clear iprTS
 
 load(['data/randtimeseries',name_root,'.mat'],'randTS');
 [partition_randn] = kmeans(randTS,numClusters,'Distance',distanceMethod,'Replicates',nreps);;
