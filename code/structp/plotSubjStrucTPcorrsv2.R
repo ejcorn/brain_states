@@ -58,7 +58,7 @@ nback <- cbind(nTPSC,nTPSTP,nTPComm)
 
 grps <- rbind(matrix('Rest',nrow = nrow(rest),ncol = ncol(rest)),matrix('n-back',nrow = nrow(nback),ncol = ncol(nback)))
 metrics <- sapply(1:ncol(rest), function(K) rep(as.character(K),nrow(rest)))
-p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(metrics,metrics)), y = as.vector(rbind(rest,nback)),fill = as.vector(grps))) + theme_classic() +
+p <- ggplot() + geom_violin(aes(x = as.vector(rbind(metrics,metrics)), y = as.vector(rbind(rest,nback)),fill = as.vector(grps))) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + scale_y_continuous(limits = c(-0.9,0.9)) +
   ylab("r(SC,TP)") + xlab("") +theme(text = element_text(size = 8)) +
   theme(legend.title = element_blank(),legend.position = 'none',axis.text.x = element_text(color = c("#D12631","#FFDC01","#0063B9"))) + 

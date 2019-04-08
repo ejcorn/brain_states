@@ -18,7 +18,7 @@ SC.full <- readMat(paste(masterdir,"analyses/structrans/",
 	"structrans_k",numClusters,"thresh",thrsh,name_root,".mat",sep = ""))$interStateSC
 SC.full[is.na(SC.full)] <- 0	#NA comes from 0 connections so make this 0
 SC <- colMeans(SC.full)[-persistExclude] # exclude diagonal/persistence probs
-
+n.trans <- numClusters^2 - numClusters 	# get number of transitions
 nobs <- nrow(SC.full)
 
 lncol <- "#CE2B37"
@@ -52,22 +52,21 @@ for(S in 1:length(scanlab)){
 
 	# compute bootstrapped confidence interval for r
 	nperms <- 1000
-	boot.cors <- matrix(NA,nrow = nperms)
-	for(P in 1:nperms){
-		resamp <- sample(1:nobs,nobs*0.5,replace=F)
-		SC.resamp <- colMeans(SC.full[resamp,])[-persistExclude]
-		TP.resamp <- colMeans(TP.full[resamp,])[-persistExclude]
-		boot.cors[P] <- cor(SC.resamp,TP.resamp)
-	}
-	upr <- quantile(boot.cors,probs = 0.0975)
+	samps <- sapply(1:nperms, function(P) sample(1:nobs,nobs,replace=T))	# precompute samples
+	boot.cors <- sapply(1:nperms, function(P) cor(colMeans(SC.full[samps[,P],-persistExclude]),
+		colMeans(TP.full[samps[,P],-persistExclude])))
+
+	upr <- quantile(boot.cors,probs = 0.975)
 	lwr <- quantile(boot.cors,probs = 0.025)
-	print(paste(scanttl[S],'95% CI:',lwr,'to',upr))
+	print(paste(scanttl[S],'95% CI:',lwr,'to',upr))	
+	r.bootmean = signif(mean(boot.cors),2)
+	print(paste(scanttl[S],'Mean:',r.bootmean))
+	r.text = paste("r =",r.bootmean)
 
 	p <- ggplot() + geom_point(aes(x = SC,y = TP),color = ptcol,size = 1, alpha = 0.75,stroke = 0) + 
 		geom_smooth(aes(x = SC,y = TP),color = lncol, fill = lncol,method = 'lm',size=0.5) +
 		scale_y_continuous(limits = c(0.05,0.26),breaks= seq(0.05,0.25,length.out=5)) + scale_x_continuous() +
-		annotate("text",size = 2, x = 0.7*max(SC),y = 0.08, label = paste("r = ",signif(r.trans,2))) +
-		#annotate("text",size = 2, x = 0.7*max(SC),y = 0.06, label = paste("p = ",signif(p.trans,2))) +
+		annotate("text",size = 2, x = 0.7*max(SC),y = 0.08, label = r.text) +
 		xlab('Mean SC') + ylab('Transition Probability') + ggtitle(scanttl[S]) + 
 		theme_classic() + theme(text = element_text(size = 8)) + 
 		theme(plot.title = element_text(size=8,hjust=0.5,face = "bold")) +
