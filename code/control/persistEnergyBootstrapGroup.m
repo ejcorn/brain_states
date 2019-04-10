@@ -22,7 +22,7 @@ load(fullfile(datadir,['VolNormSC',num2str(lausanneScaleBOLD),'.mat']));
 
 T = 1; %control horizon
 
-bootstrappedPersistenceEnergy = zeros(nobs,numClusters);
+bootstrappedPersistenceEnergy = zeros(nperms,numClusters);
 bootsamps = zeros(nperms,nobs);
 for P = 1:nperms
 	disp(['Perm ',num2str(P)])
