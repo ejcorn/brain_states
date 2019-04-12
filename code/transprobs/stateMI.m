@@ -12,8 +12,9 @@ elseif scan == 'C'
     scanlab = {'RestComb','nBackComb'}; numTRs = [120 225]; % index rest num TRs (120) and nback to loop through
 end
 
-savedir = [masterdir,'/analyses/transitionprobabilities'];
+savedir = fullfile(masterdir,'/analyses/transitionprobabilities');
 mkdir(savedir);
+
 load(fullfile(masterdir,['clusterAssignments/k',num2str(numClusters),name_root,'.mat']));
 kClusterAssignments = clusterAssignments.(['k',num2str(numClusters)]).partition;
 kClusterCentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid;
@@ -40,10 +41,9 @@ for i = 1:numel(scanlab)
         t_plus_k = [zeros(NGAP,1);a];
         % truncate state series by maxGap so all MI calcs are done on same length vectors
         t = a((maxGap):end); t_plus_k = t_plus_k((maxGap):(end-NGAP));
-        subjectMITransition{i}(N,NGAP) = MUTUAL_INFO(t,t_plus_k);
+        subjectMITransition(N) = MUTUAL_INFO(t,t_plus_k);
 
         disp(['Subject ',num2str(N)])         
     end
+    save(fullfile(savedir,[scanlab{i},'MutualInfo_k',num2str(numClusters),name_root,'.mat']),'subjectMI','subjectMITransition');
 end
-cd(savedir);
-save(['MutualInfoGap1to6_k',num2str(numClusters),name_root,'.mat'],'subjectMI','subjectMIZscore','subjectMITransition','subjectMITransitionZscore');
