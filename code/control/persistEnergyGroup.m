@@ -3,6 +3,13 @@ load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 masterdir = fullfile(basedir,'results',name_root);
 savedir = fullfile(masterdir,'analyses','control_energy');
 mkdir(savedir);
+
+% variables that get passed in:
+% c: normalization factor
+% normalize each matrix by 1/c+max(eig(A)), then subtract identity. ensures max eigenvalue is [0,-1), such that matrices are stable and 
+% at long time horizons all nodes either go to 0 or to a constant non-zero eigenvector associated with max eig
+% T: control horizon, time over which to exert control
+
 %% load states
 
 % null states
@@ -38,14 +45,12 @@ Xf_Null = Xo_Null_all;
 %% load structure, normalize, generate nulls
 load(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
 %load(fullfile(datadir,'BootstrapGroupSC',['BootstrapGroupRepresentativeSC',num2str(lausanneScaleBOLD),'Perm1.mat']),'WcI_boot','G_boot','A_boot','bootsamp');
-% normalize all networks to max eig then subtract identity to ensure max eigval = 0 so system converges on single eigenmode over time
-%A = (A/(max(eig(A)))) - eye(length(A));
-A = NORMALIZE(A);
 
-T = 1; %control horizon
+A = NORMALIZE(A,c);
 % make degree preserving null model using BCT function
-Arandmio = randmio_und(A,10);	% for some reason randmio_und makes diagonal 0
-Arandmio = Arandmio - eye(length(A));
+Arandmio = randmio_und(A+eye(length(A)),10);	% need to make diagonal 0 for randmio_und -- doesn't deal w negatives
+Arandmio = Arandmio - eye(length(A)); % subtract identity back out to ensure lambda max (-1,0]
+
 % make degree preserving, length distribution, edge weight-length distribution preserving null model using RFB function
 % Betzel & Bassett 2018 PNAS: https://doi.org/10.1073/pnas.1720186115
 nbins = 11; nrewire = 1e5; [~,ArandDLW] = fcn_preserve_degseq_lengthdist(A,D,nbins,nrewire); 
@@ -59,9 +64,9 @@ ArandDLW = ArandDLW + ArandDLW' - eye(length(A));
 
 % compute inverse of controllability gramian for each network
 
-WcI = GRAMIAN(A,T,false);
-WcI_mio = GRAMIAN(Arandmio,T,false);
-WcI_DLW = GRAMIAN(ArandDLW,T,false);
+WcI = GRAMIAN_FAST(A,T);
+WcI_mio = GRAMIAN_FAST(Arandmio,T);
+WcI_DLW = GRAMIAN_FAST(ArandDLW,T);
 
 % compute minimum control energy required to maintain cluster centers
 Epersist = MIN_CONTROL_ENERGY(A,WcI,Xo,Xf,T,false);
@@ -80,4 +85,4 @@ for P = 1:nperms
 	Epersist_Null_DLW(P,:) = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,false);
 end
 
-save(fullfile(savedir,['PersistEnergySpherePerm_k_',num2str(numClusters),'.mat']),'Epersist','Epersist_Null','Epersist_mio','Epersist_Null_mio','Epersist_DLW','Epersist_Null_DLW');
+save(fullfile(savedir,['PersistEnergySpherePerm_k',num2str(numClusters),'c',num2str(c),'T',num2str(T),'.mat']),'Epersist','Epersist_Null','Epersist_mio','Epersist_Null_mio','Epersist_DLW','Epersist_Null_DLW');

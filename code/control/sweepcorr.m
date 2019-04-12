@@ -93,15 +93,20 @@ nDT = load(fullfile(masterdir,'analyses','transitionprobabilities',...
     ['nBackCombDwellTime_k',num2str(numClusters),name_root,'.mat']));
 
 % load subject indices for each bootstrapped sample to bootstrap dwell time
-BootControl = load(fullfile(masterdir,'analyses','control_energy','BootstrapPersistenceEnergy_k5.mat'));
+bootsamps = zeros(nperms,nobs);
+for P = 1:nperms
+    disp(['Perm ',num2str(P)])
+    load(fullfile(datadir,'BootstrapGroupSC',['BootstrapGroupRepresentativeSC',num2str(lausanneScaleBOLD),'Perm',num2str(P),'.mat']),'bootsamp');
+    bootsamps(P,:) = bootsamp;  % save this to bootstrap persistence probabilities/dwell times as well
+end
 
 sweepCorrRest = zeros(n_horizons,n_normalizations,nperms);
 sweepCorrnBack = zeros(n_horizons,n_normalizations,nperms);
 
 for P = 1:nperms
     % get bootstrapped dwell time for each sample
-    rDT_i = mean(rDT.DwellTimeMean(BootControl.bootsamps(P,:),:),1)';
-    nDT_i = mean(nDT.DwellTimeMean(BootControl.bootsamps(P,:),:),1)';
+    rDT_i = mean(rDT.DwellTimeMean(bootsamps(P,:),:),1)';
+    nDT_i = mean(nDT.DwellTimeMean(bootsamps(P,:),:),1)';
     for T_i = 1:n_horizons		
 		for c_i = 1:n_normalizations
             Pe_i = squeeze(sweepPersistenceEnergy(T_i,c_i,:,P));
@@ -137,7 +142,7 @@ set(gca,'FontSize',8);
 subplot(1,2,2);
 avgnBackCorr = mean(sweepCorrnBack,3); % average over bootstraps
 imagesc(avgnBackCorr); axis square; colorbar;
-lim = avgRestCorr(find(abs(avgnBackCorr) == max(max(abs(avgnBackCorr)))));
+lim = avgnBackCorr(find(abs(avgnBackCorr) == max(max(abs(avgnBackCorr)))));
 colormap('plasma'); caxis(sort([0 lim]));
 [yp,xp] = find(pvalnBack);
 text(xp,yp,'*','Color','w','FontSize',6);
@@ -151,3 +156,9 @@ f.PaperUnits = 'centimeters';
 f.PaperSize = [9 6];
 f.PaperPosition = [0 0 9 6];
 saveas(f,fullfile(savedir,['DT_PESweepCorrMean_k',num2str(numClusters),'.pdf']));
+
+%% save correlations for plotting
+
+sweepCorrRest = reshape(sweepCorrRest,[],1);
+sweepCorrnBack = reshape(sweepCorrnBack,[],1);
+save(fullfile(savedir,['SweepDTPECorrs_k',num2str(numClusters),'.mat']),'sweepCorrRest','sweepCorrnBack');

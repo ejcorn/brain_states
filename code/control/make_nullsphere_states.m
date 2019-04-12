@@ -4,6 +4,9 @@ masterdir = fullfile(basedir,'results',name_root);
 savedir = fullfile(masterdir,'analyses','control_energy',['nullstates_k',num2str(numClusters)]);
 mkdir(savedir);
 
+% make sure you get different states each iteration
+a=clock;rng(a(6));
+
 %% make null centroids for each cluster that preserve spatial structure
 
 % code from github.com/spin-test/spin-test :

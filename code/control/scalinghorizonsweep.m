@@ -21,8 +21,7 @@ Xf = Xo;	% start and end at same place, i.e. persistence energy
 
 %% for each bootstrapped sample, compute persistence energy for each state for a range of control horizons and normalizations
 
-T_rng = [0 10.^[-1 0 1 2]]; %control horizon range
-T_rng = linspace(1,10,10);
+T_rng = linspace(1,10,10); %control horizon range
 n_horizons = length(T_rng);
 % range of normalization factor c, where A is being normalized to 1/(c + max(eig(A))) - eye(length(A))
 % when c = 0, max eig will be 0 and system goes to eigenvector associated with max eig at long time horizons

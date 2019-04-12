@@ -5,6 +5,14 @@ args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
 basedir <- args[3]
+c <- as.numeric(args[4])
+T <- as.numeric(args[5])
+
+# variables that get passed in:
+# c: normalization factor
+# normalize each matrix by 1/c+max(eig(A)), then subtract identity. ensures max eigenvalue is [0,-1), such that matrices are stable and 
+# at long time horizons all nodes either go to 0 or to a constant non-zero eigenvector associated with max eig
+# T: control horizon, time over which to exert control
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 savedir <- paste(masterdir,'analyses/control_energy/',sep='')
@@ -27,11 +35,11 @@ clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"=
 
 # compare persistence energy to null, 
 
-energy <- as.numeric(readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))$Epersist)
-null_energy <- readMat(paste(masterdir,'analyses/control_energy/DLWNullsPersistenceEnergy_k',numClusters,'.mat',sep = ''))$DLWNullPersistenceEnergy
+energy <- as.numeric(readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))$Epersist)
+null_energy <- readMat(paste(masterdir,'analyses/control_energy/DLWNullsPersistenceEnergy_k',numClusters,'c',c,'T',T,'.mat',sep = ''))$DLWNullPersistenceEnergy
 
 nperms <- nrow(null_energy)
-pvals <- sapply(1:numClusters, function(k) pval.2tail.np(energy[k],null_energy[,k]))		# compute 2-tailed p-values
+pvals <- p.adjust(sapply(1:numClusters, function(k) mean(energy[k] > null_energy[,k])),method='bonferroni')		# compute 1-tailed p-values
 null_energy <- as.vector(null_energy)
 states <- as.vector(matrix(clusterNames,nrow=nperms,ncol=numClusters))
 col <- rep('black',numClusters)
@@ -52,4 +60,4 @@ if(numClusters == 5){
 }
 #p
 
-ggsave(plot = p,filename = paste(savedir,'MinPersistEnergyVsNull_k',numClusters,name_root,'.pdf',sep = ''), units = 'in', height = 2, width = 2)
+ggsave(plot = p,filename = paste(savedir,'MinPersistEnergyVsNull_k',numClusters,'c',c,'T',T,name_root,'.pdf',sep = ''), units = 'in', height = 2, width = 2)

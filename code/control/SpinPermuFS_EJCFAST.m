@@ -43,7 +43,6 @@ function [bigrotl,bigrotr] = SpinPermuFS_EJCFAST(datal,datar,verticesl,verticesr
 
 %%extract the correspoding sphere surface coordinates for rotation
 
-rng(0);
 %Use rng to initialize the random generator for reproducible results.
 %initialize variables to save rotation
 % EJC edited to preallocate

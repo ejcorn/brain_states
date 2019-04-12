@@ -25,7 +25,9 @@ p <- ggplot() + geom_violin(aes(x = grps,y = as.vector(pvals), fill = grps)) + t
   theme(legend.position = 'none')
 p
 
-if(t.test(symmvars$nBackSymmetryScore,symmvars$restSymmetryScore,paired = TRUE)$p.value < 10^-15){
+test.output <- t.test(symmvars$nBackSymmetryScore,symmvars$restSymmetryScore,paired = TRUE)
+print(test.output)
+if(test.output$p.value < 10^-15){
 	p <- p + annotate("text", x = 'n-back', y = 0.5,label = "**",color = 'red')
 }
 ggsave(plot = p,filename = paste(basedir,'results/',

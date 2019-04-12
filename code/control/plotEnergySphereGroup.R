@@ -2,6 +2,14 @@ args <- commandArgs(TRUE)
 name_root <- args[1]
 numClusters <- as.numeric(args[2])
 basedir <- args[3]
+c <- as.numeric(args[4])
+T <- as.numeric(args[5])
+
+# variables that get passed in:
+# c: normalization factor
+# normalize each matrix by 1/c+max(eig(A)), then subtract identity. ensures max eigenvalue is [0,-1), such that matrices are stable and 
+# at long time horizons all nodes either go to 0 or to a constant non-zero eigenvector associated with max eig
+# T: control horizon, time over which to exert control
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
@@ -24,7 +32,7 @@ savedir = paste(masterdir,'/analyses/control_energy',sep='');
 
 # compare energy of maintaining each state with sphere permuted states for actual network and all null models
 # .Null indicates sphere permuted null states, .mio indicates null matrix obtained through randmio_und.m, .DLW = Rick Betzel geometric + topological null
-matResults <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))
+matResults <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))
 energy <- matResults$Epersist
 null_energy <- matResults$Epersist.Null
 energy.randmio <- matResults$Epersist.mio   
@@ -72,12 +80,12 @@ if(numClusters == 5){
   p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermAllNullModels_k',numClusters,'.pdf',sep =""),
+ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermAllNullModels_k',numClusters,'c',c,'T',T,'.pdf',sep =""),
   height = 3,width=4, units = "in",useDingbats=FALSE)
 
 # compare energy of maintaining each state with sphere permuted states for actual networks only
-energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))$Epersist
-null_energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k_',numClusters,'.mat',sep = ''))$Epersist.Null
+energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))$Epersist
+null_energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))$Epersist.Null
 nperms <- nrow(null_energy)
 state <- as.vector(sapply(clusterNames, function(K) rep(K,nperms)))
 E <- as.vector(null_energy)
@@ -85,7 +93,7 @@ grp <- rep('SC',nperms*numClusters)
 E.actual <- as.vector(energy)
 state.actual <- rep(clusterNames,1)
 grp.actual <- rep('SC',numClusters)
-p <- ggplot() + geom_boxplot(aes(x = state,y=E),color = '#005C9FFF',fill = '#005C9F1A',position = position_dodge(width = 1),outlier.shape=20,outlier.size = 0.5,lwd = 0.5) + 
+p <- ggplot() + geom_boxplot(aes(x = state,y=E),color = '#E2492FFF',fill = '#E2492F1A',position = position_dodge(width = 1),outlier.shape=20,outlier.size = 0.5,lwd = 0.5) + 
   geom_point(aes(x=state.actual,y=as.numeric(E.actual),color = grp.actual),
              shape = 24,stroke = 0,size = 1,fill = '#CE2B37',position = position_dodge(width=1)) +
   scale_color_manual(limits = c('SC','Null'),breaks = c('SC','Null'),values = c('#005C9F','#71AABE')) +
@@ -100,7 +108,7 @@ p.labs <- pval.label.np(pvals,nperms)
 col <- rep('black',numClusters)
 col[pvals < 0.05] <- 'red'
 for(K in 1:numClusters){
-  p <- p + annotate("text", x = clusterNames, y = 1.1*max(c(energy,null_energy)),label = p.labs,color = col[K])
+  p <- p + annotate("text", x = clusterNames, y = 1.1*max(c(energy,null_energy)),label = p.labs,color = col[K],size=2.5)
 }
 
 if(numClusters == 5){
@@ -108,5 +116,5 @@ if(numClusters == 5){
 }
 p
 
-ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermSCOnly_k',numClusters,'.pdf',sep =""),
+ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermSCOnly_k',numClusters,'c',c,'T',T,'.pdf',sep =""),
   height = 2,width=3, units = "in",useDingbats=FALSE)
