@@ -28,8 +28,11 @@ p <- ggplot() + geom_split_violin(aes(x = as.vector(rbind(states,states)) ,y = a
   theme(legend.key.size = unit(0.5,'line'))
 
 diffs.full <- lapply(1:numClusters, function(i) t.test(restDur[,i],nbackDur[,i],paired=TRUE))
+print(diffs.full)
 diffs <- sapply(diffs.full, function(x) x$p.value)
 diffs <- p.adjust(diffs,method = "bonf")
+print(diffs)
+
 for(K in 1:numClusters){
   if(diffs[K] < 10^-15){
     p <- p + annotate("text", x = K, y = 1.1*max(rbind(restDur,nbackDur)),label = "**",color = 'red')

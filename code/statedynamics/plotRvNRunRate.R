@@ -32,6 +32,7 @@ diffs.full <- lapply(1:numClusters, function(i) t.test(restRunRate[,i],nbackRunR
 print(diffs.full)
 diffs <- sapply(diffs.full, function(x) x$p.value)
 diffs <- p.adjust(diffs,method = "bonf")
+print(diffs)
 for(K in 1:numClusters){
   if(diffs[K] < 10^-15){
     p <- p + annotate("text", x = K, y = 1.1*max(rbind(restRunRate,nbackRunRate)),label = "**",color = 'red')

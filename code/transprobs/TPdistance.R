@@ -68,13 +68,10 @@ p <- ggplot() + geom_violin(aes(x=grps,y=dat,fill=grps)) + theme_classic() +
   theme(legend.position = 'none') + theme(axis.ticks.x = element_blank())
 p
 
-if(t.test(nback.r,rest.r,paired = TRUE)$p.value < 10^-15){
+test.output <- t.test(nback.r,rest.r,paired = TRUE)
+print(test.output)
+if(test.output$p.value < 10^-15){
 	p <- p + annotate("text", x = 'n-back', y = 0.5,label = "**",color = 'red')
 }
 
 ggsave(plot = p,filename = paste(savedir,'/RvNDistanceTPCorr_k',numClusters,name_root,'.pdf',sep = ''), units = 'in', height = 2, width = 2)
-
-summary(lm.beta(lm(rest.r ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, data = demo)))
-summary(lm.beta(glm(rest.rsig ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, data = demo,family=binomial())))
-summary(lm.beta(lm(nback.r ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, data = demo)))
-summary(lm.beta(glm(nback.rsig ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, data = demo,family=binomial())))
