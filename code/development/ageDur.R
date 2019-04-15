@@ -30,9 +30,14 @@ nbackDur <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombF
                          numClusters,name_root,'.mat',sep = ''))$FractionalOccupancy * 100
 
 restDur.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(restDur[,K] ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
-	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = demo))))
+print(restDur.age)
+restDur.age <- lapply(restDur.age, function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
+
 nbackDur.age <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackDur[,K] ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
-	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = demo))))
+print(nbackDur.age)
+nbackDur.age <- lapply(nbackDur.age, function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
 
 pdat <- as.data.frame(cbind(t(as.data.frame(restDur.age, row.names = c('RestB','RestP'))),t(as.data.frame(nbackDur.age,row.names = c('nBackB','nBackP')))))
 # pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
@@ -40,6 +45,7 @@ pdat <- as.data.frame(cbind(t(as.data.frame(restDur.age, row.names = c('RestB','
 # pdat$RestP <- ifelse(pdat$RestP,'*','')
 # pdat$nBackP <- ifelse(pdat$nBackP,'*','')
 p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
+print(p.list)
 pdat$RestP <- ifelse(p.list[[1]] < 0.05,'*','')
 pdat$nBackP <- ifelse(p.list[[2]] < 0.05,'*','')
 

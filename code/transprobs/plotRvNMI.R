@@ -56,7 +56,9 @@ p <- ggplot() + geom_violin(aes(x = as.vector(grps), y = as.vector(rbind(restMI,
   theme(legend.position = 'none') + ggtitle('Transitions Only') + theme(plot.title = element_text(size=8,hjust = 0.5))
 
 diffs.full <- t.test(restMI,nbackMI,paired = TRUE)
+print(diffs.full)
 diffs <- diffs.full$p.value*2 # correct over 2 comparisons for persist + trans and transitions only
+print(diffs)
 if(diffs < 10^-15){
     p <- p + annotate("text", x = "n-back", y = 1.1*max(rbind(restMI,nbackMI)),label = "**",color = 'red')
 }

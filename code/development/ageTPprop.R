@@ -56,6 +56,7 @@ for(i in 1:length(scanlab)){
 	}
 
 	age.symm <- lm.beta(lm(symm ~ age_in_yrs + BrainSegVol + handedness + hm + Sex, data = demo))
+	print(summary(age.symm))
 	pval <- signif(summary(age.symm)$coefficients['age_in_yrs','Pr(>|t|)']*2,2)	# bonferroni correct over rest and n-back
 	print(paste(scanlab[i],', ','Cohen\'s f^2 for age: ',cohens.f2(age.symm,'age_in_yrs'),sep=''))
 	# get partial residuals

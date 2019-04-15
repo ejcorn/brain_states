@@ -39,13 +39,20 @@ numTransitions <- ncol(restTP)
 transLabels <- as.vector(sapply(1:numClusters, function(i) sapply(1:numClusters,function(j) paste(clusterNames[i],'to',clusterNames[j]))))	#label transitions
 
 restTP.age <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(restTP[,T] ~ age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
-	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = demo))))
 nbackTP.age<- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackTP[,T] ~ age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
-	data = demo)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = demo))))
 names(restTP.age) <- transLabels
 names(nbackTP.age) <- transLabels
+print(nbackTP.age['DMN- to FPN+'])
+print(nbackTP.age['DMN+ to FPN+'])
+
+restTP.age <- lapply(restTP.age, function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
+nbackTP.age <- lapply(nbackTP.age, function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
 pdat <- cbind(as.data.frame(t(as.data.frame(restTP.age, row.names = c('RestB','RestP')))),as.data.frame(t(as.data.frame(nbackTP.age, row.names = c('nBackB','nBackP')))))
+rownames(pdat) <- transLabels
 p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
+print(p.list)
 pdat$RestP <- p.list[[1]] < 0.05
 pdat$nBackP <- p.list[[2]] < 0.05
 

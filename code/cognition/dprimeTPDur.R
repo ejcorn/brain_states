@@ -46,9 +46,14 @@ nbackREDur <- readMat(paste(masterdir,'analyses/nbackblocks/nBackRestExcludeFrac
 # rest and n-back to overall d-prime
 
 restDur.dprime <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackBehAllDprime ~ restDur[,K] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = data))))
+print(restDur.dprime)
+restDur.dprime <- lapply(restDur.dprime, function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
+
 nbackREDur.dprime <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackBehAllDprime ~ nbackREDur[,K] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = data))))
+print(nbackREDur.dprime)
+nbackREDur.dprime <- lapply(nbackREDur.dprime, function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
 
 # plot
 
@@ -85,12 +90,21 @@ nbackBlockDur <- lapply(1:numBlocks, function(B) readMat(paste(masterdir,'analys
 	BlockNames[B],'_k',numClusters,name_root,'.mat',sep = ''))$BlockFractionalOccupancy*100)
 
 nbackBlockDur.dprime <- vector("list",numBlocks)
+
 nbackBlockDur.dprime[[1]] <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackBehZerobackDprime ~ nbackBlockDur[[1]][,K] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = data))))
+print(nbackBlockDur.dprime[[1]])
+nbackBlockDur.dprime[[1]] <- lapply(nbackBlockDur.dprime[[1]], function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
+
 nbackBlockDur.dprime[[2]] <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackBehOnebackDprime ~ nbackBlockDur[[2]][,K] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = data))))
+print(nbackBlockDur.dprime[[2]])
+nbackBlockDur.dprime[[2]] <- lapply(nbackBlockDur.dprime[[2]], function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
+
 nbackBlockDur.dprime[[3]] <- lapply(1:numClusters, function(K) summary(lm.beta(lm(nbackBehTwobackDprime ~ nbackBlockDur[[3]][,K] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex,
-	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
+	data = data))))
+print(nbackBlockDur.dprime[[3]])
+nbackBlockDur.dprime[[3]] <- lapply(nbackBlockDur.dprime[[3]], function(X) X$coefficients[2,c('Standardized','Pr(>|t|)')])
 
 # plot
 
