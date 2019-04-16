@@ -53,7 +53,7 @@ restTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBe
 nbackTP.dprime <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(nbackBehAllDprime ~ nbackTP[,T] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
 	data = data)))$coefficients[2,c('Estimate','Pr(>|t|)')])
 
-pdat <- as.data.frame(cbind(t(as.data.frame(restDur.dprime, row.names = c('RestB','RestP'))),t(as.data.frame(nbackREDur.dprime,row.names = c('nBackB','nBackP')))))
+pdat <- as.data.frame(cbind(t(as.data.frame(restTP.dprime, row.names = c('RestB','RestP'))),t(as.data.frame(nbackTP.dprime,row.names = c('nBackB','nBackP')))))
 p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')	# bonferroni correct over rest and n-back
 rownames(pdat) <- transLabels
 pdat$RestP <- p.list[[1]]	# store p-val for plot

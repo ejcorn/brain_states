@@ -53,34 +53,16 @@ pdat <- cbind(as.data.frame(t(as.data.frame(restTP.age, row.names = c('RestB','R
 rownames(pdat) <- transLabels
 p.list <- list.posthoc.correct(list(pdat$RestP,pdat$nBackP),method = 'bonf')  # bonferroni correct over rest and n-back
 print(p.list)
-pdat$RestP <- p.list[[1]] < 0.05
-pdat$nBackP <- p.list[[2]] < 0.05
+pdat$RestP <- p.list[[1]] #< 0.05
+pdat$nBackP <- p.list[[2]] #< 0.05
 
-v <- matrix((pdat$RestB*pdat$RestP), nrow = numClusters, byrow = TRUE)
-p <- TP.beta.plot(v,clusterColors,title = 'Rest: Age')
-ggsave(plot = p,filename = paste(savedir,'RestTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 6,width = 6)
+b.mat <- matrix(pdat$RestB, nrow = numClusters, byrow = TRUE)
+p.mat <- matrix(pdat$RestP, nrow = numClusters, byrow = TRUE)
+p <- plot.beta.matrix(b.mat,p.mat,clusterColors,clusterNames,title = 'Rest')
+ggsave(plot = p,filename = paste(savedir,'RestTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 5.5,width = 5.5)
 
-v <- matrix((pdat$nBackB*pdat$nBackP), nrow = numClusters, byrow = TRUE)
-p <- TP.beta.plot(v,clusterColors,title = 'n-back: Age')
-ggsave(plot = p,filename = paste(savedir,'nBackTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 6,width = 6)
+b.mat <- matrix(pdat$nBackB, nrow = numClusters, byrow = TRUE)
+p.mat <- matrix(pdat$nBackP, nrow = numClusters, byrow = TRUE)
+p <- plot.beta.matrix(b.mat,p.mat,clusterColors,clusterNames,title = 'n-back')
 
-# restTP.acc <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(Overall_Accuracy ~ restTP[,T] + age_in_yrs + BrainSegVol + handedness + restRelMeanRMSMotion + Sex, 
-# 	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
-# nbackTP.acc <- lapply(1:numTransitions, function(T) summary(lm.beta(lm(Overall_Accuracy ~ nbackTP[,T] + age_in_yrs + BrainSegVol + handedness + nbackRelMeanRMSMotion + Sex, 
-# 	data = data)))$coefficients[2,c('Standardized','Pr(>|t|)')])
-
-# pdat <- as.data.frame(t(as.data.frame(restTP.acc, row.names = c('RestB','RestP'))))
-# rownames(pdat) <- transLabels
-# pdat$RestP <- p.adjust(pdat$RestP,method = 'bonf') < 0.05
-# v <- matrix((pdat$RestB*pdat$RestP), nrow = numClusters, byrow = TRUE)
-# p <- TP.beta.plot(v,clusterColors,title = 'Rest: Overall Accuracy')
-# ggsave(plot = p,filename = paste(savedir,'RestTPOverallAccuracy_k',numClusters,'.pdf',sep =''),units = 'in',height = 2,width = 2)
-
-# pdat <- as.data.frame(t(as.data.frame(nbackTP.acc, row.names = c('nBackB','nBackP'))))
-# rownames(pdat) <- transLabels
-# pdat$nBackP <- p.adjust(pdat$nBackP,method = 'bonf') < 0.05
-# v <- matrix((pdat$nBackB*pdat$nBackP), nrow = numClusters, byrow = TRUE)
-# p <- TP.beta.plot(v,clusterColors,title = 'n-back: Overall Accuracy')
-# ggsave(plot = p,filename = paste(savedir,'nBackTPOverallAccuracy_k',numClusters,'.pdf',sep =''),units = 'in',height = 2,width = 2)
-
-
+ggsave(plot = p,filename = paste(savedir,'nBackTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 5.5,width = 5.5)

@@ -17,6 +17,11 @@ MakeColormap <- function(v){
   customcmap
 }
 
+fliplr <- function(x){
+  x <- x[length(x):1]
+  return(x)
+}
+
 TP.beta.plot <- function(v,clusterColors,title){
 	numClusters = nrow(v)
 	v <- melt(t(v)[,numClusters:1])
@@ -43,4 +48,46 @@ if(numClusters == 5){
 
 }
 
+p.signif.matrix <- function(p){
+  # take matrix of p values and make asterisks
+  #  : p > 0.05 (blank)
+  # *: p <= 0.05
+
+  p.new <- matrix(data = '',nrow = nrow(p),ncol=ncol(p))
+  p.new[p > 0.05] <- ''
+  p.new[p < 0.05] <- '*'
+  return(p.new)
+  
+}
+
+plot.beta.matrix <- function(b.mat,p.mat,clusterColors,clusterNames,title){
+    # plots matrix of beta weights associated with transitions between clusters
+    # b.mat: matrix of betas
+    # p.mat: matrix of p-values
+    # clusterColors: character vector of colors for each cluster
+    # clusterNames: character vector of names for each cluster
+    # title: string containing title
+
+    melted_betas <- melt(t(b.mat))
+    melted_betas$Var2 <- fliplr(melted_betas$Var2)  
+    p <- p.signif.matrix(p.mat)
+    melted_p <- melt(t(p))
+    melted_p$Var2 <- fliplr(melted_p$Var2)
+    p1 <- ggplot() + 
+      geom_tile(data = melted_betas, aes(x=Var1, y=Var2, fill=value)) + xlab("") + ylab("") +
+      geom_text(data = melted_p, aes(x=Var1,y=Var2,label=value),color='white',size=2.5) +
+      scale_fill_viridis(option='plasma') +
+      ggtitle(title) +
+      scale_y_discrete(limits=fliplr(clusterNames),labels = fliplr(clusterNames),expand=c(0,0)) + 
+      scale_x_discrete(limits=clusterNames,labels = clusterNames,expand=c(0,0),position='bottom') + coord_fixed() +
+      theme_classic() + theme(text=element_text(size = 6), legend.key.size = unit(0.1,'inches'),
+            legend.position = 'right',
+            axis.line = element_blank(),
+            axis.text.x=element_text(color=clusterColors,angle=90,size=8),
+            axis.text.y = element_text(color=fliplr(clusterColors),size=8),
+            plot.title = element_text(size=8,hjust=0.5,face = 'bold'),
+            plot.margin = unit(c(0, 0, 0, 0), "cm"),
+            axis.ticks = element_blank())
+    return(p1)
+}
 
