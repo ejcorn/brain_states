@@ -5,7 +5,7 @@ savedir = fullfile(masterdir,'analyses','control_energy',['nullstates_k',num2str
 mkdir(savedir);
 
 % make sure you get different states each iteration
-a=clock;rng(a(6));
+rng(str2num([num2str(numClusters),num2str(split_i)]));
 
 %% make null centroids for each cluster that preserve spatial structure
 
