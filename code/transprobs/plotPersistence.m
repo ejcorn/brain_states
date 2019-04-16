@@ -23,7 +23,7 @@ tic
 tmpAssignments = kClusterAssignments(scanInd == 0);	% rest
 subjIndtmp = subjInd(scanInd == 0);
 probExceedNull = zeros(nperms,numClusters);
-for P = 1:nperms
+parfor P = 1:nperms
     tic
     nullPersistenceProbs = GET_NULL_PERSIST_PROBS(tmpAssignments,subjIndtmp);
     toc
@@ -62,7 +62,7 @@ tic
 tmpAssignments = kClusterAssignments(scanInd == 1);	% rest
 subjIndtmp = subjInd(scanInd == 1);
 probExceedNull = zeros(nperms,numClusters);
-for P = 1:nperms
+parfor P = 1:nperms
     tic
     nullPersistenceProbs = GET_NULL_PERSIST_PROBS(tmpAssignments,subjIndtmp);
     toc
