@@ -41,7 +41,7 @@ null_energy <- readMat(paste(masterdir,'analyses/control_energy/DLWNullsPersiste
 nperms <- nrow(null_energy)
 pvals <- p.adjust(sapply(1:numClusters, function(k) mean(energy[k] > null_energy[,k])),method='bonferroni')		# compute 1-tailed p-values
 null_energy <- as.vector(null_energy)
-states <- as.vector(matrix(clusterNames,nrow=nperms,ncol=numClusters))
+states <- as.vector(do.call('rbind',lapply(1:nperms,function(x) clusterNames)))
 col <- rep('black',numClusters)
 col[pvals < 0.05 | pvals > 0.95] <- 'red'
 p.lab <- pval.label.np(pvals,nperms)		# make p-value labels that don't say p = 0

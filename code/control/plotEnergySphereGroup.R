@@ -49,6 +49,18 @@ E.actual <- c(as.vector(energy),as.vector(energy.randmio),as.vector(energy.DLW))
 state.actual <- rep(as.character(1:numClusters),3)
 grp.actual <- factor(c(rep('SC',numClusters),rep('Deg. Pres.',numClusters),rep('Space Pres.',numClusters)),levels = c('Deg. Pres.','Space Pres.','SC'),ordered = TRUE)
 
+# check that these vectors were made correctly
+
+print(paste('If you see TRUE', numClusters,'times below for each null model, plotting data frames have been constructed correctly'))
+print('SC')
+print(sapply(1:numClusters, function(K) identical(E[state == as.character(K) & as.character(grp) == 'SC'],null_energy[,K])))
+print(sapply(1:numClusters, function(K) identical(E.actual[state.actual == as.character(K) & as.character(grp.actual) == 'SC'],energy[,K])))
+print('Degree preserving')
+print(sapply(1:numClusters, function(K) identical(E[state == as.character(K) & as.character(grp) == 'Deg. Pres.'],null_energy.randmio[,K])))
+print(sapply(1:numClusters, function(K) identical(E.actual[state.actual == as.character(K) & as.character(grp.actual) == 'Deg. Pres.'],energy.randmio[,K])))
+print('Space preserving')
+print(sapply(1:numClusters, function(K) identical(E[state == as.character(K) & as.character(grp) == 'Space Pres.'],null_energy.DLW[,K])))
+print(sapply(1:numClusters, function(K) identical(E.actual[state.actual == as.character(K) & as.character(grp.actual) == 'Space Pres.'],energy.DLW[,K])))
 energy.repmat <- kronecker(matrix(1,nperms,1),energy)
 energy.mio.repmat <- kronecker(matrix(1,nperms,1),energy.randmio)
 energy.DLW.repmat <- kronecker(matrix(1,nperms,1),energy.DLW)
@@ -61,6 +73,7 @@ pvals.orig <- c(p.adjust(colMeans(null_energy < energy.repmat),method='bonferron
 pvals.size <- ifelse(pvals.orig < 0.05,yes = 2.5,no = 0)    # don't show asterisks for non-sig results by making them size =0
 p.labs <- ifelse(pvals.orig < 0.05,yes = '*',no = '')       # asterisk or no asterisk
 pval.y <- 1.1*c(rep(max(null_energy),numClusters),rep(max(null_energy.randmio),numClusters),rep(max(null_energy.DLW),numClusters))  # height of p-val labels
+
 p <- ggplot() + geom_boxplot(aes(x = state,y=E,color = grp,fill=grp),position = position_dodge(width = 1),outlier.shape=20,outlier.size = 0.5,lwd = 0.3) + 
   geom_point(aes(x=state.actual,y=as.numeric(E.actual),color = grp.actual),
              shape = 24,stroke = 0,size = 1,fill = '#7F2A49',position = position_dodge(width=1)) +
