@@ -46,7 +46,7 @@ sys.path.append(homedir + "/Dropbox/Cornblath_Bassett_Projects/code/control_fc/r
 from ejcbrain import *
 
 namefile = homedir + "/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/analysiscode/human_regionNames.mat"
-roinames = sio.loadmat(namefile)['roinames'][0][3]
+roinames = sio.loadmat(namefile)['roinames'][0][parc_ind]
 nparc = len(roinames)
 for i in np.arange(0,nparc):
     roinames[i] = str(roinames[i][0][0])
@@ -105,7 +105,6 @@ for hemi in hemis:
 
 plt.figure(figsize = [numClusters,2])
 arial = {'fontname':'Arial'}
-
 """
 for K in np.arange(numClusters):
     plt.figure(figsize = [1.7,1.7])
@@ -113,7 +112,7 @@ for K in np.arange(numClusters):
     plt.suptitle(ttl,fontsize=8,fontweight='bold',**arial)        
     for H,hemi in enumerate(hemis):
         for V, view in enumerate(views):    #Arrange brains into grid
-            fname = clusterNames[K] + view + hemi + '.png'
+            fname = clusterNames[K] + view + hemi + str(K) + '.png'
             img = mpimg.imread(fname)
             plt.subplot(2,2,(H + 2*V+1))
             imgplot = plt.imshow(img,aspect='auto')
@@ -124,10 +123,6 @@ for K in np.arange(numClusters):
     #plt.tight_layout()
     plt.savefig(fname,dpi=500,bbox_inches='tight',pad_inches=0.1)
     print(['saved',fname])
-    for view in views:
-        for hemi in hemis:
-            fname = clusterNames[K] + view + hemi + '.png'
-            os.remove(fname)
 """
 for V in np.arange(1,len(views)+1):
     for K in np.arange(1,numClusters+1):

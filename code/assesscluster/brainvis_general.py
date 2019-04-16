@@ -40,7 +40,7 @@ sys.path.append(homedir + "/Dropbox/Cornblath_Bassett_Projects/code/control_fc/r
 from ejcbrain import *
 
 namefile = homedir + "/Dropbox/Cornblath_Bassett_Projects/code/control_fc/restnbackpipeline/analysiscode/human_regionNames.mat"
-roinames = sio.loadmat(namefile)['roinames'][0][3]
+roinames = sio.loadmat(namefile)['roinames'][0][parc_ind]
 nparc = len(roinames)
 for i in np.arange(0,nparc):
     roinames[i] = str(roinames[i][0][0])
@@ -59,7 +59,7 @@ hemis = ['lh']
 adv_view = {'lh': {'azimuth': 45, 'elevation': 79},'rh': {'azimuth': 135, 'elevation': 79}}
 
 savedir = homedir + "/Dropbox/Cornblath_Bassett_Projects/BrainStateTransitions/brain_states/results/" + \
-    name_root + '/centroids/'
+    name_root
 if not os.path.exists(savedir):
     os.makedirs(savedir)
 
