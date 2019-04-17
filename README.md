@@ -19,7 +19,7 @@ finalmain.sh is a bash script that will produce every figure in the paper. There
   - MATPATH: the path to the user's MATLAB binary, i.e. /Applications/MATLAB_R2017a.app/bin/matlab
   - RPATH: the path to the user's Rscript function i.e. Rscript
   
-The variable NSPLITS 
+ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code, one could replace the variable concTS in this script with random numbers.
 
 The user can also specify certain parameters in finalmain.sh:
 
@@ -32,4 +32,5 @@ The user can also specify certain parameters in finalmain.sh:
   - K: number of clusters for which all analyses will be performed.
  
 finalmain.sh will submit NSPLITS-times-10 + ~600 jobs. In our experience, this will take about a day to run depending on the availability of computing cores. We have not attempted to run this on a normal desktop computer.
-  
+
+Please contact Eli Cornblath (Eli.Cornblath@pennmedicine.upenn.edu) with any questions regarding this code.
