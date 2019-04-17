@@ -81,6 +81,12 @@ done
 K=5
 qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "DSTASK*" dstaskassess.sh
 
+NSPLITS_SH=50
+for S in $(seq 1 $NSPLITS_SH); do
+	qsub -N "SH$S" -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,S=$S,D=$ROOT,Z=$ZDIM,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC SHkmeans.sh
+done
+qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,NSPLITS=$NSPLITS_SH,BD=$BASEDIR,MP=$MATPATH -hold_jid "SH*" analyzeSHkmeans.sh
+
 #qsub -N "nullts" -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC makenullts.sh
 #qsub -N "nullcluster" -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullts" clusternullts.sh
 #qsub -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullcluster" plot_silhouette_null.sh
