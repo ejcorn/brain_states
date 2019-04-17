@@ -31,5 +31,5 @@ The user can also specify certain parameters in finalmain.sh:
   - NSPLITS: dictates how many repetitions of k-means clustering to perform for each value of K. For the submitted manuscript we used NSPLITS=100. Empirically, you will safely arrive at the solution presented in the main text for K=5 using NSPLITS=20.
   - K: number of clusters for which all analyses will be performed.
  
-finalmain.sh will submit NSPLITS-times-10 + ~600 jobs. In our experience, this will take about a day to run depending on the availability of computing cores.
+finalmain.sh will submit NSPLITS-times-10 + ~600 jobs. In our experience, this will take about a day to run depending on the availability of computing cores. We have not attempted to run this on a normal desktop computer.
   
