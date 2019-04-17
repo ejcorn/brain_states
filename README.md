@@ -19,7 +19,7 @@ finalmain.sh is a bash script that will produce every figure in the paper. There
   - MATPATH: the path to the user's MATLAB binary, i.e. /Applications/MATLAB_R2017a.app/bin/matlab
   - RPATH: the path to the user's Rscript function i.e. Rscript
   
-ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code, one could replace the variable concTS in this script with random numbers.
+ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code without obtaining the necessary BOLD data, one could replace the variables "concTS" and "SCVolnorm" in this script with random numbers.
 
 The user can also specify certain parameters in finalmain.sh:
 
