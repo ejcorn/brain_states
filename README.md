@@ -11,8 +11,11 @@ Requirements:
     - reshape2
     - viridis
     - plotrix
+  - Hardware: a computing cluster using Sun Grid Engine job scheduler, ability to request cores with at least 16G of RAM
+  
+This software was tested on GNU Linux using the Center for Functional Neuroimaging computing cluster (https://cfn.upenn.edu/).
 
-Scripts are organized by their purpose in the code folder. The jobs folder contains shell scripts to allow the scripts in code folder to be submitted to a computing cluster using a Sun Grid Engine job schedule (qsub). 
+Scripts are organized by their purpose in the code folder. The jobs folder contains shell scripts to allow the scripts in code folder to be submitted to a computing cluster using a Sun Grid Engine job scheduler (qsub). 
 
 finalmain.sh is a bash script that will produce every figure in the paper. There are a few paths that need to be specified in this script:
   - BASEDIR: the path to the master branch of this repository, i.e. /Users/Eli/Dropbox/brain_states
