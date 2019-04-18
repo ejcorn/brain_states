@@ -22,7 +22,8 @@ clusterNames = NAME_CLUSTERS_ANGLE(scrubbed_centroidsPNCorder);
 [clusterNamesUp,clusterNamesDown] = NAME_CLUSTERS_UP_DOWN(scrubbed_centroidsPNCorder);
 
 f = figure;
-imagesc(PNCvsScrub(shuffleIdx,:)); colormap('plasma');
+PNCvsScrubSpatialCorr = PNCvsScrub(shuffleIdx,:);
+imagesc(PNCvsScrubSpatialCorr); colormap('plasma');
 ylabel('Motion Scrubbed'); xlabel('Full Sample'); axis square
 yticks(1:numClusters); xticks(1:numClusters);
 yticklabels(clusterNames); xticklabels(PNCnames);
@@ -37,7 +38,7 @@ f.PaperPosition = [0 0 2.7 2.7];
 saveas(f,fullfile(savedir,['MotionScrub',num2str(motion_thresh),'mm_SpatialCorr_k',num2str(numClusters),name_root,'.pdf']),'pdf');
 
 kClusterCentroids = scrubbed_centroidsPNCorder;	% rename centroid variable to use with one plotting script
-save(fullfile(savedir,['CentroidsMotionScrubbed',num2str(motion_thresh),'mm_k',num2str(numClusters),'.mat']),'kClusterCentroids','scrubbed_centroids','clusterNames','clusterNamesUp','clusterNamesDown');
+save(fullfile(savedir,['CentroidsMotionScrubbed',num2str(motion_thresh),'mm_k',num2str(numClusters),'.mat']),'kClusterCentroids','scrubbed_centroids','clusterNames','clusterNamesUp','clusterNamesDown','PNCvsScrubSpatialCorr');
 
 % make scatter plots of task-regressed centroids vs. PNC centroids
 

@@ -67,6 +67,10 @@ pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4]))
 pdat$Scan = c(rep('Rest',numClusters),rep('n-back',numClusters))
 pdat$State = rep(clusterNames,2)
 
+if(name_root == 'ScanCLaus250Z0final' & numClusters == 5){
+  save(pdat,file=paste(savedir,'Fig7b__RvNFODprime',numClusters,name_root,'.RData',sep = ''))
+}
+
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
 	geom_bar(stat = "identity", position = position_dodge(width = NULL), color = 'black') +
   geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["FO"])) + ggtitle('Overall WM Performance') +
@@ -125,6 +129,18 @@ colnames(pdat) <- rep(c('B','p'),3)
 pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4],pdat[1:numClusters,5:6]))
 pdat$Scan = c(rep('0-back',numClusters),rep('1-back',numClusters),rep('2-back',numClusters))
 pdat$State = rep(clusterNames,3)
+
+if(name_root == 'ScanCLaus250Z0final' & numClusters == 5){
+  save(pdat,file=paste(savedir,'Fig7c__nBackBlockFODprime',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus250Z0final' & numClusters == 6){
+  save(pdat,file=paste(savedir,'FigS14i__nBackBlockFODprime',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus250Z0final' & numClusters == 4){
+  save(pdat,file=paste(savedir,'FigS13g__nBackBlockFODprime',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus250Z0cosinefinal' & numClusters == 5){
+  save(pdat,file=paste(savedir,'FigS12i__nBackBlockFODprime',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus125Z0final' & numClusters == 5){
+  save(pdat,file=paste(savedir,'FigS15i__nBackBlockFODprime',numClusters,name_root,'.RData',sep = ''))
+}
 
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
 	geom_bar(stat = "identity", position = position_dodge(width = NULL),alpha = 0.8, color = 'black') +

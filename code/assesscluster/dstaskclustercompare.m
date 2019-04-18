@@ -52,6 +52,8 @@ f.PaperSize = [2.7 2.7];
 f.PaperPosition = [0 0 2.7 2.7];
 
 saveas(f,fullfile(savedir,['DownSampleTaskvsOverallClusterSpatialCorr_k',num2str(numClusters),name_root,'.pdf']),'pdf');
+% for source data file
+save(fullfile(savedir,['FigS5d__DownSampleVsFullCentroidSpatialCorr_k',num2str(numClusters),name_root,'.mat']),'dsVsOverall');
 
 %% reorder centroids based on similarity to original centroids
 
@@ -123,6 +125,8 @@ f.PaperSize = [16/3 4];
 f.PaperPosition = [0 0 16/3 4];
 saveas(f,fullfile(savedir,['DownSampleTaskRestnBackTransProbs_k',num2str(numClusters),'.pdf']));
 
+% for source data file
+save(fullfile(savedir,['FigS5e__DownSampleTransitionProbabilities_k',num2str(numClusters),name_root,'.mat']),'grpAvgRest','grpAvgnBack');
 %% compare to overall trans probs
 
 load([masterdir,'/analyses/transitionprobabilities/RestCombTransitionProbabilityMatrices_k',num2str(numClusters),name_root,'.mat']);
@@ -142,16 +146,3 @@ corr(grpAvgRest(offDiag),overallRestTransProbs(offDiag))
 grpAvgnBack = reshape(grpAvgnBack',numClusters^2,1);
 overallnBackTransProbs = reshape(overallnBackTransProbs',numClusters^2,1);
 corr(grpAvgnBack(offDiag),overallnBackTransProbs(offDiag))
-
-%% symmetry
-
-restSymmetryScore = zeros(nobs,1);
-nBackSymmetryScore = zeros(nobs,1);
-
-for N = 1:nobs
-	restSymmetryScore(N) = SYMMETRY_SCORE(restTransProbs(N,:,:));
-	nBackSymmetryScore(N) = SYMMETRY_SCORE(nBackTransProbs(N,:,:));
-end
-
-save(['DownSampleTaskRvNSymmetryScorev2_k',num2str(numClusters),'.mat'],'restSymmetryScore','nBackSymmetryScore');
-

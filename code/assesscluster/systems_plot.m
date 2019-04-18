@@ -111,3 +111,6 @@ f.PaperUnits = 'inches';
 f.PaperSize = [8 1.5];
 f.PaperPosition = [0 0 8 1.5];
 saveas(f,fullfile(savedir,['SystemsRadial_k',num2str(numClusters),name_root,'.pdf']));
+
+% for source data file
+save(fullfile(savedir,['Fig2b__YeoSystemAlignment_k',num2str(numClusters),'.mat']),'netAngle','net7angle_Up','net7angle_Down');

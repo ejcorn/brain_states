@@ -30,14 +30,15 @@ pvals_2b0b = PERM_TEST(TwoBack.BlockTransitionProbabilityMats,ZeroBack.BlockTran
 %% plot
 f=figure;
 subplot(1,3,2);
-imagesc((TwoBackTP-ZeroBackTP).*~eye(numClusters)); colormap('plasma');
+TwoBackMinusZeroBackTP = (TwoBackTP-ZeroBackTP);
+imagesc(TwoBackMinusZeroBackTP.*~eye(numClusters)); colormap('plasma');
 xticks(1:numClusters); xticklabels(clusterNames); xtickangle(90);
 yticks(1:numClusters); yticklabels(clusterNames); axis square
 ylabel('State at t'); xlabel('State at t + 1');
 sig_thresh = 0.05 / (numClusters^2);      % bonferroni correction, for two-tailed p-values so only
 [y,x] = find(pvals_2b0b.*~eye(numClusters) < sig_thresh);
 text(x-.12,y+.12,'*','Color','w');
-caxis_bound = max(max(abs((TwoBackTP-ZeroBackTP).*~eye(numClusters))));
+caxis_bound = max(max(abs(TwoBackMinusZeroBackTP.*~eye(numClusters))));
 h = colorbar; ylabel(h,'2back - 0back'); caxis([-caxis_bound caxis_bound]); h.Ticks = [-caxis_bound 0 caxis_bound]; h.TickLabels = [round(-caxis_bound,2,'significant') 0 round(caxis_bound,2,'significant')];
 COLOR_TICK_LABELS(true,true,numClusters);
 title('2-back > 0-back');
@@ -55,8 +56,8 @@ saveas(f,fullfile(savedir,['TwoBackvsZeroBack_nonpar_k',num2str(numClusters),'.p
 
 [y,x] = find(diag(pvals_2b0b)' < sig_thresh);
 f=figure;
-imagesc(diag((TwoBackTP-ZeroBackTP))');
-caxis_bound = max(max(abs(diag((TwoBackTP-ZeroBackTP)))));
+imagesc(diag(TwoBackMinusZeroBackTP)');
+caxis_bound = max(max(abs(diag(TwoBackMinusZeroBackTP))));
 xticks([]); yticks([]);
 text(x-.12,y+.12,'*','Color','w');
 caxis([-caxis_bound caxis_bound]); colormap('plasma'); %colorbar
@@ -69,3 +70,6 @@ f.PaperUnits = 'inches';
 f.PaperSize = [1 .2];
 f.PaperPosition = [0 0 1 .2];
 saveas(f,fullfile(savedir,['PersistTwoBackvsZeroBack_nonpar_k',num2str(numClusters),'.pdf']));
+
+% for source data file
+save(fullfile(savedir,['FigS8d__nBackMinusRest_k',num2str(numClusters),'.mat']),'TwoBackMinusZeroBackTP','pvals_2b0b');

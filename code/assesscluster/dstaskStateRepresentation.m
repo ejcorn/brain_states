@@ -33,8 +33,9 @@ end
 
 RNcolors = {'#005C9F','#FF8400'};
 RNcolors = hex2rgb(RNcolors);
+dsTaskStateRepresentation = [restAbsentStateCount;nbackAbsentStateCount]';
 f = figure;
-bar([restAbsentStateCount;nbackAbsentStateCount]','FaceAlpha',.5);
+bar(dsTaskStateRepresentation,'FaceAlpha',.5);
 xticks(1:2:numK);xticklabels(minNumClusters:2:maxNumClusters);
 ylabel('% Subjects'); xlabel('k','FontWeight','bold'); title('Absent States');
 legend({'Rest','n-back'},'Location','northwest')
@@ -44,4 +45,5 @@ f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 
 saveas(f,[masterdir,'/analyses/choosing_k/rvn/DownSampleTaskStateRepresentation',name_root,'.pdf']);
+save(fullfile(masterdir,'/analyses/choosing_k/rvn/',['FigS5f__DownSampleStateRepresentation_k',num2str(numClusters),name_root,'.mat']),'dsTaskStateRepresentation');
 

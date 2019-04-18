@@ -63,6 +63,8 @@ for(S in 1:length(scanlab)){
 	print(paste(scanttl[S],'Mean:',r.bootmean))
 	r.text = paste("r =",r.bootmean)
 
+	save(SC,TP,r.bootmean,boot.cors,file=paste(masterdir,'analyses/structrans/Fig5b-c__',scanlab[S],'Thresh',thrsh,'_k',numClusters,name_root,'.RData',sep = ''))
+
 	p <- ggplot() + geom_point(aes(x = SC,y = TP),color = ptcol,size = 1, alpha = 0.75,stroke = 0) + 
 		geom_smooth(aes(x = SC,y = TP),color = lncol, fill = lncol,method = 'lm',size=0.5) +
 		scale_y_continuous(limits = c(0.05,0.26),breaks= seq(0.05,0.25,length.out=5)) + scale_x_continuous() +

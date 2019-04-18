@@ -49,6 +49,11 @@ print(paste('Cohen\'s f^2 for age:',cohens.f2(mdl,'age_in_yrs')))
 df <- data.frame(y = residuals(mdl) + summary(mdl)$coef['age_in_yrs','Estimate']*demo$age_in_yrs, x = demo$age_in_yrs)
 names(df) <- c('r(SC,TP)','Age')
 pval <- signif(summary(mdl)$coef['age_in_yrs','Pr(>|t|)']*2,2) # bonferroni correct over rest and n-back
+
+if(name_root == 'ScanCLaus250Z0final' && numClusters == 5){
+	save(df,pval, file=paste(savedir,'Fig7h__nBackBlockSCTPCorr_k',numClusters,'.RData',sep =''))
+}
+
 p <- ggplot(df,aes(x=Age,y=`r(SC,TP)`)) + geom_point(color = 'grey60',stroke = 0, size = 1, alpha = 0.6) + ggtitle('n-back') + 
 	geom_smooth(fill = RNcolors[2], color = RNcolors[2], method = 'lm') + 
 	geom_text(aes(x = 0.9*max(Age), y = 0.9*max(`r(SC,TP)`),label = paste('p =',pval)), size = 2.5) +

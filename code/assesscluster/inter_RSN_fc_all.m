@@ -83,3 +83,6 @@ f.PaperUnits = 'centimeters';
 f.PaperPosition = [0 0 9 6];
 f.PaperSize = [9 6];
 saveas(f,fullfile(savedir,[r_n_name,'MeanInterYeoSystemFC.pdf']));
+
+% for source data file
+save(fullfile(savedir,['FigS3a__MeanInterYeoSystemFC_',num2str(numClusters),'.mat']),'SystemAverageConnectivity','SystemAverageConnectivity_pval');

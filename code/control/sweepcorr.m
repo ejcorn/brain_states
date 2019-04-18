@@ -158,7 +158,8 @@ f.PaperPosition = [0 0 9 6];
 saveas(f,fullfile(savedir,['DT_PESweepCorrMean_k',num2str(numClusters),'.pdf']));
 
 %% save correlations for plotting
-
+sweepCorrRestMatrix = sweepCorrRest;
 sweepCorrRest = reshape(sweepCorrRest,[],1);
+sweepCorrnBackMatrix = sweepCorrnBack;
 sweepCorrnBack = reshape(sweepCorrnBack,[],1);
-save(fullfile(savedir,['SweepDTPECorrs_k',num2str(numClusters),'.mat']),'sweepCorrRest','sweepCorrnBack');
+save(fullfile(savedir,['SweepDTPECorrs_k',num2str(numClusters),'.mat']),'sweepCorrRest','sweepCorrnBack','sweepCorrRestMatrix','sweepCorrnBackMatrix');

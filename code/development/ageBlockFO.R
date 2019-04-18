@@ -64,6 +64,10 @@ pdat <- as.data.frame(rbind(pdat[1:numClusters,1:2],pdat[1:numClusters,3:4],pdat
 pdat$Scan = c(rep('0-back',numClusters),rep('1-back',numClusters),rep('2-back',numClusters))
 pdat$State = rep(clusterNames,3)
 
+if(name_root == 'ScanCLaus250Z0final' && numClusters == 5){
+	save(pdat, file=paste(savedir,'Fig7d__nBackBlockAgeFractionalOccupancy_k',numClusters,'.RData',sep =''))
+}
+
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
 	geom_bar(stat = "identity", position = position_dodge(width = NULL),alpha = 0.8, color = 'black') +
   geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["Age"])) + ggtitle('Block Fractional Occupancy') +

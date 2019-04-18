@@ -80,14 +80,15 @@ grpAvgRest = squeeze(mean(restTransitionProbabilityMats,1));
 grpAvgnBack = squeeze(mean(nBackTransitionProbabilityMats,1));
 
 subplot(1,3,3);
-imagesc((grpAvgnBack-grpAvgRest).*~eye(numClusters)); colormap('plasma');
+HCPnBackMinusRestTP = (grpAvgnBack-grpAvgRest);
+imagesc(HCPnBackMinusRestTP.*~eye(numClusters)); colormap('plasma');
 xticks(1:numClusters); xticklabels(clusterNames); xtickangle(90);
 yticks(1:numClusters); yticklabels(clusterNames); axis square
 ylabel('State at t'); xlabel('State at t + 1');
 sig_thresh = 0.05 / numClusters^2;      % bonferroni correction, for two-tailed p-values so only
 [y,x] = find(pvals_twotail.*~eye(numClusters) < sig_thresh);
 text(x-.12,y+.12,'*','Color','w');
-caxis_bound = max(max(abs((grpAvgnBack-grpAvgRest).*~eye(numClusters))));
+caxis_bound = max(max(abs(HCPnBackMinusRestTP.*~eye(numClusters))));
 h = colorbar; ylabel(h,'nback - rest'); caxis([-caxis_bound caxis_bound]); h.Ticks = [-caxis_bound 0 caxis_bound]; h.TickLabels = [round(-caxis_bound,2,'significant') 0 round(caxis_bound,2,'significant')];
 COLOR_TICK_LABELS(true,true,numClusters);
 title('n-back > Rest');
@@ -106,8 +107,8 @@ grpAvgnBack = squeeze(mean(nBackTransitionProbabilityMats,1));
 
 [y,x] = find(diag(pvals_twotail)' < sig_thresh);
 f=figure;
-imagesc(diag((grpAvgnBack-grpAvgRest))');
-caxis_bound = max(max(abs(diag((grpAvgnBack-grpAvgRest)))));
+imagesc(diag(HCPnBackMinusRestTP)');
+caxis_bound = max(max(abs(diag(HCPnBackMinusRestTP))));
 xticks([]); yticks([]);
 text(x-.12,y+.12,'*','Color','w');
 caxis([-caxis_bound caxis_bound]); colormap('plasma'); %colorbar
@@ -153,3 +154,5 @@ f.PaperPosition = [0 0 1 .2];
 
 saveas(f,fullfile(savedir,['HCP_XH_nBackPersistenceProbs_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),'.pdf']),'pdf');
 
+% for source data file
+save(fullfile(savedir,['FigS6d-f__HCPTransProbs_k',num2str(numClusters),'.mat']),'HCPgrpAvgRest','HCPgrpAvgnBack','HCPnBackMinusRestTP','pvals_twotail','rPP','nPP');

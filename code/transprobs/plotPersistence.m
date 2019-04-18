@@ -55,6 +55,19 @@ f.PaperPosition = [0 0 1 .2];
 cd(savedir);
 saveas(f,['RestPersistenceProbs_k',num2str(numClusters),'.pdf']);
 
+% for source data file
+if strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 5
+    save(['Fig4a__RestPersistProbs_k',num2str(numClusters),'.mat'],'rPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 4
+    save(['FigS13c__RestPersistProbs_k',num2str(numClusters),'.mat'],'rPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 6
+    save(['FigS14c__RestPersistProbs_k',num2str(numClusters),'.mat'],'rPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus250Z0cosinefinal') && numClusters == 5
+    save(['FigS12c__RestPersistProbs_k',num2str(numClusters),'.mat'],'rPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus125Z0final') && numClusters == 5
+    save(['FigS15c__RestPersistProbs_k',num2str(numClusters),'.mat'],'rPP','probExceedNull');
+end
+
 %% n-back
 disp('starting to calculate shuffled persistence probabilities n-back');
 tic
@@ -93,3 +106,17 @@ f.PaperSize = [1 .2];
 f.PaperPosition = [0 0 1 .2];
 cd(savedir);
 saveas(f,['nBackPersistenceProbs_k',num2str(numClusters),'.pdf']);
+
+% for source data file
+
+if strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 5
+    save(['Fig4b__nBackPersistProbs_k',num2str(numClusters),'.mat'],'nPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 4
+    save(['FigS13d__nBackPersistProbs_k',num2str(numClusters),'.mat'],'nPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 6
+    save(['FigS14d__nBackPersistProbs_k',num2str(numClusters),'.mat'],'nPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus250Z0cosinefinal') && numClusters == 5
+    save(['FigS12d__nBackPersistProbs_k',num2str(numClusters),'.mat'],'nPP','probExceedNull');
+elseif strcmp(name_root,'ScanCLaus125Z0final') && numClusters == 5
+    save(['FigS15d__nBackPersistProbs_k',num2str(numClusters),'.mat'],'nPP','probExceedNull');
+end

@@ -77,6 +77,7 @@ f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 cd(savedir);
+save(['FigS1c__SplithalvesCentroidSimilarity_k',num2str(numClusters),name_root,'.mat'],'maxCentroidTrainTestCorr');
 saveas(f,['SplithalvesCentroidSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
 %% reorder to compare trans probs
@@ -131,6 +132,8 @@ f.PaperPosition = [0 0 4 4];
 cd(savedir);
 saveas(f,['SplithalvesRestPPSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
+save(['FigS1d__SplithalvesRestTransitionCorr_k',num2str(numClusters),name_root,'.mat'],'test_train_TPcorr','test_train_PPcorr');
+
 %% transition probability similarity, n-back
 
 nback_transitions_train = zeros(totalNumReps,numTransitions);
@@ -165,3 +168,5 @@ f.PaperSize = [4 4];
 f.PaperPosition = [0 0 4 4];
 cd(savedir);
 saveas(f,['SplithalvesnbackPPSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
+
+save(['FigS1e__SplithalvesnBackTransitionCorr_k',num2str(numClusters),name_root,'.mat'],'test_train_TPcorr','test_train_PPcorr');

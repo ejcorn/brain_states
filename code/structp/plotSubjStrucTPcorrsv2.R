@@ -58,7 +58,19 @@ nback <- cbind(nTPSC,nTPSTP,nTPComm)
 
 grps <- rbind(matrix('Rest',nrow = nrow(rest),ncol = ncol(rest)),matrix('n-back',nrow = nrow(nback),ncol = ncol(nback)))
 metrics <- sapply(1:ncol(rest), function(K) rep(as.character(K),nrow(rest)))
-p <- ggplot() + geom_violin(aes(x = as.vector(rbind(metrics,metrics)), y = as.vector(rbind(rest,nback)),fill = as.vector(grps))) + theme_classic() +
+df.plt <- data.frame(metrics.cat=as.vector(rbind(metrics,metrics)),r.vals=as.vector(rbind(rest,nback)),grps.cat=as.vector(grps))
+
+if(name_root == 'ScanCLaus250Z0final' & numClusters == 5){
+  save(rest,nback,df.plt,file=paste(strucdir,'Fig5d__RvNSubjStrucTPCorrs_Thresh',thrsh,'_k',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus250Z0final' & numClusters == 6){
+  save(rest,nback,df.plt,file=paste(strucdir,'FigS14g__RvNSubjStrucTPCorrs_Thresh',thrsh,'_k',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus250Z0cosinefinal' & numClusters == 5){
+  save(rest,nback,df.plt,file=paste(strucdir,'FigS12g__RvNSubjStrucTPCorrs_Thresh',thrsh,'_k',numClusters,name_root,'.RData',sep = ''))
+} else if(name_root == 'ScanCLaus125Z0final' & numClusters == 5){
+  save(rest,nback,df.plt,file=paste(strucdir,'FigS15g__RvNSubjStrucTPCorrs_Thresh',thrsh,'_k',numClusters,name_root,'.RData',sep = ''))
+}
+
+p <- ggplot(df.plt) + geom_split_violin(aes(x = metrics.cat, y = r.vals,fill = grps.cat)) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + scale_y_continuous(limits = c(-0.9,0.9)) +
   ylab("r(SC,TP)") + xlab("") +theme(text = element_text(size = 8)) +
   theme(legend.title = element_blank(),legend.position = 'none',axis.text.x = element_text(color = c("#D12631","#FFDC01","#0063B9"))) + 
@@ -85,4 +97,4 @@ for(K in 1:ncol(rest)){
 }
 
 print(rvn.t)
-ggsave(plot = p, filename = paste(strucdir,'RvNStrucTPCorr_k',numClusters,'thresh',thrsh,'.pdf',sep =""),height = 1.8,width = 1.5, units = "in")
+ggsave(plot = p, filename = paste(strucdir,'RvNStrucTPCorr_k',numClusters,'thresh',thrsh,'.pdf',sep =""),height = 4,width = 4, units = "cm")

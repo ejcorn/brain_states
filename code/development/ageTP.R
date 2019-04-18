@@ -58,11 +58,17 @@ pdat$nBackP <- p.list[[2]] #< 0.05
 
 b.mat <- matrix(pdat$RestB, nrow = numClusters, byrow = TRUE)
 p.mat <- matrix(pdat$RestP, nrow = numClusters, byrow = TRUE)
+if(name_root == 'ScanCLaus250Z0final' && numClusters == 5){
+	save(b.mat,p.mat, file=paste(savedir,'Fig7e__RestAgeTransProbs_k',numClusters,'.RData',sep =''))
+}
 p <- plot.beta.matrix(b.mat,p.mat,clusterColors,clusterNames,title = 'Rest')
 ggsave(plot = p,filename = paste(savedir,'RestTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 5.5,width = 5.5)
 
 b.mat <- matrix(pdat$nBackB, nrow = numClusters, byrow = TRUE)
 p.mat <- matrix(pdat$nBackP, nrow = numClusters, byrow = TRUE)
+if(name_root == 'ScanCLaus250Z0final' && numClusters == 5){
+	save(b.mat,p.mat, file=paste(savedir,'Fig7f__nBackAgeTransProbs_k',numClusters,'.RData',sep =''))
+}
 p <- plot.beta.matrix(b.mat,p.mat,clusterColors,clusterNames,title = 'n-back')
 
 ggsave(plot = p,filename = paste(savedir,'nBackTPAge_k',numClusters,'.pdf',sep =''),units = 'cm',height = 5.5,width = 5.5)

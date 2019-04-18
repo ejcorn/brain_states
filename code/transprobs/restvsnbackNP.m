@@ -37,7 +37,7 @@ maxval = max(max([grpAvgRest,grpAvgnBack]))
 
 % add asterisks for significance relative to null
 lt = 0.025/(2*numClusters^2); ut = 1-lt;   % two-tailed Bonferroni corrected thresholds over rest and n-back
-load(['randnull/',scanlab{1},'Null_ShuffledStatesD_k',num2str(numClusters),'.mat'])
+load(['randnull/',scanlab{1},'Null_ShuffledStatesD_k',num2str(numClusters),'.mat'],'probExceedNull')
 [ygt,xgt] = find((probExceedNull > ut).*~eye(numClusters));
 [ylt,xlt] = find((probExceedNull < lt).*~eye(numClusters));
 
@@ -57,7 +57,7 @@ set(gca,'TickLength',[0 0]);
 set(gca,'Fontname','arial');
 
 clear probExceedNull
-load(['randnull/',scanlab{2},'Null_ShuffledStatesD_k',num2str(numClusters),'.mat'])
+load(['randnull/',scanlab{2},'Null_ShuffledStatesD_k',num2str(numClusters),'.mat'],'probExceedNull')
 [ygt,xgt] = find((probExceedNull > ut).*~eye(numClusters));
 [ylt,xlt] = find((probExceedNull < lt).*~eye(numClusters));
 cd(savedir);
@@ -76,7 +76,8 @@ set(gca,'TickLength',[0 0]);
 set(gca,'Fontname','arial');
 
 subplot(1,3,3);
-imagesc((grpAvgnBack-grpAvgRest).*~eye(numClusters)); colormap('plasma');
+nBackMinusRestTPMat = (grpAvgnBack-grpAvgRest);
+imagesc(nBackMinusRestTPMat.*~eye(numClusters)); colormap('plasma');
 xticks(1:numClusters); xticklabels(clusterNames); xtickangle(90);
 yticks(1:numClusters); yticklabels(clusterNames); axis square
 ylabel('State at t'); xlabel('State at t + 1');
@@ -84,7 +85,7 @@ sig_thresh = 0.05 / numClusters^2;      % bonferroni correction, for two-tailed 
 [y,x] = find(pvals_twotail.*~eye(numClusters) < sig_thresh);
 text(x-.12,y+.12,'*','Color','w');
 %h=colorbar; ylabel(h,'-log_{10}(p)'); caxis([0 log10(nperms)]); h.Ticks = [0 ut lt log10(nperms)]; h.TickLabels = [0 round(ut,2,'significant') round(lt,2,'significant') log10(nperms)];
-caxis_bound = max(max(abs((grpAvgnBack-grpAvgRest).*~eye(numClusters))));
+caxis_bound = max(max(abs(nBackMinusRestTPMat.*~eye(numClusters))));
 h = colorbar; ylabel(h,'nback - rest'); caxis([-caxis_bound caxis_bound]); h.Ticks = [-caxis_bound 0 caxis_bound]; h.TickLabels = [round(-caxis_bound,2,'significant') 0 round(caxis_bound,2,'significant')];
 COLOR_TICK_LABELS(true,true,numClusters);
 title('n-back > Rest');
@@ -105,8 +106,8 @@ grpAvgnBack = squeeze(mean(nBackTransitionProbabilityMats,1));
 
 [y,x] = find(diag(pvals_twotail)' < sig_thresh);
 f=figure;
-imagesc(diag((grpAvgnBack-grpAvgRest))');
-caxis_bound = max(max(abs(diag((grpAvgnBack-grpAvgRest)))));
+imagesc(diag(nBackMinusRestTPMat)');
+caxis_bound = max(max(abs(diag(nBackMinusRestTPMat))));
 xticks([]); yticks([]);
 text(x-.12,y+.12,'*','Color','w');
 caxis([-caxis_bound caxis_bound]); colormap('plasma'); %colorbar
@@ -119,3 +120,17 @@ f.PaperUnits = 'inches';
 f.PaperSize = [1 .2];
 f.PaperPosition = [0 0 1 .2];
 saveas(f,['PersistRestvsnBack_nonpar_k',num2str(numClusters),'.pdf']);
+
+% for source data file
+
+if strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 5
+    save(['Fig4c__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
+elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 4
+    save(['FigS13e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
+elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 6
+    save(['FigS14e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
+elseif strcmp(name_root,'ScanCLaus250Z0cosinefinal') && numClusters == 5
+    save(['FigS12e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
+elseif strcmp(name_root,'ScanCLaus125Z0final') && numClusters == 5
+    save(['FigS15e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
+end

@@ -17,13 +17,6 @@ print('1')
 symmdir <- paste(basedir,'results/',name_root,'/analyses/development/symmetry/',sep = '')
 dir.create(symmdir,recursive = TRUE)
 
-print('2')
-
-unifdir <- paste(basedir,'results/',name_root,'/analyses/development/randnull/',sep = '')
-dir.create(unifdir,recursive = TRUE)
-
-print('2')
-
 scanlab <- c("RestComb","nBackComb")
 scanttl <- c('Rest','n-back')
 RNcolors <- c('#005C9F','#FF8400')  
@@ -62,7 +55,11 @@ for(i in 1:length(scanlab)){
 	# get partial residuals
 	Asymmetry <- residuals(age.symm) + summary(age.symm)$coefficients['age_in_yrs','Estimate']*demo$age_in_yrs
 	Age <- demo$age_in_yrs	
-	
+
+	if(name_root == 'ScanCLaus250Z0final' && numClusters == 5){
+		save(Age,Asymmetry,pval, file=paste(symmdir,'Fig7g__AgeVsAsymmetry',scanlab[i],'_k',numClusters,'.RData',sep =''))
+	}
+
 	p <- ggplot() + geom_point(aes(x = Age, y = Asymmetry),color = 'grey60',stroke = 0, size = 1, alpha = 0.6) + 
 	geom_smooth(aes(x=Age, y = Asymmetry),fill = RNcolors[i], color = RNcolors[i], method = 'lm') + ggtitle(paste(scanttl[i])) + 
 	geom_text(aes(x = 0.9*max(Age), y = 0.9*max(Asymmetry),label = paste('p =',pval)), size = 2.5) +

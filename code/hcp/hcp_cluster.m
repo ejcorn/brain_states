@@ -49,7 +49,8 @@ saveas(f,fullfile(savedir,['HCP_XHClusterSpatialCorr_k',num2str(numClusters),'_R
 %% within HCP spatial corr
 
 f = figure;
-imagesc(corr(HCPcentroidsPNCorder)); colormap('plasma');
+HCPSpatialCorr = corr(HCPcentroidsPNCorder);
+imagesc(HCPSpatialCorr); colormap('plasma');
 r_labels = cellstr(num2str(round(diag(corr(HCPcentroidsPNCorder)),2,'significant')))';
 text((1:numClusters)-0.1,(1:numClusters),r_labels,'Color','k','FontSize',6)
 ylabel('HCP'); xlabel('HCP'); axis square
@@ -65,6 +66,8 @@ f.PaperSize = [2.7 2.7];
 f.PaperPosition = [0 0 2.7 2.7];
 
 saveas(f,fullfile(savedir,['HCP_XHBetweenClusterSpatialCorr_k',num2str(numClusters),'_R',num2str(rTR),'N',num2str(nTR),name_root,'.pdf']),'pdf');
+
+save(fullfile(savedir,['FigS6b-c__HCPCentroidSpatialCorr_k',num2str(numClusters),'.mat']),'HCPSpatialCorr','PNCvsHCPorder');
 
 %% reorder centroids based on similarity to original centroids
 

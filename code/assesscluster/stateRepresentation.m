@@ -45,4 +45,5 @@ savedir = fullfile(masterdir,'analyses','choosing_k');
 mkdir(savedir);
 
 saveas(f,fullfile(savedir,['StateRepresentation',name_root,'.pdf']));
-
+CombinedStateRepresentation = [restAbsentStateCount;nbackAbsentStateCount]';
+save(fullfile(savedir,['FigS1b__StateRepresentation',name_root,'.mat']),'CombinedStateRepresentation');

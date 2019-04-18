@@ -12,10 +12,10 @@ alias ENDCOMMENT="fi"
 # set parcellation, distance method, z-score, scans
 
 ZDIM=0
-METHOD='cosine'
+METHOD='correlation'
 NPARC=250
 SCAN='C'
-LAB='cosinefinal'
+LAB='final'
 
 ROOT='Scan'$SCAN'Laus'$NPARC'Z'$ZDIM$LAB
 BASEDIR='/data/tesla-data/ecornblath/brain_states/'
@@ -70,15 +70,16 @@ ASSIGN="${ASSIGN//[!0-9]/}"
 ### Supplemental control analyses related to clustering ###
 ###########################################################
 
-qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN kmeansmotion.sh
+qsub -N "motioncluster" -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN kmeansmotion.sh
+qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "motioncluster" plotkmeansmotion.sh
 qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN kmeanstaskregress.sh
 qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN distancetostate.sh
 qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN inter_RSN_fc.sh
 
-for K in {2..11}; do
-	qsub -N "DSTASK$K" -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN dstaskcluster.sh
+for Ki in {2..11}; do
+	qsub -N "DSTASK$Ki" -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$Ki,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN dstaskcluster.sh
 done
-K=5
+
 qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "DSTASK*" dstaskassess.sh
 
 NSPLITS_SH=50
@@ -89,22 +90,22 @@ qsub -l h_vmem=16.5G,s_vmem=16G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,NSPLITS
 
 #qsub -N "nullts" -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $PROC makenullts.sh
 #qsub -N "nullcluster" -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullts" clusternullts.sh
-#qsub -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullcluster" plot_silhouette_null.sh
+#qsub -N "nullcentroids" -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullcluster" iprnullcentroids.sh
+#qsub -l h_vmem=24.5G,s_vmem=24G -q $QUEUE -v METHOD=$METHOD,K=$K,D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid "nullcentroids" plot_silhouette_null.sh
 
 #########################
 ### Assess clustering ###
 #########################
 
-for K in {2..11}
+for Ki in {2..11}
 do
-	qsub -N "zrand" -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN calczrand.sh
+	qsub -N "zrand" -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,K=$Ki,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN calczrand.sh
 done
 
 qsub -N "plotzrand" -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v METHOD=$METHOD,D=$ROOT,N=$NSPLITS,BD=$BASEDIR,MP=$MATPATH -hold_jid "zrand" plotzrand.sh
 
 qsub -l h_vmem=10.5G,s_vmem=10G -q $QUEUE -v D=$ROOT,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN stateRepresentation.sh
 
-K=5
 qsub -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v D=$ROOT,K=$K,BD=$BASEDIR,MP=$MATPATH -hold_jid $ASSIGN systems_plot.sh
 
 ######################
@@ -199,6 +200,7 @@ for S in $(seq $NSPLITS_BOOTSC); do 	# bootstrap group average SC
 done
 #ENDCOMMENT
 
+NSPLITS_SWEEP=25
 for S in $(seq $NSPLITS_SWEEP); do 	# sweep through control horizon and normalization for each bootstrapped SC matrix
 	qsub -N "SWEEP$S" -l h_vmem=12.5G,s_vmem=12G -q $QUEUE -v D=$ROOT,BD=$BASEDIR,K=$K,MP=$MATPATH,NSPLITS=$NSPLITS_SWEEP,NPERMS=$NPERMS_BOOTSC,S=$S -hold_jid $DMAT,"BOOTSC*" scalinghorizonsweep.sh
 done

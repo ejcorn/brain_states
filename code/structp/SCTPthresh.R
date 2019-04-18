@@ -80,6 +80,7 @@ for(S in 1:length(scanlab)){
 
     pv <- as.character(ifelse(sig.vs.null,yes='*',no=''))
     df <- data.frame(SCTP=SCTP.bythrsh,SCTP.null=SCTP.bythrsh.null,thrsh=thrsh.rng,pv=pv)#,
+    save(df,file=paste(masterdir,'analyses/structrans/FigS11a-b__ThreshRange',scanlab[S],'TPSC_k',numClusters,name_root,'.RData',sep=''))
 
     print(scanttl[S])
     p <- ggplot(data=df) + geom_line(aes(x = thrsh,y = SCTP),color = lncol,size = 0.5) +   

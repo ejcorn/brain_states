@@ -11,7 +11,7 @@ zRandAllK = zeros(numK,2);
 %
 for K = 1:numK
 	load(fullfile(masterdir,'clusterAssignments',['zrand_k',num2str(clusterRange(K)),name_root,'.mat']),'zRandK');
-	zRandAllK(K,:) = zRandK(clusterRange(K),:);
+	zRandAllK(K,:) = zRandK; %(clusterRange(K),:);
 end
 
 barcolors = [53 183 121; 68 1 84] / 255;
@@ -25,6 +25,7 @@ f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 saveas(f,fullfile(savedir,['zRandbyK',num2str(nreps),'reps.pdf']),'pdf');
+save(fullfile(savedir,['FigS1a__zRandbyK',num2str(nreps),'reps.mat']),'zRandAllK'); % for source data file
 
 f = figure;
 cv = zRandAllK(:,2)./zRandAllK(:,1)

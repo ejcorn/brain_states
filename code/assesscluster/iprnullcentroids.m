@@ -30,8 +30,11 @@ else
 	IPR_centroidsPNCorder = kClusterCentroids;
 end
 
+IPRNullSpatialCorr = PNCvsIPR(shuffleIdx,:);
+save(fullfile(savedir,['FigS4f__IPRNullSpatialCorr_k',num2str(numClusters),name_root,'.mat']),'IPRNullSpatialCorr');
+
 f = figure;
-imagesc(PNCvsIPR(shuffleIdx,:)); colormap('plasma');
+imagesc(IPRNullSpatialCorr); colormap('plasma');
 ylabel('IPR Null'); xlabel('Full Sample'); axis square
 yticks(1:numClusters); xticks(1:numClusters);
 yticklabels(clusterNames); xticklabels(PNCnames);

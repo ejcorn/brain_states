@@ -59,6 +59,9 @@ f.PaperSize = [3 1.5];
 f.PaperPosition = [0 0 3 1.5];
 saveas(f,['RvNCentroidSpatialCorr_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
+% for source data file
+save(['FigS5b__RvNCentroidSpatialCorr_k',num2str(numClusters),name_root,'.mat'],'r');
+
 % Get overall centroids
 
 kClusterCentroids = zeros(nparc,numClusters);
@@ -94,3 +97,5 @@ save(['OverallClusterCentroids_k',num2str(numClusters),name_root,'.mat'],'kClust
 
 % overall centroids spatial anticorrelation
 
+% for source data file
+save(['FigS5a__OverallCentroidSpatialCorr_k',num2str(numClusters),name_root,'.mat'],'clusterCorr');

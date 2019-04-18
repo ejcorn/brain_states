@@ -60,8 +60,10 @@ nback.rsig <- sapply(nback.distcors,function(d) (d$p.value < 0.05))
 
 dat <- c(rest.r,nback.r)
 grps <- c(rep('Rest',nobs),rep('n-back',nobs))
+df <- data.frame(dat=dat,grps=grps)
+save(df, file = paste(savedir,'/Fig4e__RvNDistanceTPCorr_k',numClusters,name_root,'.RData',sep = ''))
 
-p <- ggplot() + geom_violin(aes(x=grps,y=dat,fill=grps)) + theme_classic() +
+p <- ggplot(df) + geom_violin(aes(x=grps,y=dat,fill=grps)) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + 
   ylab("r(TP,Distance)") + xlab("") +theme(text = element_text(size = 8)) + 
   scale_x_discrete(limits = c('Rest','n-back'),breaks= c('Rest','n-back'),label =c('Rest','n-back')) +
