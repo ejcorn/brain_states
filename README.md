@@ -24,6 +24,10 @@ finalmain.sh is a bash script that will produce every figure in the paper. There
   
 ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code without obtaining the necessary BOLD data, one could replace the variables "concTS" and "SCVolnorm" in this script with random numbers.
 
+code/miscfxns/addpaths.m also requires specification of a paths to a couple of existing open-source software packages:
+  - Brain Connectivity Toolbox, MATLAB version: https://sites.google.com/site/bctnet/
+  - Network Community Toolbox: http://commdetect.weebly.com/
+
 The user can also specify certain parameters in finalmain.sh:
 
   - ZDIM: should time series be z-scored? We did not z-score but one can if desired.
