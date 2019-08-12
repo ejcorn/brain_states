@@ -15,7 +15,7 @@ Code to reproduce all analysis in Cornblath et al. 2018 ("Context-dependent arch
   
 This software was tested on GNU Linux using the Center for Functional Neuroimaging computing cluster (https://cfn.upenn.edu/).
 
-## Directory structure and path specificaioin
+## Directory structure and path specification
 
 Scripts are organized by their purpose in the code folder. The jobs folder contains shell scripts to allow the scripts in code folder to be submitted to a computing cluster using a Sun Grid Engine job scheduler (qsub). 
 
