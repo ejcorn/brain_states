@@ -23,6 +23,16 @@ finalmain.sh is a bash script that will produce every figure in the paper. There
   - BASEDIR: the path to the master branch of this repository, i.e. /Users/Eli/Dropbox/brain_states
   - MATPATH: the path to the user's MATLAB binary, i.e. /Applications/MATLAB_R2017a.app/bin/matlab
   - RPATH: the path to the user's Rscript function i.e. Rscript
+
+Additionally, data dependencies are as follows (where `$NPARC` is the parcellation scale and `$ID` is a subject ID):
+  - `datadir_main`: at the top of processDataBaumSample.m, specifies the path to processed data. Within this directory there should be:
+      - `subject_demographics/*.csv` with csv file of demographics, containing scanids and bblids
+      - `diffusion_data/volNormSC/Lausannne${NPARC}/${ID}_volNormStreamline_LausanneScale${NPARC}.mat`
+      - `diffusion_data/FA/Lausanne${NPARC}/${ID}_FA_LausanneScale${NPARC}.mat`
+      - `rest_data/Lausanne${NPARC}/${ID}_Lausanne${NPARC}_ts.1D`
+      - `nback_data/Lausanne${NPARC}/${ID}_Lausanne${NPARC}_ts.1D`
+  - `data/*`: the main data folder of the pipeline
+      - .csv files with n-back performance data
   
 ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code without obtaining the necessary BOLD data, one could replace the variables "concTS" and "SCVolnorm" in this script with random numbers or your own BOLD data.
 
