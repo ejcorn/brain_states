@@ -47,4 +47,4 @@ finalmain.sh will submit NSPLITS-times-10 + ~600 jobs. In our experience, this w
 
 Most of the main analysis scripts are meant to load output from upstream scripts. The file finalmain.sh calls all individual scripts to a job scheduler that will run each script in order of dependency. The initial part of the pipeline collects processed BOLD data and subject information, performs clustering, and saves the cluster assignments. Almost every MATLAB script begins by loading general data (parcellation, number of subjects) and clustering related data (cluster assignments, cluster centroids, cluster names, assignment of TRs to scan or subject). Some scripts will also load the .csv file with BOLD data.
 
-Please contact Eli Cornblath (Eli.Cornblath@pennmedicine.upenn.edu) with any questions regarding this code.
+Please contact Eli Cornblath (Eli ~`DOT`~ Cornblath ~`AT`~ pennmedicine.upenn.edu) with any questions regarding this code.
