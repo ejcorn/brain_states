@@ -24,11 +24,10 @@ finalmain.sh is a bash script that will produce every figure in the paper. There
   - MATPATH: the path to the user's MATLAB binary, i.e. /Applications/MATLAB_R2017a.app/bin/matlab
   - RPATH: the path to the user's Rscript function i.e. Rscript
   
-ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code without obtaining the necessary BOLD data, one could replace the variables "concTS" and "SCVolnorm" in this script with random numbers.
+ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code without obtaining the necessary BOLD data, one could replace the variables "concTS" and "SCVolnorm" in this script with random numbers or your own BOLD data.
 
-code/miscfxns/addpaths.m also requires specification of a paths to a couple of existing open-source software packages:
+code/miscfxns/addpaths.m also requires specification of path to the BCT:
   - Brain Connectivity Toolbox, MATLAB version: https://sites.google.com/site/bctnet/
-  - Network Community Toolbox: http://commdetect.weebly.com/
 
 ## Input specification
 
@@ -43,5 +42,9 @@ The user can also specify certain parameters in finalmain.sh:
   - K: number of clusters for which all analyses will be performed.
  
 finalmain.sh will submit NSPLITS-times-10 + ~600 jobs. In our experience, this will take about a day to run depending on the availability of computing cores. We have not attempted to run this on a normal desktop computer.
+
+## Understanding individual scripts in context
+
+Most of the main analysis scripts are meant to load output from upstream scripts. The file finalmain.sh calls all individual scripts to a job scheduler that will run each script in order of dependency. The initial part of the pipeline collects processed BOLD data and subject information, performs clustering, and saves the cluster assignments. Almost every MATLAB script begins by loading general data (parcellation, number of subjects) and clustering related data (cluster assignments, cluster centroids, cluster names, assignment of TRs to scan or subject). Some scripts will also load the .csv file with BOLD data.
 
 Please contact Eli Cornblath (Eli.Cornblath@pennmedicine.upenn.edu) with any questions regarding this code.
