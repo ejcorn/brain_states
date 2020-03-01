@@ -55,6 +55,14 @@ finalmain.sh will submit NSPLITS-times-10 + ~600 jobs. In our experience, this w
 
 ## Understanding individual scripts in context
 
-Most of the main analysis scripts are meant to load output from upstream scripts. The file finalmain.sh calls all individual scripts to a job scheduler that will run each script in order of dependency. The initial part of the pipeline collects processed BOLD data and subject information, performs clustering, and saves the cluster assignments. Almost every MATLAB script begins by loading general data (parcellation, number of subjects) and clustering related data (cluster assignments, cluster centroids, cluster names, assignment of TRs to scan or subject). Some scripts will also load the .csv file with BOLD data. So when reading the scripts, expect that some loaded variables are in the workspace but are only defined in other scripts.
+Most of the main analysis scripts are meant to load output from upstream scripts. The file finalmain.sh calls all individual scripts to a job scheduler that will run each script in order of dependency. The initial part of the pipeline collects processed BOLD data and subject information, performs clustering, and saves the cluster assignments. Three variables are passed into almost every MATLAB script:
+
+  -`basedir`: home/working directory for the project see (**Directory structure and path specification**)
+  -`name_root`: name of specific output folder for given set **Input specification**
+  -`numClusters`: number of clusters for clustering solution you want to analyze
+
+Almost every MATLAB script begins by loading general data (parcellation, number of subjects) and clustering related data (cluster assignments, cluster centroids, cluster names, assignment of TRs to scan or subject). Some scripts will also load the .csv file with BOLD data. So when reading the scripts, expect that some loaded variables are in the workspace but are only defined in other scripts.
+
+In order to run just an individual script without rerunning everything, you can paste into your console predefined values for the 3 variables above and it should be sufficient to run most scripts provided the dependent data has already been generated. An example of these "start up" commands is in the file startup_params.txt
 
 Please contact Eli Cornblath (Eli ~`DOT`~ Cornblath ~`AT`~ pennmedicine.upenn.edu) with any questions regarding this code.

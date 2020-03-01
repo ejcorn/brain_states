@@ -1,3 +1,4 @@
+% makes Figure S9
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
@@ -103,6 +104,7 @@ saveas(f,['RestvsnBack_nonpar_k',num2str(numClusters),'.pdf']);
 % retrieve diagonal again
 grpAvgRest = squeeze(mean(restTransitionProbabilityMats,1));    
 grpAvgnBack = squeeze(mean(nBackTransitionProbabilityMats,1));
+nBackMinusRestTPMat = (grpAvgnBack-grpAvgRest);
 
 [y,x] = find(diag(pvals_twotail)' < sig_thresh);
 f=figure;
@@ -120,17 +122,3 @@ f.PaperUnits = 'inches';
 f.PaperSize = [1 .2];
 f.PaperPosition = [0 0 1 .2];
 saveas(f,['PersistRestvsnBack_nonpar_k',num2str(numClusters),'.pdf']);
-
-% for source data file
-
-if strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 5
-    save(['Fig4c__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
-elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 4
-    save(['FigS13e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
-elseif strcmp(name_root,'ScanCLaus250Z0final') && numClusters == 6
-    save(['FigS14e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
-elseif strcmp(name_root,'ScanCLaus250Z0cosinefinal') && numClusters == 5
-    save(['FigS12e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
-elseif strcmp(name_root,'ScanCLaus125Z0final') && numClusters == 5
-    save(['FigS15e__nBackMinusRest_k',num2str(numClusters),'.mat'],'nBackMinusRestTPMat','pvals_twotail');
-end

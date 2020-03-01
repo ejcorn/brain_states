@@ -54,43 +54,7 @@ E.VIS.BCTNull <- do.call('cbind',lapply(1:nperms, function(P) readMat(paste(mast
 	'analyses/control_energy/model_task_inputs/BCTNull_c',c,'T',T.opt.VIS,
 	'/BCTNullPerm',P,'_FA_TransitionEnergiesVISWeightedControl_c',c,'T',T.opt.VIS,'_k',numClusters,'.mat',sep=''))$E.full))
 
-# load DMN #
-
-E.DMN <- readMat(paste(masterdir,'analyses/control_energy/model_task_inputs/TransitionEnergiesDMNWeightedControl_k',
-	numClusters,'.mat',sep=''))
-T.idx.DMN <- which.min(cor(E.DMN$E.full[offDiag,],restTP[offDiag],method=method))
-E.T.DMN <- E.DMN$E.full[,T.idx.DMN]
-T.opt.DMN <- signif(E.DMN$T.rng[T.idx.DMN],2) # T value at which correlation between rest TP and energy is maximal
-print(paste('Optimal T for DMN predicting rest:',T.opt.DMN))
-
-# now load null models for that T value
-E.DMN.DLWNull <- do.call('cbind',lapply(1:nperms, function(P) readMat(paste(masterdir,
-	'analyses/control_energy/model_task_inputs/DLWNull_c',c,'T',T.opt.DMN,
-	'/DLWNullPerm',P,'_FA_TransitionEnergiesDMNWeightedControl_c',c,'T',T.opt.DMN,'_k',numClusters,'.mat',sep=''))$E.full))
-E.DMN.BCTNull <- do.call('cbind',lapply(1:nperms, function(P) readMat(paste(masterdir,
-	'analyses/control_energy/model_task_inputs/BCTNull_c',c,'T',T.opt.DMN,
-	'/BCTNullPerm',P,'_FA_TransitionEnergiesDMNWeightedControl_c',c,'T',T.opt.DMN,'_k',numClusters,'.mat',sep=''))$E.full))
-
 ### compute p-values ###
-
-# DMN control #
-
-r.RealBrain.rest <- cor(E.T.DMN[offDiag],restTP[offDiag],method=method) # correlation between real brain network energy and rest trans probs
-r.DLWNull.rest <- cor(E.DMN.DLWNull[offDiag,],restTP[offDiag],method=method) # correlation between DLW null energy and rest trans probs
-p.DLWNull.rest <- pval.label.np(pvals=mean(r.RealBrain.rest >= r.DLWNull.rest),n=length(r.DLWNull.rest))
-
-r.BCTNull.rest <- cor(E.DMN.BCTNull[offDiag,],restTP[offDiag],method=method) # correlation between BCT null energy and rest trans probs
-p.BCTNull.rest <- pval.label.np(pvals=mean(r.RealBrain.rest >= r.BCTNull.rest),n=length(r.BCTNull.rest))
-
-r.RealBrain.nback <- cor(E.T.DMN[offDiag],nbackTP[offDiag],method=method) # correlation between real brain network energy and nback trans probs
-r.DLWNull.nback <- cor(E.DMN.DLWNull[offDiag,],nbackTP[offDiag],method=method) # correlation between DLW null energy and nback trans probs
-p.DLWNull.nback <- pval.label.np(pvals=mean(r.RealBrain.nback >= r.DLWNull.nback),n=length(r.DLWNull.nback))
-
-r.BCTNull.nback <- cor(E.DMN.BCTNull[offDiag,],nbackTP[offDiag],method=method) # correlation between BCT null energy and nback trans probs
-p.BCTNull.nback <- pval.label.np(pvals=mean(r.RealBrain.nback >= r.BCTNull.nback),n=length(r.BCTNull.nback))
-
-DMN.pvals.rest <- data.frame(test=c('DLW','BCT'),plabel=c(p.DLWNull.rest,p.BCTNull.rest))
-DMN.pvals.nback <- data.frame(test=c('DLW','BCT'),plabel=c(p.DLWNull.nback,p.BCTNull.nback))
 
 # VIS control #
 
@@ -115,7 +79,6 @@ VIS.pvals.nback <- data.frame(test=c('DLW','BCT'),plabel=c(p.DLWNull.nback,p.BCT
 # scatter.ETP() is in code/plottingfxns/plottingfxns.R
 
 E.T.VIS <- rank(E.T.VIS[offDiag])
-E.T.DMN <- rank(E.T.DMN[offDiag])
 restTP <- rank(restTP[offDiag])
 nbackTP <- rank(nbackTP[offDiag])
 
@@ -127,11 +90,3 @@ p.nback <- scatter.ETP(E.T.VIS,nbackTP,RNcolors[2],ttl='2-back',plabel.df=VIS.pv
 save(p.rest,E.T.VIS,nbackTP,VIS.pvals.nback,file=paste0(savedir,'Fig5d__VISControl2Back.RData'))
 ggsave(plot = p.nback,filename = paste(savedir,'VISWeightedEnergyVs2backTP_c',c,'T',T.opt.VIS,method,'_k',numClusters,'.pdf',sep =''),
 	units = 'in',height = 1.5,width = 1.5)
-
-p.rest <- scatter.ETP(E.T.DMN,restTP,RNcolors[1],ttl='Rest',plabel.df=DMN.pvals.rest,method=method)
-ggsave(plot = p.rest,filename = paste(savedir,'DMNWeightedEnergyVsRestTP_c',c,'T',T.opt.DMN,method,'_k',numClusters,'.pdf',sep =''),
-	units = 'in',height = 1.5,width = 1.5)
-p.nback <- scatter.ETP(E.T.DMN,nbackTP,RNcolors[2],ttl='2-back',plabel.df=DMN.pvals.nback,method=method)
-ggsave(plot = p.nback,filename = paste(savedir,'DMNWeightedEnergyVs2backTP_c',c,'T',T.opt.DMN,method,'_k',numClusters,'.pdf',sep =''),
-	units = 'in',height = 1.5,width = 1.5)
-

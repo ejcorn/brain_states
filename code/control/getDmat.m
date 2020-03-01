@@ -6,12 +6,12 @@ mkdir(savedir);
 
 %% get coordinates of spatial embedding
 
-fname = ['data/ROIv_scale',num2str(lausanneScaleBOLD),'_dilated.nii.gz'];
-lausnifti = load_nii(fname);
+[nifti,sc_indices] = RETURN_NII_SUBCORT(name_root,lausanneScaleBOLD);
+
 lauscoor = zeros(nparc,3);
 
 for i = 1:nparc
-    [xind,yind,zind] = ind2sub(size(lausnifti.img),find(ismember(lausnifti.img,i)));
+    [xind,yind,zind] = ind2sub(size(nifti),find(ismember(nifti,i)));
     lauscoor(i,:) = mean([xind,yind,zind],1);
 end
 

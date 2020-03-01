@@ -8,6 +8,7 @@ library(ggplot2)
 library(lm.beta)
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
+source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
 scanlab <- c("RestComb","nBackComb")
 scanttl <- c('Rest','n-back')
 RNcolors <- c('#005C9F','#FF8400')  
@@ -19,9 +20,7 @@ clusterNames <- unlist(clusterAssignments$clusterAssignments[[1]][[5]])
 kClusterCentroids <- clusterAssignments$clusterAssignments[[1]][[2]]
 
 savedir = paste(masterdir,'/analyses/control_energy',sep='');
-if(!dir.exists(savedir)){
-	dir.create(savedir,recursive = TRUE)
-}
+dir.create(savedir,recursive = TRUE)
 
 # account for distance between centroids
 
@@ -61,7 +60,6 @@ nback.rsig <- sapply(nback.distcors,function(d) (d$p.value < 0.05))
 dat <- c(rest.r,nback.r)
 grps <- c(rep('Rest',nobs),rep('n-back',nobs))
 df <- data.frame(dat=dat,grps=grps)
-save(df, file = paste(savedir,'/Fig4e__RvNDistanceTPCorr_k',numClusters,name_root,'.RData',sep = ''))
 
 p <- ggplot(df) + geom_violin(aes(x=grps,y=dat,fill=grps)) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + 

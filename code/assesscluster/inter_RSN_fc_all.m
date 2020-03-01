@@ -1,3 +1,5 @@
+% Makes Fig S8a
+
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
@@ -70,6 +72,7 @@ SystemAverageConnectivity	% show values to write in
 SystemAverageConnectivity_tstat
 SystemAverageConnectivity_pval
 
+% Fig S8a
 f=figure;
 imagesc(SystemAverageConnectivity); 
 text(xp,yp,'*','Color','w');
@@ -83,6 +86,3 @@ f.PaperUnits = 'centimeters';
 f.PaperPosition = [0 0 9 6];
 f.PaperSize = [9 6];
 saveas(f,fullfile(savedir,[r_n_name,'MeanInterYeoSystemFC.pdf']));
-
-% for source data file
-save(fullfile(savedir,['FigS3a__MeanInterYeoSystemFC_',num2str(numClusters),'.mat']),'SystemAverageConnectivity','SystemAverageConnectivity_pval');

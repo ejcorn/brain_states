@@ -23,12 +23,11 @@ clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
 load(fullfile(datadir,'nbackBlocks.mat'));
 
 BlockLabels = [0 1 2];	% only iterate through 0-back, 1-back, 2-back. Ignore rest and instructions
-numBlocks = length(BlockLabels)
+numBlocks = length(BlockLabels);
 BlockNames = {'0back','1back','2back'};
 
 %% Compute fractional occupancy for each state in each n-back block
 
-cd(savedir);
 for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each subject in each cluster
 	BlockFractionalOccupancy = zeros(nobs,numClusters);
 	BlockDuration = sum(nbackBlocks == BlockLabels(B));
@@ -40,7 +39,7 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 			BlockFractionalOccupancy(N,K) = sum(tmpAssignments(nbackBlocks == BlockLabels(B)) == K) / BlockDuration;
 		end
 	end
-	save(['FractionalOccupancy',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockFractionalOccupancy');
+	save(fullfile(savedir,['FractionalOccupancy',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat']),'BlockFractionalOccupancy');
 end
 
 %% Compute fractional occupancy for whole n-back task, excluding rest or instruction components
@@ -54,7 +53,7 @@ for N = 1:nobs
 			% calculate time spent in each state as percentage of time spent in non-rest blocks
 		BlockFractionalOccupancy(N,K) = sum(tmpAssignments(ismember(nbackBlocks,BlockLabels)) == K) / BlockDuration;
 	end
-	save(['nBackRestExcludeFractionalOccupancy_k',num2str(numClusters),name_root,'.mat'],'BlockFractionalOccupancy');
+	save(fullfile(savedir,['nBackRestExcludeFractionalOccupancy_k',num2str(numClusters),name_root,'.mat']),'BlockFractionalOccupancy');
 end
 
 %% Compute dwell times for each state in each n-back block
@@ -71,12 +70,10 @@ for B = 1:numBlocks	% iterate through blocks and calculate dwell time for each s
 		mean_dt = GET_BLOCK_DWELL_TIME(tmpAssignments,nbackBlocks == BlockLabels(B),numClusters);
 		BlockDwellTime(N,:) = mean_dt*TR;	% store dwell time *in seconds*		
 	end
-	save(['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockDwellTime');
+	save(fullfile(savedir,['DwellTime',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat']),'BlockDwellTime');
 end
 
 %% Transition probabilities within each block
-
-% *** doesn't address case where blocks are not contiguous in time ***
 
 for B = 1:numBlocks
 	BlockTransitionProbability = zeros(nobs,numClusters^2);
@@ -85,6 +82,27 @@ for B = 1:numBlocks
 		subjPartition = kClusterAssignments(subjInd == N);
 		[BlockTransitionProbabilityMats(N,:,:),BlockTransitionProbability(N,:)] = GET_BLOCK_TRANS_PROBS(subjPartition,nbackBlocks == BlockLabels(B),numClusters);
 	end	
-	save(['TransProbs',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat'],'BlockTransitionProbability','BlockTransitionProbabilityMats');
+	save(fullfile(savedir,['TransProbs',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat']),'BlockTransitionProbability','BlockTransitionProbabilityMats');
 end
 
+%% Transition probabilities while excluding persistence
+
+for B = 1:numBlocks
+	BlockTransitionProbability = zeros(nobs,numClusters^2);
+	BlockTransitionProbabilityMats = zeros(nobs,numClusters,numClusters);	% preallocate transition probability matrices
+	for N = 1:nobs
+		subjPartition = kClusterAssignments(subjInd == N);
+		[BlockTransitionProbabilityMats(N,:,:),BlockTransitionProbability(N,:)] = GET_BLOCK_TRANS_PROBS_NO_PERSIST(subjPartition,nbackBlocks == BlockLabels(B),numClusters);
+	end	
+	save(fullfile(savedir,['TransProbsNoPersist',BlockNames{B},'_k',num2str(numClusters),name_root,'.mat']),'BlockTransitionProbability','BlockTransitionProbabilityMats');
+end
+
+%% Transition probabilities only at block boundaries
+
+BetweenBlockNumTransitions = zeros(nobs,numClusters^2);
+BetweenBlockTransitionProbability = zeros(nobs,numClusters^2);
+for N = 1:nobs
+	subjPartition = kClusterAssignments(subjInd == N);
+	[~,BetweenBlockTransitionProbability(N,:),~,BetweenBlockNumTransitions(N,:)] = GET_BETWEEN_BLOCK_TRANS_PROBS(subjPartition,nbackBlocks,numClusters);
+end
+save(fullfile(savedir,['BetweenBlockTransProbs_k',num2str(numClusters),name_root,'.mat']),'BetweenBlockNumTransitions','BetweenBlockTransitionProbability');

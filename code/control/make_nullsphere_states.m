@@ -23,11 +23,11 @@ kClusterCentroids = clusterAssignments.(['k',num2str(numClusters)]).bestCentroid
 
 fshome = getenv('FREESURFER_HOME');
 addpath(genpath(fullfile(fshome,'matlab')));
-[Lvertices, Lfaces] = freesurfer_read_surf('/data/tesla-data/ecornblath/dtipreproc/freesurfer_practice/fsaverage5/surf/lh.sphere');
-[Rvertices, Rfaces] = freesurfer_read_surf('/data/tesla-data/ecornblath/dtipreproc/freesurfer_practice/fsaverage5/surf/rh.sphere');
-fname = ['/data/tesla-data/ecornblath/dtipreproc/freesurfer_practice/fsaverage5/label/lh.myaparc_',num2str(lausanneScaleBOLD),'.annot'];
+[Lvertices, Lfaces] = freesurfer_read_surf(fullfile(basedir,'data/annot/lh.sphere'));
+[Rvertices, Rfaces] = freesurfer_read_surf(fullfile(basedir,'data/annot/lh.sphere'));
+fname = fullfile(basedir,['data/annot/lh.myaparc_',num2str(lausanneScaleBOLD),'.annot']);
 [Lv,LL,Lct] = read_annotation(fname);
-fname = ['/data/tesla-data/ecornblath/dtipreproc/freesurfer_practice/fsaverage5/label/rh.myaparc_',num2str(lausanneScaleBOLD),'.annot'];
+fname = fullfile(basedir,['data/annot/rh.myaparc_',num2str(lausanneScaleBOLD),'.annot']);
 [Rv,RL,Rct] = read_annotation(fname);    
 annot.Lv = Lv; annot.LL = LL; annot.Lct = Lct; annot.Rv = Rv; annot.RL = RL; annot.Rct = Rct;
 annot.Lvertices = Lvertices; annot.Lfaces = Lfaces; annot.Rvertices = Rvertices; annot.Rfaces = Rfaces;

@@ -1,3 +1,5 @@
+% makes Fig S4
+
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
@@ -39,6 +41,7 @@ clusterNames = dsNames;
 save(fullfile(savedir,['DownSampleTaskClusterCentroids_k',num2str(numClusters),'.mat']),'dsCentroids',...
 	'dsNames','dsNamesUp','dsNamesDown','kClusterCentroids','clusterNames','clusterNamesUp','clusterNamesDown');
 
+% Fig S4d
 f = figure;
 imagesc(dsVsOverall); colormap('plasma'); axis square
 xticks(1:numClusters); xticklabels(overallNames); xtickangle(90); xlabel('Full Sample')
@@ -52,8 +55,6 @@ f.PaperSize = [2.7 2.7];
 f.PaperPosition = [0 0 2.7 2.7];
 
 saveas(f,fullfile(savedir,['DownSampleTaskvsOverallClusterSpatialCorr_k',num2str(numClusters),name_root,'.pdf']),'pdf');
-% for source data file
-save(fullfile(savedir,['FigS5d__DownSampleVsFullCentroidSpatialCorr_k',num2str(numClusters),name_root,'.mat']),'dsVsOverall');
 
 %% reorder centroids based on similarity to original centroids
 
@@ -88,12 +89,26 @@ end
 
 %% transition probabilities
 
-[~,restTransProbs] = GET_TRANS_PROBS(partition(scanInd == 0),subjInd(scanInd == 0));
-[~,nBackTransProbs] = GET_TRANS_PROBS(partition(scanInd == 1),subjInd(scanInd == 1));
+[~,restTransProbs] = GET_TRANS_PROBS_NO_PERSIST(partition(scanInd == 0),subjInd(scanInd == 0));
+
+load(fullfile(datadir,'nbackBlocks.mat'));
+BlockLabels = [0 1 2];	% only iterate through 0-back, 1-back, 2-back. Ignore rest and instructions
+numBlocks = length(BlockLabels);
+BlockNames = {'0back','1back','2back'};
+for B = 1:numBlocks
+	nBackTransProbs = zeros(nobs,numClusters,numClusters);	% preallocate transition probability matrices
+	for N = 1:nobs
+		subjPartition = partition(scanInd' == 1 & subjInd == N);
+		% using only first rTR TRs of task
+		[nBackTransProbs(N,:,:),~] = GET_BLOCK_TRANS_PROBS_NO_PERSIST(subjPartition,nbackBlocks(1:rTR) == BlockLabels(B),numClusters);
+	end		
+end
 
 grpAvgRest = squeeze(mean(restTransProbs,1)) .* ~eye(numClusters);
-grpAvgnBack = squeeze(mean(nBackTransProbs,1)) .* ~eye(numClusters);
+grpAvgnBack = squeeze(nanmean(nBackTransProbs,1)) .* ~eye(numClusters);
 maxVal = max(max([grpAvgRest,grpAvgnBack]));
+
+% Fig S4d
 f = figure;
 
 subplot(1,2,1);
@@ -123,10 +138,8 @@ caxis([0 maxVal]); colorbar
 f.PaperUnits = 'inches';
 f.PaperSize = [16/3 4];
 f.PaperPosition = [0 0 16/3 4];
-saveas(f,fullfile(savedir,['DownSampleTaskRestnBackTransProbs_k',num2str(numClusters),'.pdf']));
+saveas(f,fullfile(savedir,['DownSampleTaskRest2BackTransProbs_k',num2str(numClusters),'.pdf']));
 
-% for source data file
-save(fullfile(savedir,['FigS5e__DownSampleTransitionProbabilities_k',num2str(numClusters),name_root,'.mat']),'grpAvgRest','grpAvgnBack');
 %% compare to overall trans probs
 
 load([masterdir,'/analyses/transitionprobabilities/RestCombTransitionProbabilityMatrices_k',num2str(numClusters),name_root,'.mat']);

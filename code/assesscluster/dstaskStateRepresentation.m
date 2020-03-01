@@ -1,3 +1,5 @@
+% makes Fig S4
+
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
@@ -34,6 +36,8 @@ end
 RNcolors = {'#005C9F','#FF8400'};
 RNcolors = hex2rgb(RNcolors);
 dsTaskStateRepresentation = [restAbsentStateCount;nbackAbsentStateCount]';
+
+% Fig S4f
 f = figure;
 bar(dsTaskStateRepresentation,'FaceAlpha',.5);
 xticks(1:2:numK);xticklabels(minNumClusters:2:maxNumClusters);
@@ -45,5 +49,4 @@ f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 
 saveas(f,[masterdir,'/analyses/choosing_k/rvn/DownSampleTaskStateRepresentation',name_root,'.pdf']);
-save(fullfile(masterdir,'/analyses/choosing_k/rvn/',['FigS5f__DownSampleStateRepresentation_k',num2str(numClusters),name_root,'.mat']),'dsTaskStateRepresentation');
 

@@ -18,7 +18,7 @@ YeoNetNames = {'VIS+', 'SOM+', 'DAT+', 'VAT+', 'LIM+', 'FPN+', 'DMN+','VIS-', 'S
 
 %% plot
 
-clusterColors = {'AB484F','591A23', 'AA709F','527183','7E874B'};
+clusterColors = GET_CLUSTER_COLORS(numClusters);
 %YeoColors = [137 72 155; 128 162 199; 91 153 72; 202 114 251;247 253 205; 218 166 86; 199 109 117] / 255;
 YeoColors = [137 72 155; 128 162 199; 91 153 72; 202 114 251;250 218 94; 218 166 86; 199 109 117] / 255;
 YeoColors = [YeoColors;YeoColors];
@@ -89,7 +89,8 @@ saveas(f,fullfile(savedir,['Systems_k',num2str(numClusters),name_root,'.pdf']));
 
 %% make radial plots
 
-clusterColors = {'AB484F','591A23', 'AA709F','527183','7E874B'};
+clusterColors = GET_CLUSTER_COLORS(numClusters);
+
 clusterColors = hex2rgb(clusterColors);
 netAngle = linspace(0,2*pi,numNets+1);
 thetaNames = YeoNetNames; thetaNames{8} = '';

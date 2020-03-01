@@ -16,16 +16,16 @@ source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
-clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
+clusterColors <- getClusterColors(numClusters)
 RNcolors <- c('#005C9F','#FF8400') 
 
 demo <- read.csv(paste(basedir,'data/Demographics',name_root,'.csv',sep =""))
 
-nbbeh <- read.csv('/data/jag/bassett-lab/Lausanne1601/nback/n1601_nbackBehavior_from_20160207_dataRelease.csv')
+nbbeh <- read.csv(paste(basedir,'data/n1601_nbackBehavior_from_20160207_dataRelease.csv',sep=''))
 nbbeh <- nbbeh[which(nbbeh$scanid %in% demo$scanid),]
 nbbeh <- nbbeh[order(nbbeh$scanid),]
 
-cnb <- read.csv('/data/jag/bassett-lab/Lausanne1601/cnb/n1601_cnb_factor_scores_tymoore_20151006.csv')
+cnb <- read.csv(paste(basedir,'data/n1601_cnb_factor_scores_tymoore_20151006.csv',sep=''))
 cnb <- cnb[which(nbbeh$scanid %in% demo$scanid),]
 cnb <- cnb[order(cnb$scanid),]
 
@@ -107,15 +107,20 @@ pdat$Scan = c(rep('0-back',numClusters),rep('1-back',numClusters),rep('2-back',n
 pdat$State = rep(clusterNames,3)
 
 p <- ggplot(data = pdat, aes(y = B, x = State, fill = Scan,label = p)) + 
-	geom_bar(stat = "identity", position = position_dodge(width = NULL),alpha = 0.8, color = 'black') +
+	geom_bar(stat = "identity", position = position_dodge(width = NULL),alpha = 0.8, color = 'black',size=0.5) +
   geom_text(position = position_dodge(width = 0.9), size = 5) + xlab("") + ylab(expression(beta["DT"])) + ggtitle('Block WM Performance') +
   scale_fill_brewer(limits = unique(pdat$Scan), palette = 'Pastel1') + scale_x_discrete(limits = clusterNames,breaks = clusterNames) + 
   scale_y_continuous(limits = c(1.05*min(pdat$B),1.1*max(pdat$B)))+ 
   theme_classic() + theme(text = element_text(size = 8)) + theme(legend.key.size = unit(0.5,'line')) + theme(axis.text.x = element_text(angle = 90,vjust = 0.5,hjust = 0.95)) +
   theme(legend.title = element_blank(),plot.title = element_text(hjust =0.5,size = 8),legend.position = 'none') +
   theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))
-if(numClusters == 5){
-	p <- p + theme(axis.text.x = element_text(color = clusterColors))
+
+height = 3; width = 6
+if(numClusters == 5 | numClusters == 6){
+  	p <- p + theme(axis.text.y = element_text(color = rev(clusterColors))) 
+    p <- p + coord_flip()
+    p <- p + scale_x_discrete(limits = rev(clusterNames),breaks = rev(clusterNames))
+    height = 5; width = 2.5
 }
 
-ggsave(plot = p,filename = paste(savedir,'RvNBlockDprimeDwellTime_k',numClusters,'.pdf',sep =''),units = 'cm',height = 3,width = 6)
+ggsave(plot = p,filename = paste(savedir,'RvNBlockDprimeDwellTime_k',numClusters,'.pdf',sep =''),units = 'cm',height = height,width = width)

@@ -2,5 +2,8 @@
 set -euxo pipefail
 
 echo 'Enter root folder:'
-read ROOT
-rsync -avzh ecornblath@chead:/data/tesla-data/ecornblath/brain_states/results/$ROOT/analyses/ results/$ROOT/
+#read ROOT
+#ROOT='ScanCLaus250Z0reproduce_test'
+ROOT='ScanCLaus250Z0prepub_test'
+#ROOT='ScanCLaus250Z0final'
+rsync -avzh --exclude '*SHkmeans*' ecornblath@chead:/data/tesla-data/ecornblath/brain_states_prepubtest/results/$ROOT/analyses/ results/$ROOT/

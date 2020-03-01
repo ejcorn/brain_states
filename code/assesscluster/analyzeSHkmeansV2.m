@@ -1,3 +1,5 @@
+% makes Fig S2c-f
+
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
@@ -70,14 +72,14 @@ end
 maxCentroidTrainTestCorr = reshape(squeeze(maxCentroidTrainTestCorr)',1,[]);
 barcolors = [53 183 121; 68 1 84] / 255;
 
+% Fig S2d
 f = figure; histogram(maxCentroidTrainTestCorr,'FaceColor',barcolors(1,:),'FaceAlpha',0.5); 
-ylabel('# of Centroid Pairs'); xlabel('Correlation');
+ylabel('# of Centroid Pairs'); xlabel('Correlation'); xlim([-1 1]);
 prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 cd(savedir);
-save(['FigS1c__SplithalvesCentroidSimilarity_k',num2str(numClusters),name_root,'.mat'],'maxCentroidTrainTestCorr');
 saveas(f,['SplithalvesCentroidSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
 %% reorder to compare trans probs
@@ -114,8 +116,9 @@ end
 test_train_TPcorr = diag(corr(rest_transitions_train(:,offDiag)',rest_transitions_test(:,offDiag)'));
 test_train_PPcorr = diag(corr(rest_transitions_train(:,onDiag)',rest_transitions_test(:,onDiag)'));
 
+% Fig S2e
 f = figure; histogram(test_train_TPcorr,'FaceColor',barcolors(2,:),'FaceAlpha',0.5); 
-ylabel('# of Samples'); xlabel('Correlation'); title('Transition Probability')
+ylabel('# of Samples'); xlabel('Correlation'); title('Transition Probability'); xlim([-1 1]);
 prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [4 4];
@@ -123,16 +126,15 @@ f.PaperPosition = [0 0 4 4];
 cd(savedir);
 saveas(f,['SplithalvesRestTPSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
+% Fig S2e
 f = figure; histogram(test_train_PPcorr,'FaceColor',barcolors(1,:),'FaceAlpha',0.5); 
-ylabel('# of Samples'); xlabel('Correlation'); title('Persistence Probability')
+ylabel('# of Samples'); xlabel('Correlation'); title('Persistence Probability'); xlim([-1 1]);
 prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [4 4];
 f.PaperPosition = [0 0 4 4];
 cd(savedir);
 saveas(f,['SplithalvesRestPPSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
-
-save(['FigS1d__SplithalvesRestTransitionCorr_k',num2str(numClusters),name_root,'.mat'],'test_train_TPcorr','test_train_PPcorr');
 
 %% transition probability similarity, n-back
 
@@ -151,8 +153,9 @@ end
 test_train_TPcorr = diag(corr(nback_transitions_train(:,offDiag)',nback_transitions_test(:,offDiag)'));
 test_train_PPcorr = diag(corr(nback_transitions_train(:,onDiag)',nback_transitions_test(:,onDiag)'));
 
+% Fig S2f
 f = figure; histogram(test_train_TPcorr,'FaceColor',barcolors(2,:),'FaceAlpha',0.5); 
-ylabel('# of Samples'); xlabel('Correlation'); title('Transition Probability')
+ylabel('# of Samples'); xlabel('Correlation'); title('Transition Probability'); xlim([-1 1]);
 prettifyEJC;
 f.PaperUnits = 'centimeters';
 f.PaperSize = [4 4];
@@ -160,13 +163,12 @@ f.PaperPosition = [0 0 4 4];
 cd(savedir);
 saveas(f,['SplithalvesnbackTPSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
+% Fig S2f
 f = figure; histogram(test_train_PPcorr,'FaceColor',barcolors(1,:),'FaceAlpha',0.5); 
-ylabel('# of Samples'); xlabel('Correlation'); title('Persistence Probability')
-prettifyEJC;
+ylabel('# of Samples'); xlabel('Correlation'); title('Persistence Probability'); xlim([-1 1]);
+prettifyEJC; 
 f.PaperUnits = 'centimeters';
 f.PaperSize = [4 4];
 f.PaperPosition = [0 0 4 4];
 cd(savedir);
 saveas(f,['SplithalvesnbackPPSimilarity_k',num2str(numClusters),name_root,'.pdf'],'pdf');
-
-save(['FigS1e__SplithalvesnBackTransitionCorr_k',num2str(numClusters),name_root,'.mat'],'test_train_TPcorr','test_train_PPcorr');

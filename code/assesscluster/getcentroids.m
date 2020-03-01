@@ -12,7 +12,7 @@ elseif scan == 'C'
     scanlab = {'RestComb','nBackComb'};
 
 end
-savedir = [masterdir,'/analyses/transitionprobabilities'];
+savedir = fullfile(masterdir,'/analyses/centroids');
 mkdir(savedir);
 
 for i = 1:numel(scanlab)
@@ -47,6 +47,7 @@ for K = 1:numClusters
     r(K) = corr(restCentroids(:,K),nBackCentroids(:,K));
 end
 
+% Fig S4b
 %barcolors = [53 183 121; 68 1 84] / 255; 
 RNcolors = {'458AC6','FFB75E'}; 
 barcolors = hex2rgb(RNcolors);
@@ -59,9 +60,6 @@ f.PaperSize = [3 1.5];
 f.PaperPosition = [0 0 3 1.5];
 saveas(f,['RvNCentroidSpatialCorr_k',num2str(numClusters),name_root,'.pdf'],'pdf');
 
-% for source data file
-save(['FigS5b__RvNCentroidSpatialCorr_k',num2str(numClusters),name_root,'.mat'],'r');
-
 % Get overall centroids
 
 kClusterCentroids = zeros(nparc,numClusters);
@@ -73,7 +71,7 @@ end
 [clusterNames,clusterReorder,clusterNamesSort] = NAME_CLUSTERS_ANGLE(kClusterCentroids);
 
 clusterCorr = corr(kClusterCentroids);
-
+% Fig S4a
 imagesc(clusterCorr); colormap('plasma');
 xticks(1:numClusters); xticklabels(clusterNames); xtickangle(90);
 yticks(1:numClusters); yticklabels(clusterNames); axis square
@@ -94,8 +92,5 @@ clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
 clusterNamesUp = clusterAssignments.(['k',num2str(numClusters)]).clusterNamesUp;
 clusterNamesDown = clusterAssignments.(['k',num2str(numClusters)]).clusterNamesDown;
 save(['OverallClusterCentroids_k',num2str(numClusters),name_root,'.mat'],'kClusterCentroids','clusterNames','clusterNamesDown','clusterNamesUp');
-
+save(['Fig2a__OveralClusterCentroids_k',num2str(numClusters),name_root,'.mat'],'kClusterCentroids','clusterNames','clusterNamesDown','clusterNamesUp');
 % overall centroids spatial anticorrelation
-
-% for source data file
-save(['FigS5a__OverallCentroidSpatialCorr_k',num2str(numClusters),name_root,'.mat'],'clusterCorr');

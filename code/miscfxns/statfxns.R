@@ -6,7 +6,7 @@ pval.2tail.np <- function(test.val,dist){
 	# sig.fig: number of significant figures
 	# compute 2-tailed p-value for test value occurring in distribution
 	dist <- as.numeric(dist)
-	pval.2tail <- 2*min(mean(test.val > dist),mean(test.val < dist))
+	pval.2tail <- 2*min(mean(test.val >= dist),mean(test.val <= dist))
 	return(pval.2tail)
 }
 

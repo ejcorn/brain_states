@@ -1,0 +1,17 @@
+name_root = 'ScanCLaus250Z0final'; numClusters = 5; basedir = '/data/tesla-data/ecornblath/brain_states/'; cd(basedir); addpath(genpath(pwd));
+
+name_root = 'ScanCLaus250Z0final'; numClusters = 6; basedir = '/data/tesla-data/ecornblath/brain_states/'; cd(basedir); addpath(genpath(pwd));
+
+distanceMethod= 'cosine';
+
+name_root = 'ScanCLaus250Z0final'
+numClusters = 5
+lausanneScaleBOLD=250
+scan = 'C'
+scan_ind = 3
+scanlab='ipr_null/CentroidsIPRNull_k' 
+resultsdir_fname='centroids/ipr_null/CentroidsIPRNull_k5.mat'
+
+name_root = 'ScanCLaus250Z0reproduce_test'; numClusters = 5; basedir = '/data/tesla-data/ecornblath/brain_states/';
+
+name_root = 'ScanCLaus250Z0final'; numClusters = 5; basedir = '/data/tesla-data/ecornblath/brain_states/';

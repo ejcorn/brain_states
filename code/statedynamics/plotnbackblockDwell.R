@@ -9,6 +9,7 @@ library(RColorBrewer)
 library(plotrix)
 
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
+source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
 
 BlockNames <- c('0back','1back','2back')
 numBlocks <- length(BlockNames)
@@ -16,7 +17,7 @@ numBlocks <- length(BlockNames)
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
 #clusterNames <- c('A',"b","c","d","e")
-clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
+clusterColors <- getClusterColors(numClusters)
 RNcolors <- c('#005C9F','#FF8400') 
 
 restDwell <- colMeans(readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',
@@ -50,7 +51,7 @@ p <- ggplot() + geom_line(aes(x = blocks, y = nbackDwell, color = states), size 
   xlab("Task Block") + ylab("Dwell Time (seconds)") + 
   theme_classic() + theme(text = element_text(size = 8),legend.position = 'none')
 
-if(numClusters == 5){
+if(numClusters == 5 | numClusters == 6){
   p <- p + scale_color_manual(limits = c(1:numClusters), values = clusterColors, label=clusterNames) +
     annotate("text",x = rep(1,numClusters),y = 0.1 + (nbackDwell + nbackDwellSEM)[blocks == 1],label = clusterNames,size = 2, color = clusterColors)
   
@@ -60,4 +61,5 @@ if(numClusters == 5){
     scale_color_discrete(limits = c(1:numClusters))
 }
 
-ggsave(plot = p, filename = paste(masterdir,'analyses/nbackblocks/nbackBlockDwellTime_k',numClusters,'.pdf',sep =""),height = 2,width = 2.7, units = "in")
+ggsave(plot = p, filename = paste(masterdir,'analyses/nbackblocks/nbackBlockDwellTime_k',numClusters,'.pdf',sep =""),
+  height = 2,width = 2.25, units = "in")

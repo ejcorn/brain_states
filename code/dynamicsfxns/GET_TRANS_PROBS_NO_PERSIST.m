@@ -1,7 +1,7 @@
 function [transitionProbability,transProbEndGivenStart] = GET_TRANS_PROBS_NO_PERSIST(kClusterAssignments,subjInd)
 
 % Calculate transition probabilities from sequential cluster assignments
-% get rid of persistence and shuffle, so you only look at transitions
+% get rid of persistence, so you only look at transitions
 
 kClusterAssignments = reshape(kClusterAssignments,length(kClusterAssignments),1); %convert to row vector
 nobs = max(subjInd);

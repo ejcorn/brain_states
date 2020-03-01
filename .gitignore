@@ -1,12 +1,13 @@
 # MATLAB files
 *.m~
 
-# data folder
+# data folder, results, superfluous scripts
 data
 results
+all_*
 
 # mac files
-.DS_Store
+*.DS_Store*
 
 # History files
 .Rhistory

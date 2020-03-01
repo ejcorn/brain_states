@@ -43,7 +43,7 @@ Xo_Null_all = Xo_Null_all ./ NullStateMagnitude;	% normalize null states
 Xf_Null = Xo_Null_all;
 
 %% load structure, normalize, generate nulls
-load(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
+load(fullfile(savedir,['GroupRepresentativeSC_FA_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
 %load(fullfile(datadir,'BootstrapGroupSC',['BootstrapGroupRepresentativeSC',num2str(lausanneScaleBOLD),'Perm1.mat']),'WcI_boot','G_boot','A_boot','bootsamp');
 
 A = NORMALIZE(A,c);
@@ -85,4 +85,4 @@ for P = 1:nperms
 	Epersist_Null_DLW(P,:) = MIN_CONTROL_ENERGY(ArandDLW,WcI_DLW,Xo_Null_all(:,:,P),Xf_Null(:,:,P),T,false);
 end
 
-save(fullfile(savedir,['PersistEnergySpherePerm_k',num2str(numClusters),'c',num2str(c),'T',num2str(T),'.mat']),'Epersist','Epersist_Null','Epersist_mio','Epersist_Null_mio','Epersist_DLW','Epersist_Null_DLW');
+save(fullfile(savedir,['PersistEnergySpherePerm_FA_k',num2str(numClusters),'c',num2str(c),'T',num2str(T),'.mat']),'Epersist','Epersist_Null','Epersist_mio','Epersist_Null_mio','Epersist_DLW','Epersist_Null_DLW');

@@ -1,3 +1,5 @@
+% makes Fig S7
+
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 savedir = fullfile(masterdir,'analyses','centroids','motion_scrub');

@@ -1,9 +1,10 @@
-%zdim = 0; scan = 'C'; lausanneScaleBOLD = 250; extralabel = 'corrfinal';
+%zdim = 0; scan = 'C'; lausanneScaleBOLD = 250; extralabel = 'final';
+datadir_main = '/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/';
 
 name_root = ['Scan',scan,'Laus',num2str(lausanneScaleBOLD),'Z',num2str(zdim),extralabel];
 datadir = [basedir,'data'];
 masterdir = fullfile(basedir,'results',name_root);
-demoLTN = readtable('/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/subject_demographics/n884_pnc_dtiNbackRest_subject_demographics.csv');
+demoLTN = readtable(fullfile(datadir_main,'subject_demographics/n884_pnc_dtiNbackRest_subject_demographics.csv'));
 demoLTN = sortrows(demoLTN,'scanid','ascend');
 nobs = length(demoLTN.scanid); demoLTN.Sex = demoLTN.sex - 1;
 demoLTN.age_in_yrs = demoLTN.ageAtScan1 / 12;
@@ -28,11 +29,15 @@ elseif lausanneScaleBOLD == 125
     nparc = 233;
 end
 
-dtifnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/diffusion_data/volNormSC/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),num2str(demoLTN.scanid),...
+dtifnames = cellstr([repmat([fullfile(datadir_main,'diffusion_data/volNormSC/'),'Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),num2str(demoLTN.scanid),...
     repmat(['_volNormStreamline_LausanneScale',num2str(lausanneScaleBOLD),'.mat'],[nobs 1])]);
-    
+fafnames = cellstr([repmat([fullfile(datadir_main,'diffusion_data/FA/'),'Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),num2str(demoLTN.scanid),...
+    repmat(['_FA_LausanneScale',num2str(lausanneScaleBOLD),'.mat'],[nobs 1])]);
+
 % check if structure exists for every subject -- this removes 4 subjects in 462 node scale
-StructureExist = logical(cellfun(@(x) exist(x,'file'),dtifnames));
+StructureExistDT = logical(cellfun(@(x) exist(x,'file'),dtifnames));
+StructureExistFA = logical(cellfun(@(x) exist(x,'file'),fafnames));
+StructureExist = StructureExistDT&StructureExistFA; % select subjects with both FA and DT -- the two masks are the same in 233 and 462 node scale
 demoLTN = demoLTN(StructureExist,:);
 
 if sum(StructureExist) < nobs
@@ -40,17 +45,25 @@ if sum(StructureExist) < nobs
 end
 
 nobs = sum(StructureExist);
-SCvolnorm = cell(nobs,1);
-dtifnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/diffusion_data/volNormSC/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+SCvolnorm = cell(nobs,1); FA = cell(nobs,1);
+dtifnames = cellstr([repmat([fullfile(datadir_main,'diffusion_data/volNormSC/'),'Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
     num2str(demoLTN.scanid),...
     repmat(['_volNormStreamline_LausanneScale',num2str(lausanneScaleBOLD),'.mat'],[nobs 1])]);
+fafnames = cellstr([repmat([fullfile(datadir_main,'diffusion_data/FA/'),'Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+    num2str(demoLTN.scanid),...
+    repmat(['_FA_LausanneScale',num2str(lausanneScaleBOLD),'.mat'],[nobs 1])]);
 
 % iterate through subjects, store structural connectivity matrices in a cell
 for N = 1:nobs
-    load(dtifnames{N});
-    A = volNorm_connectivity(1:nparc,1:nparc);  % remove brainstem  
+    DTIsubject = load(dtifnames{N});
+    A = DTIsubject.volNorm_connectivity(1:nparc,1:nparc);  % remove brainstem  
     A(~~eye(nparc)) = 0;    % make sure diagonals are all 0
     SCvolnorm{N} = A;
+    
+    FAsubject = load(fafnames{N});
+    A = FAsubject.connectivity(1:nparc,1:nparc); % remove brainstem  
+    A(~~eye(nparc)) = 0;    % make sure diagonals are all 0
+    FA{N} = A;
 end
 
 disp('SC loaded');
@@ -63,10 +76,10 @@ restNumTRs = 120; nbackNumTRs = 225;
 restTS = nan(restNumTRs,nparc,nobs);
 nbackTS = nan(nbackNumTRs,nparc,nobs);
 
-restfnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/rest_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+restfnames = cellstr([repmat([fullfile(datadir_main,'rest_data/'),'Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
     num2str(demoLTN.scanid),... % only load files in demoLTN
     repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])]);
-nbackfnames = cellstr([repmat(['/data/tesla-data/ecornblath/PNCLatestFreeze/cornblathPncRestNback/nback_data/Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
+nbackfnames = cellstr([repmat([fullfile(datadir_main,'nback_data/'),'Lausanne',num2str(lausanneScaleBOLD),'/'],[nobs 1]),...
     num2str(demoLTN.scanid),... % only load files in demoLTN
     repmat(['_Lausanne',num2str(lausanneScaleBOLD),'_ts.1D'],[nobs 1])]);
 
@@ -117,6 +130,7 @@ rest_hm = rest_hm(BOLDMissingDataExclusionMask);
 nback_hm = nback_hm(BOLDMissingDataExclusionMask);
 nobs = sum(BOLDMissingDataExclusionMask);
 SCvolnorm(find(~BOLDMissingDataExclusionMask)) = [];
+FA(find(~BOLDMissingDataExclusionMask)) = [];
 
 %% concatenate
 
@@ -141,6 +155,7 @@ disp('Concatenation done');
 cd(datadir);
 save(['TimeSeriesIndicators',name_root,'.mat'],'scanInd','subjInd');
 save(['VolNormSC',num2str(lausanneScaleBOLD),'.mat'],'SCvolnorm');
+save(['FA',num2str(lausanneScaleBOLD),'.mat'],'FA');
 save(['Demographics',name_root,'.mat'],'demoLTN','nparc','nobs','lausanneScaleBOLD','scan','zdim','rest_hm','nback_hm','basedir','datadir','masterdir');
 disp('.mat data saved');
 csvwrite(['ConcTSCSV_',name_root,'.csv'],concTS);

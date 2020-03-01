@@ -10,18 +10,19 @@ library(RColorBrewer)
 masterdir <- paste(basedir,'results/',name_root,'/',sep='')
 
 source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
+source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
 
 restDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/RestCombDwellTime_k',numClusters,name_root,'.mat',sep = ''))$DwellTimeMean
 nbackDwell <- readMat(paste(masterdir,'analyses/transitionprobabilities/nBackCombDwellTime_k',numClusters,name_root,'.mat',sep = ''))$DwellTimeMean
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
-clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
+clusterColors <- getClusterColors(numClusters)
 RNcolors <- c('#005C9F','#FF8400')  
 
 grps <- rbind(matrix('Rest',nrow = nrow(restDwell),ncol = ncol(restDwell)),matrix('n-back',nrow = nrow(nbackDwell),ncol = ncol(nbackDwell)))
 states <- sapply(1:numClusters, function(K) rep(as.character(K),nrow(restDwell)))
-df <- data.frame(states=as.vector(rbind(states,states)),grps = as.vector(grps),dt=as.vector(rbind(restDwell,nbackDwell)))
-p <- ggplot(data=df) + geom_split_violin(aes(x = states, y = dt,fill = grps)) + theme_classic() +
+df.plt <- data.frame(states=as.vector(rbind(states,states)),grps = as.vector(grps),dt=as.vector(rbind(restDwell,nbackDwell)))
+p <- ggplot(df.plt) + geom_split_violin(aes(x = states, y = dt,fill = grps)) + theme_classic() +
   scale_fill_manual(limits = c('Rest','n-back'), values = RNcolors) + 
   ylab("Dwell Time (seconds)") + xlab("") +theme(text = element_text(size = 8)) +
   theme(legend.title = element_blank()) + 
@@ -41,8 +42,9 @@ for(K in 1:numClusters){
   }
 }
 
-if(numClusters == 5){
+if(numClusters == 5 | numClusters == 6){
   p <- p + theme(axis.text.x = element_text(size=8,colour = clusterColors))
 }
-
-ggsave(plot = p, filename = paste(masterdir,'analyses/transitionprobabilities/RvNDwellTime_k',numClusters,'.pdf',sep =""),height = 2,width = (numClusters-1) + 0.25, units = "in")
+save(df.plt,clusterNames,clusterColors,p,diffs.full,file=paste0(masterdir,'analyses/transitionprobabilities/Fig3b__DwellTime.RData'))
+ggsave(plot = p, filename = paste(masterdir,'analyses/transitionprobabilities/RvNDwellTime_k',numClusters,'.pdf',sep =""),
+  height = 2,width = (numClusters-2) + 0.25, units = "in")

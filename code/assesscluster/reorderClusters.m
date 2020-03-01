@@ -8,9 +8,13 @@ load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat']));
 
 load(['k',num2str(numClusters),name_root,'.mat'],'clusterAssignments');
 
-if numClusters == 5
+if numClusters == 5 | numClusters == 6
     clusterNames = clusterAssignments.(['k',num2str(numClusters)]).clusterNames;
-    niceOrder = {'DMN+','DMN-','FPN+','VIS+','VIS-'};
+    if numClusters == 5
+    	niceOrder = {'DMN+','DMN-','FPN+','VIS+','VIS-'};
+    elseif numClusters == 6
+    	niceOrder = {'DMN+','DMN-','FPN+','SOM+','VIS+','VIS-'};
+    end
     shuffleIdx = zeros(numClusters,1);
     for K = 1:numClusters
     	shuffleIdx(K) = find(strcmp(clusterNames,niceOrder{K}));

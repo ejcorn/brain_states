@@ -70,6 +70,3 @@ f.PaperUnits = 'centimeters';
 f.PaperPosition = [0 0 8 8];
 f.PaperSize = [8 8];
 saveas(f,fullfile(savedir,['SilhouetteRealvsIPRHistogram.pdf']));
-
-% for source data files
-save(fullfile(savedir,['FigS4a-d__SilhouetteScores_k',num2str(numClusters),'.mat']),'S_randn','S_ipr','S_data');

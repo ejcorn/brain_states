@@ -1,3 +1,5 @@
+% makes FigS8
+
 addpaths;
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
 load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
@@ -66,6 +68,7 @@ within_SOM = squeeze(nanmean(nanmean(within_SOM,1),2)); % average corr
 
 numbins = 10;
 
+% Fig S8b-d
 f=figure;
 subplot(1,3,1);
 histogram(within_SOM,numbins,'EdgeAlpha',0.5); hold on;
@@ -76,8 +79,6 @@ xlim([-0.8 0.8])
 title('Within System');
 ylabel('# of Subjects');
 xlabel('r');
-% for source data file
-save(fullfile(savedir,['FigS3b__MeanWithinNetworkFC-_',num2str(numClusters),'.mat']),'within_SOM','within_VIS','within_DMN');
 %% between network connectivity
 
 % compute correlations within a priori systems
@@ -99,8 +100,6 @@ xlim([-0.8 0.8])
 title('Between System');
 ylabel('# of Subjects');
 xlabel('r');
-% for source data file
-save(fullfile(savedir,['FigS3c__MeanBetweenNetworkFC-_',num2str(numClusters),'.mat']),'between_VIS_SOM','between_DMN_SOM','between_DMN_VIS');
 
 %% 
 % ***show the distribution of correlations between time points in DMN-
@@ -122,7 +121,6 @@ f.PaperUnits = 'centimeters';
 f.PaperPosition = [0 0 21 6];
 f.PaperSize = [21 6];
 saveas(f,fullfile(savedir,[r_n_name,'FCWithinBetween.pdf']));
-save(fullfile(savedir,['FigS3d__TRsInDMN-_',num2str(numClusters),'.mat']),'DMN_minus');
 
 %% export stats for latex table
 r_tab = zeros(7,4);
@@ -155,6 +153,8 @@ DMN_activity = mean(concTS(partition_data == DMN_low,netlabels_sort == DMN),2);
 
 maxval = ceil(max([abs(SOM_activity);abs(VIS_activity);abs(DMN_activity)]));
 MAE = 0.01; %alpha of points
+
+% Fig S8e-g
 f = figure;
 subplot(1,3,1);
 scatter(SOM_activity,VIS_activity,'MarkerEdgeAlpha',MAE);
@@ -191,6 +191,3 @@ f.PaperPosition = [0 0 21 10];
 f.PaperSize = [21 10];
 %saveas(f,fullfile(savedir,[r_n_name,'DMN-FrameActivity.pdf']));
 print(fullfile(savedir,[r_n_name,'DMN-FrameActivity.png']),'-dpng','-r300');
-
-% for source data file
-save(fullfile(savedir,['FigS3e-g__TRsInYeoSystemActivationSpace_',num2str(numClusters),'.mat']),'SOM_activity','VIS_activity','DMN_activity');

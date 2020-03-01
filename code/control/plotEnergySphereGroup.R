@@ -18,6 +18,7 @@ library(R.matlab)
 library(RColorBrewer)
 
 source(paste(basedir,'code/plottingfxns/GeomSplitViolin.R',sep=''))
+source(paste(basedir,'code/plottingfxns/plottingfxns.R',sep=''))
 source(paste(basedir,'code/miscfxns/statfxns.R',sep=''))
 
 scanlab <- c("RestComb","nBackComb")
@@ -26,13 +27,13 @@ scanttl <- c('Rest','n-back')
 RNcolors <- c('#005C9F','#FF8400')  
 clusterNames <- readMat(paste(basedir,'results/',name_root,'/clusterAssignments/k',numClusters,name_root,'.mat',sep=''))
 clusterNames <- unlist(clusterNames$clusterAssignments[[1]][[5]])
-clusterColors <- c("1"="#AB484F","2"="#591A23", "3"="#AA709F","4"="#527183","5"="#7E874B")
+clusterColors <- getClusterColors(numClusters)
 
 savedir = paste(masterdir,'/analyses/control_energy',sep='');
 
 # compare energy of maintaining each state with sphere permuted states for actual network and all null models
 # .Null indicates sphere permuted null states, .mio indicates null matrix obtained through randmio_und.m, .DLW = Rick Betzel geometric + topological null
-matResults <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))
+matResults <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_FA_k',numClusters,'c',c,'T',T,'.mat',sep = ''))
 energy <- matResults$Epersist
 null_energy <- matResults$Epersist.Null
 energy.randmio <- matResults$Epersist.mio   
@@ -89,45 +90,9 @@ p <- ggplot() + geom_boxplot(aes(x = state,y=E,color = grp,fill=grp),position = 
   theme_classic() + theme(text = element_text(size= 8)) + theme(plot.title = element_text(hjust = 0.5)) +
   theme(legend.title = element_blank(),legend.text = element_text(size = 8))
 
-if(numClusters == 5){
+if(numClusters == 5 | numClusters == 6){
   p <- p + theme(axis.text.x = element_text(color = clusterColors))
 }
 
-ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermAllNullModels_k',numClusters,'c',c,'T',T,'.pdf',sep =""),
-  height = 3,width=4, units = "in",useDingbats=FALSE)
-
-# compare energy of maintaining each state with sphere permuted states for actual networks only
-energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))$Epersist
-null_energy <- readMat(paste(masterdir,'analyses/control_energy/PersistEnergySpherePerm_k',numClusters,'c',c,'T',T,'.mat',sep = ''))$Epersist.Null
-nperms <- nrow(null_energy)
-state <- as.vector(sapply(clusterNames, function(K) rep(K,nperms)))
-E <- as.vector(null_energy)
-grp <- rep('SC',nperms*numClusters)
-E.actual <- as.vector(energy)
-state.actual <- rep(clusterNames,1)
-grp.actual <- rep('SC',numClusters)
-p <- ggplot() + geom_boxplot(aes(x = state,y=E),color = '#E2492FFF',fill = '#E2492F1A',position = position_dodge(width = 1),outlier.shape=20,outlier.size = 0.5,lwd = 0.5) + 
-  geom_point(aes(x=state.actual,y=as.numeric(E.actual),color = grp.actual),
-             shape = 24,stroke = 0,size = 1,fill = '#CE2B37',position = position_dodge(width=1)) +
-  scale_color_manual(limits = c('SC','Null'),breaks = c('SC','Null'),values = c('#005C9F','#71AABE')) +
-  scale_x_discrete(limits = clusterNames,breaks = clusterNames,labels = list(clusterNames)) +
-  ylab('Min. Control Energy') + xlab('') + ggtitle('Min. State Maintenance Energy') + 
-  theme_classic() + theme(text = element_text(size= 8)) + theme(plot.title = element_text(hjust = 0.5)) +
-  theme(legend.position = 'none')
-
-energy.repmat <- kronecker(matrix(1,nperms,1),energy)
-pvals <- p.adjust(colMeans(null_energy < energy.repmat),method='bonferroni')
-p.labs <- pval.label.np(pvals,nperms)
-col <- rep('black',numClusters)
-col[pvals < 0.05] <- 'red'
-for(K in 1:numClusters){
-  p <- p + annotate("text", x = clusterNames, y = 1.1*max(c(energy,null_energy)),label = p.labs,color = col[K],size=2.5)
-}
-
-if(numClusters == 5){
-  p <- p + theme(axis.text.x = element_text(color = clusterColors))
-}
-p
-
-ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermSCOnly_k',numClusters,'c',c,'T',T,'.pdf',sep =""),
-  height = 2,width=3, units = "in",useDingbats=FALSE)
+ggsave(plot = p, filename = paste(masterdir,'analyses/control_energy/PersistenceEnergyVsSpherePermAllNullModels_FA_k',numClusters,'c',c,'T',T,'.pdf',sep =""),
+  height = 2.25,width=4, units = "in",useDingbats=FALSE)

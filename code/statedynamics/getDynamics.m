@@ -1,7 +1,7 @@
 addpaths;
 
 load(fullfile(basedir,['data/Demographics',name_root,'.mat']));
-load(fullfile(datadir,['TimeSeriesIndicators',name_root,'.mat']));
+load(fullfile(basedir,['data/TimeSeriesIndicators',name_root,'.mat']));
 
 if scan == 'R'
     scanlab = {'Rest'}; numTRs = 120;
@@ -27,6 +27,9 @@ for i = 1:numel(scanlab)
     save(fullfile(savedir,[scanlab{i},'TransitionProbabilityMatrices_k',num2str(numClusters),name_root,'.mat']),'transitionProbabilityMats')
     save(fullfile(savedir,[scanlab{i},'TransitionProbabilities_k',num2str(numClusters),name_root,'.mat']),'transitionProbability')
     save(fullfile(savedir,[scanlab{i},'NumTransitions_k',num2str(numClusters),name_root,'.mat']),'numTransitions')
+
+    [transitionProbability,transitionProbabilityMats] = GET_TRANS_PROBS_NO_PERSIST(kClusterAssignments(scanInd == (i-1)),subjInd(scanInd == (i-1)));    
+    save(fullfile(savedir,[scanlab{i},'TransitionProbabilitiesNoPersist_k',num2str(numClusters),name_root,'.mat']),'transitionProbability','transitionProbabilityMats');
 
     %% calculate fractional occupancy, i.e. percentage of time spent in each state, regardless of order
     

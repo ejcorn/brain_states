@@ -32,4 +32,4 @@ W = nanmean(A,3);   % nanmean (take into account only nonzero values when comput
 A = G.*W;          % set G = 1 to corresponding mean edge weight
 A(isnan(A)) = 0;
 
-save(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D');
+save(fullfile(savedir,['GroupRepresentativeSC_Laus',num2str(lausanneScaleBOLD),'.mat']),'A','D','G');
