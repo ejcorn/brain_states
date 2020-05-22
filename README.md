@@ -1,5 +1,7 @@
 # brain_states
-Code to reproduce all analysis in Cornblath et al. 2018 ("Context-dependent architecture of brain state dynamics is explained by white matter connectivity and theories of network control").
+Code to reproduce all analysis in Cornblath et al. 2020 ("Temporal sequences of brain activity at rest are constrained by white matter structure and modulated by cognitive demands").
+
+The most simple way to re-implement this work is to start by looking at the script `example.m` in the master folder before digging into the full set of scripts called by `finalmain.sh`.
 
 ## Requirements:
   - MATLAB R2017a or later
