@@ -6,7 +6,7 @@ addpath(genpath('code'))
 
 savedir = fullfile(basedir,'results','example');mkdir(savedir);		% set save directory
 distanceMethod = 'correlation'; % distance metric for clustering, we used correlation
-numClusters = 5; % set number of clusters
+numClusters = 5; % set number of clusters -- this requires a separate process of your choosing to select the best number of clusters. See https://arxiv.org/abs/1007.1075 for a useful discussion. 
 nreps = 20;	% how many times to repeat clustering. will choose lowest error solution
 
 %% load BOLD data
@@ -39,7 +39,7 @@ subplot(1,2,1); imagesc(centroids); title('Centroids'); xticks(1:numClusters); x
 colormap('plasma'); axis square; colorbar; set(gca,'FontSize',8); COLOR_TICK_LABELS(true,false,numClusters);
 subplot(1,2,2); imagesc(corr(centroids)); title('Centroid Similarity'); colorbar; caxis([-1 1]); 
 colormap('plasma'); axis square; set(gca,'FontSize',8); xticks(1:numClusters); yticks(1:numClusters); 
-xticklabels(clusterNames); yticklabels(clusterNames);
+xticklabels(clusterNames); yticklabels(clusterNames); xtickangle(90);
 COLOR_TICK_LABELS(true,true,numClusters);
 f.PaperUnits = 'inches';
 f.PaperSize = [4 2];
@@ -54,7 +54,8 @@ saveas(f,fullfile(savedir,['Centroids_k',num2str(numClusters),'.pdf']));
 % state j occurs at the TR after state i, given that you are in state i (and not in the last TR of a scan)
 % restTransitionProbabilityMatsNoPersist: each element reflectts
 % probability that state j follows state i in the next state change,
-% given that you are in state i (and not in the last TR of a scan)
+% given that you are in state i (and not in the last TR of a scan). This
+% *NoPersist version is used in the manuscript but both are interesting.
 
 % get resting state transition probability matrices -- 2D is flattened by row for
 % regressions
@@ -132,6 +133,9 @@ f.PaperSize = [8 4];
 f.PaperPosition = [0 0 8 4];
 % plot transition probability matrices
 saveas(f,fullfile(savedir,['Rest2BackTransProbs_k',num2str(numClusters),'.pdf']),'pdf');
+
+% see code/transprobs/plot_transprob_digraph.m for visualizing TPs as a
+% directed network
 
 %% control energy
 
