@@ -35,6 +35,8 @@ Additionally, data dependencies are as follows (where `$NPARC` is the parcellati
       - `nback_data/Lausanne${NPARC}/${ID}_Lausanne${NPARC}_ts.1D`
   - `data/*`: the main data folder of the pipeline
       - .csv files with n-back performance data
+      - .csv with n-back framewise motion time series
+      - `motion_files/*`: contains `\n` delimited text files named `${BBLID}_${SCANID}_relRMS.1D` with time series of framewise motion for each subject's resting state scan
   
 ProcessDataBaumSample.m requires file paths to the resting state and n-back BOLD time series, as well as structural adjacency matrices from diffusion tractography. To demo this code without obtaining the necessary BOLD data, one could replace the variables "concTS" and "SCVolnorm" in this script with random numbers or your own BOLD data.
 
