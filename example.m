@@ -79,7 +79,7 @@ grpAvg2Back = squeeze(nanmean(twobackTransitionProbabilityMatsNoPersist,1)) .* ~
 %% permutation testing to compare transition probability matrices
 disp('start permutation testing')
 nperms = 100000;
-pvals_twotail = PERM_TEST(twobackTransitionProbabilityMatsNoPersist,restTransitionProbabilityMats,nperms);
+pvals_twotail = PERM_TEST(twobackTransitionProbabilityMatsNoPersist,restTransitionProbabilityMatsNoPersist,nperms);
 
 %% plot transition probabilities
 maxVal = max(max([grpAvgRest,grpAvg2Back])); % sync color scales
